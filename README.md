@@ -1,6 +1,6 @@
 # Site vitrine e-Fanamby
 
-« Parions sur la data. » — Football analytics, made in Madagascar.
+« Parions sur la data. ». Football analytics, made in Madagascar.
 Next.js 16 (App Router) · React 19 · TypeScript · Tailwind CSS 4 · Phosphor Icons · polices Mozilla Text.
 6 pages (Accueil, Fonctionnalités, Références, Tarifs, Contact, Essai gratuit) + 3 pages juridiques, en 4 langues (fr, en, mg, es).
 
