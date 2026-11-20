@@ -1,0 +1,73 @@
+SITE VITRINE e-Fanamby — DESIGN SYSTEM : JETONS RELEVÉS DANS LE PDF « system copie » — 16/11/2026, 22:00
+
+SOURCE ET FIABILITÉ
+- PDF d'une seule page (4429 × 2677 points, soit 1 point = 1 px Figma), reçu le 16/11 à 21:25. Les textes sont lisibles et les polices embarquées : Mozilla Text Bold, SemiBold, Medium, Regular.
+- Le fichier est en couleurs d'impression (PDF/X-4 passé par Illustrator) : les pastilles s'affichent légèrement décalées par rapport au code hex. Les codes hex écrits dans le PDF font foi, pas les couleurs rendues.
+- Mesures de boutons prises sur le rendu. Les valeurs que le PDF ne donne pas sont listées en fin de document.
+
+1. TYPOGRAPHIE (famille Mozilla Text)
+- Header 1 : Bold, 64 px
+- Header 2 : Bold, 40 px
+- Header 3 : Bold, 24 px
+- Header 4 : SemiBold, 18 px
+- Header 5 : SemiBold, 16 px
+- Body Large : Medium, 18 px
+- Main Text : Regular, 16 px
+- Small Text : Regular, 12 px
+- Pre Title : Bold, 10 px, tout en capitales
+- Button Text : Bold, 14 px
+- Link : Bold, 13,5 px, tout en capitales
+Seules 4 graisses sont utilisées (Regular, Medium, SemiBold, Bold) : ce sont les seules à charger.
+
+2. COULEURS
+- Marine #06062D (couleur principale)
+- Violet #411AFF
+- Vert #2FDE97
+- Menthe #EBFFF7
+- Alert #FF1D1D
+- Warning : le PDF écrit #FF1D1D, comme Alert, mais la pastille est jaune. Le code hex du Warning est donc à donner.
+- Nuances : 4 par couleur (marine, violet, vert, Alert, Warning ; pas pour la menthe). Les valeurs ne sont pas écrites ; d'après le rendu elles correspondent à environ 100 %, 75 %, 50 % et 25 % de la couleur sur fond blanc (estimation à confirmer).
+- 4 dégradés, tous dans une forme à coin coupé : vert vers menthe ; violet vers menthe ; vert vers marine ; violet vers marine. Direction (de gauche à droite avec une légère diagonale sur le rendu) et arrêts exacts à relever dans Figma.
+
+Contrastes calculés (norme WCAG, ratio de luminance) :
+- Texte marine sur menthe : 18,8:1, très bon. Texte menthe sur marine : 18,8:1. Texte menthe sur violet : 7,2:1. Texte blanc sur violet : 7,5:1. Texte violet sur blanc : 7,5:1 ; sur menthe : 7,2:1.
+- Vert sur marine : 11,2:1, bon. Vert sur blanc : 1,75:1 ; vert sur menthe : 1,7:1 ; insuffisant : le vert ne sert qu'en fond, en bordure ou sur marine, jamais en texte ni en icône sur fond clair.
+- Violet sur marine : 2,6:1, insuffisant même pour de grands textes : pas de texte violet sur fond marine.
+- Alert #FF1D1D sur blanc : 3,9:1 ; sur menthe : 3,7:1. Insuffisant pour du texte courant (4,5:1 demandé) ; acceptable pour de grands textes et des icônes. Un message d'erreur en #FF1D1D de 12 à 16 px sur fond clair ne passe pas : il faudra un rouge plus foncé pour le texte, ou une icône + texte marine.
+
+3. ESPACEMENTS : 12, 16, 20, 28, 32, 40, 48, 64, 82, 96, 128, 152 px
+- « 82 » est inhabituel : 80 ? À confirmer. Il n'y a pas de 4 ni de 8 px.
+
+4. RAYONS : 4, 10, 16, 20, 24 px
+- La maquette utilise aussi un rayon de 30 px (masque de l'image portrait de l'Accueil, d'après le SVG) : à aligner sur le design system.
+
+5. ICÔNES (Phosphor, phosphoricons.com)
+- Le design system montre deux graisses : Regular et Bold, en deux rangées (une vingtaine d'icônes) pour chacune.
+- La maquette utilise aussi la graisse Fill (20 étincelles dans Tarifs, trophée, ballon, coureur, flèches, guillemets, logos Facebook, LinkedIn, WhatsApp, enveloppe). Fill est donc à ajouter au design system, ou la maquette est à changer.
+- Quelques icônes du design system (calendrier, repère de carte, téléchargement) n'ont pas été vues dans les 6 pages : probablement celles de la plateforme. À confirmer.
+
+6. BOUTONS
+- Forme : coins coupés en haut à droite et en bas à gauche (coupe d'environ 14 px sur les boutons small et medium, mesure approximative).
+- Tailles mesurées, sans icône / avec icône : Small 101×43 / 99×43 ; Medium 130×55 / 132×55 ; Large 158×63 / 169×63 (en px).
+- Avec icône : flèche ArrowUpRight à droite du texte (graisse regular ou bold : à confirmer ; la maquette est plus proche de bold, à cette taille l'écart est faible).
+- Variantes : Solid et Outline. États : Default, Hover, Pressed, Disabled.
+- Solid : fond violet ; Pressed et Disabled sont des nuances plus claires du violet. Outline : bordure violette sur fond blanc ; Hover : fond lavande.
+- Texte : Button Text Bold 14 px.
+
+7. COINS COUPÉS : deux variantes à confirmer
+- Design system (boutons, cartes de couleurs) : haut droit et bas gauche coupés.
+- Maquette (captures du 16/11) : coin coupé en bas à droite sur les cartes de prix et les champs de formulaire.
+Ce sont peut-être deux variantes voulues (boutons et cartes de couleurs, d'une part ; cartes de prix et champs, d'autre part). À confirmer.
+
+ÉCARTS ET MANQUES À TRANCHER (par ordre d'importance pour le code)
+1. États absents du design system : champs de formulaire (le champ actif existe dans les captures : bordure verte avec halo), erreur, succès, focus au clavier des boutons et liens, survol des liens et de la FAQ, menu des langues ouvert. Le focus au clavier est indispensable pour l'accessibilité.
+2. Composants absents : le design system ne documente que les boutons. Cartes (prix, références, fonctionnalités), tableau comparatif, FAQ, en-tête, pied de page, champs : à déduire de la maquette.
+3. Interlignage (line-height) et espacement des lettres : non indiqués. Surtout pour Pre Title et Link, en capitales. À définir (par exemple 1,2 pour les titres et 1,5 pour le texte, à valider).
+4. Tailles responsives : Header 1 à 64 px est grand pour un écran de 390 px. Les tailles mobile restent à définir (le PDF ne donne que le desktop).
+5. Taille du texte par taille de bouton (small, medium, large) : seul « 14 px » est écrit.
+6. Warning : code hex à donner (voir couleurs).
+7. Contrastes : voir la section 2 (Alert et vert).
+8. Rayon 30 px de la maquette absent du design system ; espacement « 82 » à confirmer ; graisse Fill absente.
+9. Pre Title en 10 px : très petit, à tester en lecture réelle sur mobile.
+10. Link en 13,5 px : valeur non entière, à confirmer.
+Ce qu'on peut faire sans attendre : variables de couleur, de typographie, d'espacement et de rayon, et le composant bouton (tailles et états).

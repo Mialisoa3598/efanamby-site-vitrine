@@ -1,0 +1,246 @@
+@import "tailwindcss";
+
+/*
+  JETONS DU DESIGN SYSTEM e-Fanamby (relevés dans « system copie.pdf », 16/11/2026).
+  Source unique : si le design system change, on corrige ICI et tout le site suit.
+  Les valeurs marquées « à confirmer » sont listées dans docs/design-system-jetons.txt.
+*/
+@theme {
+  /* Couleurs */
+  --color-navy: #06062d;
+  --color-violet: #411aff;
+  --color-green: #2fde97;
+  --color-mint: #ebfff7;
+  --color-alert: #ff1d1d;
+
+  /* Nuances de violet et de marine (estimation : 75 / 50 / 25 % sur fond blanc, à confirmer) */
+  --color-violet-75: #7f66ff;
+  --color-violet-50: #a08cff;
+  --color-violet-25: #d9d1ff;
+  --color-navy-75: #4a4a68;
+  --color-navy-50: #83839a;
+  --color-navy-25: #c1c1cb;
+
+  /* Traits des tableaux et cartes (relevés sur la maquette) */
+  --color-line: #b9d8cc;
+  --color-header-row: #adf2d6;
+
+  --font-sans: var(--font-mozilla-text), system-ui, sans-serif;
+
+  /* Rayons du design system : 4, 10, 16, 20, 24 (+ 30 présent dans la maquette) */
+  --radius-ds-1: 4px;
+  --radius-ds-2: 10px;
+  --radius-ds-3: 16px;
+  --radius-ds-4: 20px;
+  --radius-ds-5: 24px;
+  --radius-ds-6: 30px;
+}
+
+html {
+  scroll-behavior: smooth;
+  /* L'en-tête reste collé en haut (76 px) : les ancres (lien d'évitement, #contenu) s'arrêtent sous lui. */
+  scroll-padding-top: 76px;
+}
+
+body {
+  background: var(--color-mint);
+  color: var(--color-navy);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+/* ---------- Animations (décision du 18/11 : niveau « léger », en CSS, sans bibliothèque) ----------
+   Apparition douce au défilement. Pour animer un nouvel élément : lui ajouter l'attribut data-reveal
+   (et data-reveal-delay="1", "2" ou "3" pour le décaler dans une rangée). Rien d'autre à faire.
+   Un élément data-reveal est VISIBLE par défaut ; c'est le composant ScrollReveal (components/layout/scroll-reveal.tsx)
+   qui le cache seulement s'il est sous la ligne de flottaison, puis le révèle. Distance, durée et courbe : les trois jetons ci-dessous. */
+:root {
+  --reveal-distance: 18px;
+  --reveal-duration: 600ms;
+  --reveal-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+@media (prefers-reduced-motion: no-preference) {
+  [data-reveal][data-reveal-state="hidden"] {
+    opacity: 0;
+    transform: translateY(var(--reveal-distance));
+  }
+  [data-reveal][data-reveal-state="shown"] {
+    transition:
+      opacity var(--reveal-duration) var(--reveal-ease) var(--reveal-delay, 0ms),
+      transform var(--reveal-duration) var(--reveal-ease) var(--reveal-delay, 0ms);
+  }
+  [data-reveal-delay="1"] { --reveal-delay: 90ms; }
+  [data-reveal-delay="2"] { --reveal-delay: 180ms; }
+  [data-reveal-delay="3"] { --reveal-delay: 270ms; }
+}
+/* Chiffres animés (CountUp) : invisibles jusqu'à ce que le script les prenne en charge ; sans script, ils apparaissent d'eux-mêmes après 1,5 s. */
+@media (prefers-reduced-motion: no-preference) {
+  .count-up {
+    opacity: 0;
+    animation: count-up-fallback 0s 1.5s forwards;
+  }
+}
+@keyframes count-up-fallback {
+  to {
+    opacity: 1;
+  }
+}
+@media print {
+  [data-reveal-state] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* ---------- Échelle typographique (Mozilla Text). Desktop = design system ; mobile = à valider ---------- */
+.t-h1 { font-size: 64px; line-height: 1.05; font-weight: 700; letter-spacing: -0.02em; }
+.t-h2 { font-size: 40px; line-height: 1.15; font-weight: 700; letter-spacing: -0.017em; }
+.t-h3 { font-size: 24px; line-height: 1.25; font-weight: 700; }
+.t-h4 { font-size: 18px; line-height: 1.3; font-weight: 600; }
+.t-h5 { font-size: 16px; line-height: 1.3; font-weight: 600; }
+.t-body-lg { font-size: 18px; line-height: 1.55; font-weight: 500; }
+.t-body { font-size: 16px; line-height: 1.5; font-weight: 400; }
+.t-small { font-size: 12px; line-height: 1.4; font-weight: 400; }
+.t-pretitle { font-size: 10px; line-height: 1.4; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
+.t-button { font-size: 14px; line-height: 1.2; font-weight: 700; }
+.t-link { font-size: 13.5px; line-height: 1.3; font-weight: 700; }
+
+@media (max-width: 1023px) {
+  .t-h1 { font-size: 52px; }
+  .t-h2 { font-size: 34px; }
+}
+@media (max-width: 767px) {
+  .t-h1 { font-size: 42px; }
+  .t-h2 { font-size: 30px; }
+  .t-h3 { font-size: 22px; }
+}
+@media (max-width: 389px) {
+  .t-h1 { font-size: 36px; }
+  .t-h2 { font-size: 28px; }
+}
+
+/* ---------- Coins coupés ---------- */
+/* --cut = taille de la coupe. Forme « bouton violet / carte » : haut-droit et bas-gauche coupés. */
+.cut-tr-bl {
+  clip-path: polygon(0 0, calc(100% - var(--cut, 14px)) 0, 100% var(--cut, 14px), 100% 100%, var(--cut, 14px) 100%, 0 calc(100% - var(--cut, 14px)));
+}
+/* Forme « carte de cas concret » : haut-droit seul coupé. */
+.cut-tr {
+  clip-path: polygon(0 0, calc(100% - var(--cut, 14px)) 0, 100% var(--cut, 14px), 100% 100%, 0 100%);
+}
+/* Forme « bouton vert, champ, carte de prix » : bas-droit coupé. */
+.cut-br {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--cut, 12px)), calc(100% - var(--cut, 12px)) 100%, 0 100%);
+}
+
+/* Carte à coin coupé AVEC contour : le contour est le fond de l'élément, le remplissage est un ::before décalé de --bw. */
+.cut-outline {
+  position: relative;
+  background: var(--bc, var(--color-navy));
+  isolation: isolate;
+}
+.cut-outline::before {
+  content: "";
+  position: absolute;
+  inset: var(--bw, 1px);
+  z-index: -1;
+  background: var(--bg, var(--color-mint));
+  border-radius: calc(var(--radius, 16px) - var(--bw, 1px));
+  clip-path: inherit;
+}
+
+/* ---------- Focus clavier visible partout (le design system n'en définit pas : valeur proposée, à valider) ---------- */
+:where(a, button, summary, input, textarea, select, [tabindex]):focus-visible {
+  outline: 3px solid var(--color-green);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+.on-light :where(a, button, summary, input, textarea):focus-visible {
+  outline-color: var(--color-violet);
+}
+
+/* FAQ en <details> : on masque le marqueur natif, l'icône est dessinée par le composant. */
+details > summary { list-style: none; }
+details > summary::-webkit-details-marker { display: none; }
+
+.sr-only-text { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---------- Conteneur de page : marges de 72 px à 1280, puis 40 / 24 / 20 px en descendant ---------- */
+.wrap {
+  --gutter: 72px;
+  width: min(100% - 2 * var(--gutter), 1136px);
+  margin-inline: auto;
+}
+@media (max-width: 1279px) { .wrap { --gutter: 40px; } }
+@media (max-width: 767px) { .wrap { --gutter: 24px; } }
+@media (max-width: 389px) { .wrap { --gutter: 20px; } }
+
+/* Feuille claire à haut arrondi qui recouvre le bas d'un hero sombre. */
+.sheet { position: relative; margin-top: -40px; border-radius: 24px 24px 0 0; background: var(--color-mint); }
+
+/* Coin coupé AVEC contour fin : la diagonale est tracée par des pseudo-éléments (fonctionne sur fond transparent). */
+.lined { position: relative; border: var(--lw, 1px) solid var(--bc, currentColor); }
+.cut-br.lined::after,
+.cut-tr-bl.lined::before,
+.cut-tr-bl.lined::after {
+  content: "";
+  position: absolute;
+  width: calc(var(--cut, 12px) * 1.4142 + 2px);
+  height: var(--lw, 1px);
+  background: var(--bc, currentColor);
+  pointer-events: none;
+}
+.cut-br.lined::after { right: calc(var(--cut, 12px) * -0.2071 - 1px); bottom: calc(var(--cut, 12px) * 0.5 - var(--lw, 1px)); transform: rotate(-45deg); }
+.cut-tr-bl.lined::before { right: calc(var(--cut, 14px) * -0.2071 - 1px); top: calc(var(--cut, 14px) * 0.5 - var(--lw, 1px) / 2); transform: rotate(45deg); }
+.cut-tr-bl.lined::after { left: calc(var(--cut, 14px) * -0.2071 - 1px); bottom: calc(var(--cut, 14px) * 0.5 - var(--lw, 1px) / 2); transform: rotate(45deg); }
+
+/* ---------- Coins coupés ARRONDIS (maquette) : classe .rc à ajouter à .cut-tr-bl ou .cut-br. ----------
+   Fichier généré (polygone dont chaque sommet de coupe est remplacé par un arc de rayon --r, 5 points par arc).
+   --r vaut 0,45 × --cut par défaut ; --rb = rayon des coins droits (comme rounded-[…]) pour le contour .lined. */
+@layer components {
+  .rc { --r: calc(var(--cut, 14px) * 0.45); }
+}
+.cut-tr-bl.rc {
+  clip-path: polygon(0px 0px, calc(100% + var(--cut,14px) * -1 + var(--r) * -0.4142) 0px, calc(100% + var(--cut,14px) * -1 + var(--r) * -0.2191) calc(var(--r) * 0.0192), calc(100% + var(--cut,14px) * -1 + var(--r) * -0.0315) calc(var(--r) * 0.0761), calc(100% + var(--cut,14px) * -1 + var(--r) * 0.1414) calc(var(--r) * 0.1685), calc(100% + var(--cut,14px) * -1 + var(--r) * 0.2929) calc(var(--r) * 0.2929), calc(100% + var(--r) * -0.2929) calc(var(--cut,14px) + var(--r) * -0.2929), calc(100% + var(--r) * -0.1685) calc(var(--cut,14px) + var(--r) * -0.1414), calc(100% + var(--r) * -0.0761) calc(var(--cut,14px) + var(--r) * 0.0315), calc(100% + var(--r) * -0.0192) calc(var(--cut,14px) + var(--r) * 0.2191), 100% calc(var(--cut,14px) + var(--r) * 0.4142), 100% 100%, calc(var(--cut,14px) + var(--r) * 0.4142) 100%, calc(var(--cut,14px) + var(--r) * 0.2191) calc(100% + var(--r) * -0.0192), calc(var(--cut,14px) + var(--r) * 0.0315) calc(100% + var(--r) * -0.0761), calc(var(--cut,14px) + var(--r) * -0.1414) calc(100% + var(--r) * -0.1685), calc(var(--cut,14px) + var(--r) * -0.2929) calc(100% + var(--r) * -0.2929), calc(var(--r) * 0.2929) calc(100% + var(--cut,14px) * -1 + var(--r) * 0.2929), calc(var(--r) * 0.1685) calc(100% + var(--cut,14px) * -1 + var(--r) * 0.1414), calc(var(--r) * 0.0761) calc(100% + var(--cut,14px) * -1 + var(--r) * -0.0315), calc(var(--r) * 0.0192) calc(100% + var(--cut,14px) * -1 + var(--r) * -0.2191), 0px calc(100% + var(--cut,14px) * -1 + var(--r) * -0.4142));
+}
+.cut-br.rc {
+  clip-path: polygon(0px 0px, 100% 0px, 100% calc(100% + var(--cut,12px) * -1 + var(--r) * -0.4142), calc(100% + var(--r) * -0.0192) calc(100% + var(--cut,12px) * -1 + var(--r) * -0.2191), calc(100% + var(--r) * -0.0761) calc(100% + var(--cut,12px) * -1 + var(--r) * -0.0315), calc(100% + var(--r) * -0.1685) calc(100% + var(--cut,12px) * -1 + var(--r) * 0.1414), calc(100% + var(--r) * -0.2929) calc(100% + var(--cut,12px) * -1 + var(--r) * 0.2929), calc(100% + var(--cut,12px) * -1 + var(--r) * 0.2929) calc(100% + var(--r) * -0.2929), calc(100% + var(--cut,12px) * -1 + var(--r) * 0.1414) calc(100% + var(--r) * -0.1685), calc(100% + var(--cut,12px) * -1 + var(--r) * -0.0315) calc(100% + var(--r) * -0.0761), calc(100% + var(--cut,12px) * -1 + var(--r) * -0.2191) calc(100% + var(--r) * -0.0192), calc(100% + var(--cut,12px) * -1 + var(--r) * -0.4142) 100%, 0px 100%);
+}
+/* Contour fin d'une carte arrondie à fond translucide : anneau dessiné par ::before (le contour suit la forme). */
+.cut-tr-bl.rc.lined { border: 0; }
+.cut-tr-bl.rc.lined::after { display: none; }
+.cut-tr-bl.rc.lined::before {
+  inset: 0; width: auto; height: auto; transform: none;
+  clip-path: polygon(evenodd, 0px calc(var(--rb,16px)), calc(var(--rb,16px) * 0.0341) calc(var(--rb,16px) * 0.7412), calc(var(--rb,16px) * 0.134) calc(var(--rb,16px) * 0.5), calc(var(--rb,16px) * 0.2929) calc(var(--rb,16px) * 0.2929), calc(var(--rb,16px) * 0.5) calc(var(--rb,16px) * 0.134), calc(var(--rb,16px) * 0.7412) calc(var(--rb,16px) * 0.0341), calc(var(--rb,16px)) 0px, calc(100% + var(--cut,14px) * -1 + var(--r) * -0.4142) 0px, calc(100% + var(--cut,14px) * -1 + var(--r) * -0.2191) calc(var(--r) * 0.0192), calc(100% + var(--cut,14px) * -1 + var(--r) * -0.0315) calc(var(--r) * 0.0761), calc(100% + var(--cut,14px) * -1 + var(--r) * 0.1414) calc(var(--r) * 0.1685), calc(100% + var(--cut,14px) * -1 + var(--r) * 0.2929) calc(var(--r) * 0.2929), calc(100% + var(--r) * -0.2929) calc(var(--cut,14px) + var(--r) * -0.2929), calc(100% + var(--r) * -0.1685) calc(var(--cut,14px) + var(--r) * -0.1414), calc(100% + var(--r) * -0.0761) calc(var(--cut,14px) + var(--r) * 0.0315), calc(100% + var(--r) * -0.0192) calc(var(--cut,14px) + var(--r) * 0.2191), 100% calc(var(--cut,14px) + var(--r) * 0.4142), 100% calc(100% + var(--rb,16px) * -1), calc(100% + var(--rb,16px) * -0.0341) calc(100% + var(--rb,16px) * -0.7412), calc(100% + var(--rb,16px) * -0.134) calc(100% + var(--rb,16px) * -0.5), calc(100% + var(--rb,16px) * -0.2929) calc(100% + var(--rb,16px) * -0.2929), calc(100% + var(--rb,16px) * -0.5) calc(100% + var(--rb,16px) * -0.134), calc(100% + var(--rb,16px) * -0.7412) calc(100% + var(--rb,16px) * -0.0341), calc(100% + var(--rb,16px) * -1) 100%, calc(var(--cut,14px) + var(--r) * 0.4142) 100%, calc(var(--cut,14px) + var(--r) * 0.2191) calc(100% + var(--r) * -0.0192), calc(var(--cut,14px) + var(--r) * 0.0315) calc(100% + var(--r) * -0.0761), calc(var(--cut,14px) + var(--r) * -0.1414) calc(100% + var(--r) * -0.1685), calc(var(--cut,14px) + var(--r) * -0.2929) calc(100% + var(--r) * -0.2929), calc(var(--r) * 0.2929) calc(100% + var(--cut,14px) * -1 + var(--r) * 0.2929), calc(var(--r) * 0.1685) calc(100% + var(--cut,14px) * -1 + var(--r) * 0.1414), calc(var(--r) * 0.0761) calc(100% + var(--cut,14px) * -1 + var(--r) * -0.0315), calc(var(--r) * 0.0192) calc(100% + var(--cut,14px) * -1 + var(--r) * -0.2191), 0px calc(100% + var(--cut,14px) * -1 + var(--r) * -0.4142), 0px calc(var(--rb,16px)), var(--lw,1px) calc(var(--rb,16px)), calc(var(--rb,16px) * 0.0341 + var(--lw,1px) * 0.9659) calc(var(--rb,16px) * 0.7412 + var(--lw,1px) * 0.2588), calc(var(--rb,16px) * 0.134 + var(--lw,1px) * 0.866) calc(var(--rb,16px) * 0.5 + var(--lw,1px) * 0.5), calc(var(--rb,16px) * 0.2929 + var(--lw,1px) * 0.7071) calc(var(--rb,16px) * 0.2929 + var(--lw,1px) * 0.7071), calc(var(--rb,16px) * 0.5 + var(--lw,1px) * 0.5) calc(var(--rb,16px) * 0.134 + var(--lw,1px) * 0.866), calc(var(--rb,16px) * 0.7412 + var(--lw,1px) * 0.2588) calc(var(--rb,16px) * 0.0341 + var(--lw,1px) * 0.9659), calc(var(--rb,16px)) var(--lw,1px), calc(100% + var(--cut,14px) * -1 + var(--r) * -0.4142 + var(--lw,1px) * 0) var(--lw,1px), calc(100% + var(--cut,14px) * -1 + var(--r) * -0.2191 + var(--lw,1px) * -0.1951) calc(var(--r) * 0.0192 + var(--lw,1px) * 0.9808), calc(100% + var(--cut,14px) * -1 + var(--r) * -0.0315 + var(--lw,1px) * -0.3827) calc(var(--r) * 0.0761 + var(--lw,1px) * 0.9239), calc(100% + var(--cut,14px) * -1 + var(--r) * 0.1414 + var(--lw,1px) * -0.5556) calc(var(--r) * 0.1685 + var(--lw,1px) * 0.8315), calc(100% + var(--cut,14px) * -1 + var(--r) * 0.2929 + var(--lw,1px) * -0.7071) calc(var(--r) * 0.2929 + var(--lw,1px) * 0.7071), calc(100% + var(--r) * -0.2929 + var(--lw,1px) * -0.7071) calc(var(--cut,14px) + var(--r) * -0.2929 + var(--lw,1px) * 0.7071), calc(100% + var(--r) * -0.1685 + var(--lw,1px) * -0.8315) calc(var(--cut,14px) + var(--r) * -0.1414 + var(--lw,1px) * 0.5556), calc(100% + var(--r) * -0.0761 + var(--lw,1px) * -0.9239) calc(var(--cut,14px) + var(--r) * 0.0315 + var(--lw,1px) * 0.3827), calc(100% + var(--r) * -0.0192 + var(--lw,1px) * -0.9808) calc(var(--cut,14px) + var(--r) * 0.2191 + var(--lw,1px) * 0.1951), calc(100% + var(--lw,1px) * -1) calc(var(--cut,14px) + var(--r) * 0.4142 + var(--lw,1px) * -0), calc(100% + var(--lw,1px) * -1) calc(100% + var(--rb,16px) * -1), calc(100% + var(--rb,16px) * -0.0341 + var(--lw,1px) * -0.9659) calc(100% + var(--rb,16px) * -0.7412 + var(--lw,1px) * -0.2588), calc(100% + var(--rb,16px) * -0.134 + var(--lw,1px) * -0.866) calc(100% + var(--rb,16px) * -0.5 + var(--lw,1px) * -0.5), calc(100% + var(--rb,16px) * -0.2929 + var(--lw,1px) * -0.7071) calc(100% + var(--rb,16px) * -0.2929 + var(--lw,1px) * -0.7071), calc(100% + var(--rb,16px) * -0.5 + var(--lw,1px) * -0.5) calc(100% + var(--rb,16px) * -0.134 + var(--lw,1px) * -0.866), calc(100% + var(--rb,16px) * -0.7412 + var(--lw,1px) * -0.2588) calc(100% + var(--rb,16px) * -0.0341 + var(--lw,1px) * -0.9659), calc(100% + var(--rb,16px) * -1) calc(100% + var(--lw,1px) * -1), calc(var(--cut,14px) + var(--r) * 0.4142 + var(--lw,1px) * -0) calc(100% + var(--lw,1px) * -1), calc(var(--cut,14px) + var(--r) * 0.2191 + var(--lw,1px) * 0.1951) calc(100% + var(--r) * -0.0192 + var(--lw,1px) * -0.9808), calc(var(--cut,14px) + var(--r) * 0.0315 + var(--lw,1px) * 0.3827) calc(100% + var(--r) * -0.0761 + var(--lw,1px) * -0.9239), calc(var(--cut,14px) + var(--r) * -0.1414 + var(--lw,1px) * 0.5556) calc(100% + var(--r) * -0.1685 + var(--lw,1px) * -0.8315), calc(var(--cut,14px) + var(--r) * -0.2929 + var(--lw,1px) * 0.7071) calc(100% + var(--r) * -0.2929 + var(--lw,1px) * -0.7071), calc(var(--r) * 0.2929 + var(--lw,1px) * 0.7071) calc(100% + var(--cut,14px) * -1 + var(--r) * 0.2929 + var(--lw,1px) * -0.7071), calc(var(--r) * 0.1685 + var(--lw,1px) * 0.8315) calc(100% + var(--cut,14px) * -1 + var(--r) * 0.1414 + var(--lw,1px) * -0.5556), calc(var(--r) * 0.0761 + var(--lw,1px) * 0.9239) calc(100% + var(--cut,14px) * -1 + var(--r) * -0.0315 + var(--lw,1px) * -0.3827), calc(var(--r) * 0.0192 + var(--lw,1px) * 0.9808) calc(100% + var(--cut,14px) * -1 + var(--r) * -0.2191 + var(--lw,1px) * -0.1951), var(--lw,1px) calc(100% + var(--cut,14px) * -1 + var(--r) * -0.4142 + var(--lw,1px) * 0), var(--lw,1px) calc(var(--rb,16px)));
+}
+/* Même contour pour un bouton à coin coupé bas-droit (bouton « Voir une démo » de l'accueil) : anneau dessiné par ::after. */
+.cut-br.rc.lined { border: 0; }
+.cut-br.rc.lined::after {
+  inset: 0; width: auto; height: auto; transform: none;
+  clip-path: polygon(evenodd, 0px calc(var(--rb,16px)), calc(var(--rb,16px) * 0.0341) calc(var(--rb,16px) * 0.7412), calc(var(--rb,16px) * 0.134) calc(var(--rb,16px) * 0.5), calc(var(--rb,16px) * 0.2929) calc(var(--rb,16px) * 0.2929), calc(var(--rb,16px) * 0.5) calc(var(--rb,16px) * 0.134), calc(var(--rb,16px) * 0.7412) calc(var(--rb,16px) * 0.0341), calc(var(--rb,16px)) 0px, calc(100% + var(--rb,16px) * -1) 0px, calc(100% + var(--rb,16px) * -0.7412) calc(var(--rb,16px) * 0.0341), calc(100% + var(--rb,16px) * -0.5) calc(var(--rb,16px) * 0.134), calc(100% + var(--rb,16px) * -0.2929) calc(var(--rb,16px) * 0.2929), calc(100% + var(--rb,16px) * -0.134) calc(var(--rb,16px) * 0.5), calc(100% + var(--rb,16px) * -0.0341) calc(var(--rb,16px) * 0.7412), 100% calc(var(--rb,16px)), 100% calc(100% + var(--cut,12px) * -1 + var(--r) * -0.4142), calc(100% + var(--r) * -0.0192) calc(100% + var(--cut,12px) * -1 + var(--r) * -0.2191), calc(100% + var(--r) * -0.0761) calc(100% + var(--cut,12px) * -1 + var(--r) * -0.0315), calc(100% + var(--r) * -0.1685) calc(100% + var(--cut,12px) * -1 + var(--r) * 0.1414), calc(100% + var(--r) * -0.2929) calc(100% + var(--cut,12px) * -1 + var(--r) * 0.2929), calc(100% + var(--cut,12px) * -1 + var(--r) * 0.2929) calc(100% + var(--r) * -0.2929), calc(100% + var(--cut,12px) * -1 + var(--r) * 0.1414) calc(100% + var(--r) * -0.1685), calc(100% + var(--cut,12px) * -1 + var(--r) * -0.0315) calc(100% + var(--r) * -0.0761), calc(100% + var(--cut,12px) * -1 + var(--r) * -0.2191) calc(100% + var(--r) * -0.0192), calc(100% + var(--cut,12px) * -1 + var(--r) * -0.4142) 100%, calc(var(--rb,16px)) 100%, calc(var(--rb,16px) * 0.7412) calc(100% + var(--rb,16px) * -0.0341), calc(var(--rb,16px) * 0.5) calc(100% + var(--rb,16px) * -0.134), calc(var(--rb,16px) * 0.2929) calc(100% + var(--rb,16px) * -0.2929), calc(var(--rb,16px) * 0.134) calc(100% + var(--rb,16px) * -0.5), calc(var(--rb,16px) * 0.0341) calc(100% + var(--rb,16px) * -0.7412), 0px calc(100% + var(--rb,16px) * -1), 0px calc(var(--rb,16px)), var(--lw,1px) calc(var(--rb,16px)), calc(var(--rb,16px) * 0.0341 + var(--lw,1px) * 0.9659) calc(var(--rb,16px) * 0.7412 + var(--lw,1px) * 0.2588), calc(var(--rb,16px) * 0.134 + var(--lw,1px) * 0.866) calc(var(--rb,16px) * 0.5 + var(--lw,1px) * 0.5), calc(var(--rb,16px) * 0.2929 + var(--lw,1px) * 0.7071) calc(var(--rb,16px) * 0.2929 + var(--lw,1px) * 0.7071), calc(var(--rb,16px) * 0.5 + var(--lw,1px) * 0.5) calc(var(--rb,16px) * 0.134 + var(--lw,1px) * 0.866), calc(var(--rb,16px) * 0.7412 + var(--lw,1px) * 0.2588) calc(var(--rb,16px) * 0.0341 + var(--lw,1px) * 0.9659), calc(var(--rb,16px)) var(--lw,1px), calc(100% + var(--rb,16px) * -1) var(--lw,1px), calc(100% + var(--rb,16px) * -0.7412 + var(--lw,1px) * -0.2588) calc(var(--rb,16px) * 0.0341 + var(--lw,1px) * 0.9659), calc(100% + var(--rb,16px) * -0.5 + var(--lw,1px) * -0.5) calc(var(--rb,16px) * 0.134 + var(--lw,1px) * 0.866), calc(100% + var(--rb,16px) * -0.2929 + var(--lw,1px) * -0.7071) calc(var(--rb,16px) * 0.2929 + var(--lw,1px) * 0.7071), calc(100% + var(--rb,16px) * -0.134 + var(--lw,1px) * -0.866) calc(var(--rb,16px) * 0.5 + var(--lw,1px) * 0.5), calc(100% + var(--rb,16px) * -0.0341 + var(--lw,1px) * -0.9659) calc(var(--rb,16px) * 0.7412 + var(--lw,1px) * 0.2588), calc(100% + var(--lw,1px) * -1) calc(var(--rb,16px)), calc(100% + var(--lw,1px) * -1) calc(100% + var(--cut,12px) * -1 + var(--r) * -0.4142 + var(--lw,1px) * 0), calc(100% + var(--r) * -0.0192 + var(--lw,1px) * -0.9808) calc(100% + var(--cut,12px) * -1 + var(--r) * -0.2191 + var(--lw,1px) * -0.1951), calc(100% + var(--r) * -0.0761 + var(--lw,1px) * -0.9239) calc(100% + var(--cut,12px) * -1 + var(--r) * -0.0315 + var(--lw,1px) * -0.3827), calc(100% + var(--r) * -0.1685 + var(--lw,1px) * -0.8315) calc(100% + var(--cut,12px) * -1 + var(--r) * 0.1414 + var(--lw,1px) * -0.5556), calc(100% + var(--r) * -0.2929 + var(--lw,1px) * -0.7071) calc(100% + var(--cut,12px) * -1 + var(--r) * 0.2929 + var(--lw,1px) * -0.7071), calc(100% + var(--cut,12px) * -1 + var(--r) * 0.2929 + var(--lw,1px) * -0.7071) calc(100% + var(--r) * -0.2929 + var(--lw,1px) * -0.7071), calc(100% + var(--cut,12px) * -1 + var(--r) * 0.1414 + var(--lw,1px) * -0.5556) calc(100% + var(--r) * -0.1685 + var(--lw,1px) * -0.8315), calc(100% + var(--cut,12px) * -1 + var(--r) * -0.0315 + var(--lw,1px) * -0.3827) calc(100% + var(--r) * -0.0761 + var(--lw,1px) * -0.9239), calc(100% + var(--cut,12px) * -1 + var(--r) * -0.2191 + var(--lw,1px) * -0.1951) calc(100% + var(--r) * -0.0192 + var(--lw,1px) * -0.9808), calc(100% + var(--cut,12px) * -1 + var(--r) * -0.4142 + var(--lw,1px) * 0) calc(100% + var(--lw,1px) * -1), calc(var(--rb,16px)) calc(100% + var(--lw,1px) * -1), calc(var(--rb,16px) * 0.7412 + var(--lw,1px) * 0.2588) calc(100% + var(--rb,16px) * -0.0341 + var(--lw,1px) * -0.9659), calc(var(--rb,16px) * 0.5 + var(--lw,1px) * 0.5) calc(100% + var(--rb,16px) * -0.134 + var(--lw,1px) * -0.866), calc(var(--rb,16px) * 0.2929 + var(--lw,1px) * 0.7071) calc(100% + var(--rb,16px) * -0.2929 + var(--lw,1px) * -0.7071), calc(var(--rb,16px) * 0.134 + var(--lw,1px) * 0.866) calc(100% + var(--rb,16px) * -0.5 + var(--lw,1px) * -0.5), calc(var(--rb,16px) * 0.0341 + var(--lw,1px) * 0.9659) calc(100% + var(--rb,16px) * -0.7412 + var(--lw,1px) * -0.2588), calc(var(--lw,1px)) calc(100% + var(--rb,16px) * -1), var(--lw,1px) calc(var(--rb,16px)));
+}
+
+/* Panneau de formulaire : verre sombre sans contour, comme la maquette (pages Contact et Essai gratuit). */
+.glass-panel { @apply backdrop-blur-[32px]; background: rgb(6 6 45 / 0.25); }
+/* Page dont le bas est marine (Contact, Essai gratuit) : les coins arrondis du pied de page se détachent sur le marine, pas sur la menthe. */
+body:has(.page-ends-navy) { background: var(--color-navy); }
+/* Sur un grand écran, la page marine s'étire jusqu'au pied de page : plus de bande menthe entre la lueur du bas et le footer. */
+main:has(> .page-ends-navy) { display: flex; flex-direction: column; }
+main > .page-ends-navy { flex: 1 0 auto; }
+
+/* Verre : panneau translucide des maquettes (modes de la page Fonctionnalités, formulaires, statistiques). */
+.glass { @apply backdrop-blur-[12px]; background: rgb(255 255 255 / 0.08); }

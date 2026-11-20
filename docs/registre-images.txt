@@ -1,0 +1,36 @@
+SITE VITRINE e-Fanamby — IMAGES WEB (WebP) ET REGISTRE — 16/11/2026, 22:00
+
+RÉSULTAT : 14 fichiers WebP, 1,44 Mo au total (1 473 Ko), le plus lourd 196 Ko. Les 12 photos d'origine pesaient 108 Mo à elles seules.
+
+MÉTHODE
+- Chaque photo est recadrée sur la zone réellement visible dans la maquette (aucune marge), puis redimensionnée à 2 fois sa taille d'affichage de la maquette (haute densité), sans jamais agrandir l'original. Exceptions : les deux grandes bannières (maillot, poignée de main) sont à 1,5 et 1,6 fois, pour rester sous 200 Ko ; l'ordinateur du hero de l'Accueil est à sa taille native (836 px pour 572 affichés).
+- Export WebP, qualité réglée image par image pour viser moins de 200 Ko (qualité de 58 à 90 selon l'image). Les deux images à fond transparent (ordinateur, ballon) gardent leur transparence.
+- Cadrage conforme à la maquette : dans le code, affichage avec « object-fit: cover » dans un cadre de même proportion que la maquette. width et height du fichier à déclarer pour éviter les décalages de mise en page.
+- Les originaux pleine taille restent chez la stagiaire (noms IMG_… et pexels-…) : on y retourne pour refaire un cadrage autre pour le mobile, au besoin.
+- Vérification visuelle faite sur une planche des 14 fichiers : cadrages et couleurs conformes.
+
+REGISTRE (fichier web — dimensions — poids — page et emplacement — fichier d'origine — texte alternatif FR proposé, à valider — droits)
+- maillot-academie-fanamby.webp — 1704×581 — 196 Ko (qualité 62) — Accueil, bandeau de bas de page (1136×387) — IMG_4004 (4096×2730, 16,9 Mo) — alt : « Maillot de l'académie Fanamby posé à plat » — Académie : autorisation validée (16/11).
+- analyste-notes-carnet.webp — 540×460 — 17 Ko (qualité 82) — Accueil, carte-photo du bloc « problèmes » (270×230) — pexels-charlotte-may-5965544 (4096×2731, 6,7 Mo) — alt : « Une personne prend des notes dans un carnet devant un ordinateur portable » — Pexels : lien de la page source à noter.
+- but-de-football-vue-aerienne.webp — 1016×1116 — 175 Ko (qualité 74) — Accueil, bloc « football analytics » (508×558) — pexels-bylukemiller-24589151 (4096×2731, 12,3 Mo) — alt : « Vue aérienne d'un but sur un terrain de football » — Pexels : lien de la page source à noter.
+- analyse-match-ordinateur.webp — 1834×1222 — 82 Ko (qualité 82, avec transparence) — Fonctionnalités, hero (917×611) — joueurs-3 (PNG 4096×2731, 5,1 Mo) — alt : « Un ordinateur portable affichant un tableau de bord d'analyse, tenu à deux mains » — Origine à préciser.
+- joueurs-equipe-de-nuit.webp — 430×1078 — 51 Ko (qualité 82) — Fonctionnalités, triptyque du bas, bande de droite (215×539) — pexels-qibili-37313578 (4096×2731, 7,4 Mo) — alt : « Un groupe de joueurs en soirée » — Pexels : lien de la page source à noter.
+- journalistes-photographes.webp — 430×1078 — 52 Ko (qualité 82) — Fonctionnalités, triptyque du bas, bande du milieu (215×539) — makamuki0-journalists-6856400 (4096×3072, 10 Mo) — alt : « Des photographes de presse en action » — Nom de type Pixabay : lien de la page source à noter.
+- joueur-dossard-academie.webp — 430×1078 — 64 Ko (qualité 82) — Fonctionnalités, triptyque du bas, bande de gauche (215×539) — IMG_4010 (3858×2572, 4,8 Mo) — alt : « Un joueur de l'académie Fanamby en dossard » — Académie : autorisation validée (16/11) ; droit à l'image des personnes validé (16/11, 21:25).
+- ceremonie-poesam-2026.webp — 2272×1005 — 114 Ko (qualité 82) — Références, hero (1137×502) — IMG_4014 (4096×2731, 13 Mo) — alt : « Une intervenante au podium lors de la cérémonie POESAM 2026 » — Académie : autorisation validée ; droit à l'image validé. Un écran visible à l'arrière-plan montre « Prix indicatif 150 000 Ar/match, 300 000 Ar/match… » : cohérent avec le tableau, mais écrit « 150 000 » (la maquette écrit « 150.000 ») et à revoir si les prix changent.
+- tableau-tactique-terrain.webp — 1116×460 — 168 Ko (qualité 82) — Références, carte (558×230) — lukaszwyrwik-sport-6716041_1920 (1920×1280, 1,3 Mo) — alt : « Un tableau tactique posé sur l'herbe d'un terrain de football » — Nom de type Pixabay : lien de la page source à noter.
+- poignee-de-main-partenariat.webp — 1800×784 — 187 Ko (qualité 70) — Références, bannière avant la FAQ (1137×495) — pexels-gabby-k-9490632 (2731×4096, 12,5 Mo) — alt : « Une poignée de main entre deux personnes » — Pexels : lien de la page source à noter.
+- mains-clavier-ordinateur.webp — 982×1152 — 54 Ko (qualité 82) — Tarifs, bas de page (491×576) — pexels-gabby-k-9429371 (2725×4096, 7 Mo) — alt : « Des mains tapent sur un clavier d'ordinateur » — Pexels : lien de la page source à noter.
+- joueurs-sur-le-terrain.webp — 2560×1710 — 195 Ko (qualité 58) — Essai gratuit, arrière-plan pleine largeur (1280×855) — IMG_4007 (4096×2731, 11 Mo) — alt : « Des joueurs sur le terrain pendant une séance » — Académie : autorisation validée ; droit à l'image validé.
+- ordinateur-plateforme-efanamby.webp — 836×927 — 105 Ko (qualité 90) — Accueil, hero (572×635) — PNG 836×927, 579 Ko, fond transparent — alt : « Ordinateur affichant la plateforme e-Fanamby, posé sur une roche noire » — Image de la maquette : maquette du produit, aucun droit tiers connu.
+- ballon-etoiles.webp — 314×314 — 15 Ko (qualité 90) — Accueil, hero (157×157) — PNG 370×370, 106 Ko, fond transparent — alt vide (image décorative) — Motif d'étoiles proche du ballon de la Ligue des champions : à justifier ou à remplacer.
+
+À RETENIR
+- Les liens des pages sources (Pexels, Pixabay) et l'origine de joueurs-3 restent à noter dans ce registre ; la stagiaire a téléchargé ces photos et les héberge elle-même (aucun lien direct vers la banque d'images).
+- Les textes alternatifs sont proposés à partir de ce que montre chaque photo ; à relire, puis à traduire dans les 4 langues.
+- Une version AVIF est possible plus tard (environ 20 à 25 % plus légère que WebP sur les deux grandes bannières, d'après un essai).
+
+LOGO ET FAVICON (SVG reçu le 16/11, 21:36 ; dossier logo/ du zip)
+- logo-efanamby-marine.svg (3,8 Ko, #06062D, pour fonds clairs) ; logo-efanamby-clair.svg (3,8 Ko, #EBFFF7, pour fonds marine : en-tête et pied de page). Texte alternatif : « e-Fanamby » (titre intégré au SVG) ; dans le lien vers l'accueil, l'étiquette est « e-Fanamby, accueil ».
+- Couleur de la version claire : #EBFFF7, confirmée le 16/11 à 21:39.
+- Favicon : la marque du logo en menthe sur carré marine (favicon.svg, favicon-32x32.png, apple-touch-icon.png, favicon.ico), conservée : la stagiaire ne veut pas changer la marque du logo (16/11, 21:44).

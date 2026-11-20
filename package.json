@@ -1,0 +1,47 @@
+{
+  "name": "efanamby-site-vitrine",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "verify": "npm run typecheck && npm run lint && npm test",
+    "test:e2e": "node scripts/e2e.mjs",
+    "check:launch": "tsx scripts/check-launch.ts",
+    "test:mail": "tsx --conditions=react-server scripts/test-mail.ts"
+  },
+  "dependencies": {
+    "@phosphor-icons/react": "2.1.10",
+    "next": "16.4.6",
+    "nodemailer": "^10.6.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "server-only": "^0.0.1"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.10.0",
+    "@playwright/test": "1.63.0",
+    "@tailwindcss/turbopack": "^4",
+    "@types/node": "^26.6.6",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.4.6",
+    "playwright-core": "^1.63.0",
+    "tailwindcss": "^4",
+    "tsx": "^4",
+    "typescript": "^5",
+    "vitest": "^5.1.1"
+  },
+  "engines": {
+    "node": ">=20.9.0"
+  },
+  "description": "Site vitrine e-Fanamby — Football analytics, made in Madagascar.",
+  "allowScripts": {
+    "esbuild@0.28.2": true
+  }
+}
