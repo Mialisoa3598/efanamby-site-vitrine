@@ -5,7 +5,7 @@ Next.js 16 (App Router) · React 19 · TypeScript · Tailwind CSS 4 · Phosphor 
 6 pages (Accueil, Fonctionnalités, Références, Tarifs, Contact, Essai gratuit) + 3 pages juridiques, en 4 langues (fr, en, mg, es).
 
 **Pour modifier ou ajouter quelque chose : lire [`GUIDE.md`](GUIDE.md)** (où est chaque chose, comment la changer, comment vérifier). Les points encore à trancher sont dans [`docs/decisions.md`](docs/decisions.md).
-État au 18/11/2026 : pas encore déployé. Responsive, formulaires (avec e-mail de confirmation pour l'essai gratuit et la démo) et animations légères sont codés et testés ; restent les essais réels (envoi Gmail, vrais téléphones) et les décisions ouvertes.
+
 
 ## Démarrer
 
