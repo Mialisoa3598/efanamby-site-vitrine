@@ -35,7 +35,7 @@ npm run verify         # typecheck + lint + tests unitaires, d'un coup (à lance
 npm run typecheck      # TypeScript
 npm run lint           # ESLint
 npm test               # 85 tests unitaires (traductions, validation, e-mails, anti-spam)
-npm run test:e2e       # 327 tests de navigateur (Chromium) : construit le site puis le teste en mode aperçu (307), puis en mode production (20)
+npm run test:e2e       # 332 tests de navigateur (Chromium) : construit le site puis le teste en mode aperçu (311), puis en mode production (21)
 npm run check:launch   # liste ce qui bloque encore la mise en ligne (--strict : code de sortie 1 s'il reste un point bloquant)
 npm run test:mail -- adresse@exemple.com   # envoi RÉEL d'un message à l'équipe + d'une confirmation (voir GUIDE.md, section 6)
 ```
@@ -54,7 +54,7 @@ Les déploiements d'aperçu Vercel (branches) sont automatiquement fermés aux m
 
 ## Choix à connaître
 
-- Une seule règle pour les langues : une langue n'est ouverte que lorsqu'elle est relue. Fermée, elle répond 404, n'est pas dans le sitemap ni dans les hreflang ; le sélecteur l'affiche « bientôt ».
+- Langues : depuis le 20/11, français, anglais, malgache et espagnol sont ouverts (`live: true`, `src/i18n/config.ts`), les trois dernières sans relecture native. Une langue repassée à `live: false` répond 404, n'est pas dans le sitemap ni dans les hreflang ; le sélecteur l'affiche « bientôt ».
 - Les icônes viennent toutes de Phosphor (`@phosphor-icons/react`). Le logo est repris tel quel.
 - Les formulaires envoient un e-mail à l'adresse de l'équipe (pas de base de données) : protection par champ-piège, délai minimal de 2 s et limite de 5 envois par 10 minutes et par adresse IP (mémoire de l'instance : suffisant contre un envoi en boucle simple, pas une protection absolue). L'essai gratuit et la démo envoient en plus une confirmation à la personne (sans reprendre son texte, 2 par adresse et par heure) ; réglable dans `CONFIRMED_KINDS` (`src/lib/validation.ts`).
 - Les pages sont pré-générées (`●` dans `npm run build`). Ne pas appeler `headers()` / `cookies()` dans une page, un layout ou un `not-found` : le site redeviendrait dynamique (détails dans `GUIDE.md`, section 9).

@@ -1,7 +1,7 @@
 # Guide d'utilisation — site vitrine e-Fanamby
 
 Pour ne pas se perdre : où est chaque chose, comment la modifier, comment vérifier que rien n'est cassé.
-Dernière mise à jour : 20/11/2026 (matin, version v3.2). Le site n'est **pas encore en ligne** : le code du responsive, des formulaires (avec e-mail de confirmation) et des animations est fait ; le déploiement a démarré pas à pas (section 11), les essais réels (envoi Gmail, vrais téléphones, section 10) se font sur l'adresse de test.
+Dernière mise à jour : 20/11/2026 (soir, version v3.3). Le site n'est **pas encore en ligne** : le code du responsive, des formulaires (avec e-mail de confirmation) et des animations est fait ; le déploiement a démarré pas à pas (section 11), les essais réels (envoi Gmail, vrais téléphones, section 10) se font sur l'adresse de test.
 
 Autres fichiers utiles : `README.md` (résumé technique), `docs/decisions.md` (ce qu'il reste à trancher), `docs/design-system-jetons.txt` (valeurs du design system), `docs/registre-images.txt` (légende et origine de chaque photo).
 
@@ -121,7 +121,10 @@ Les cartes de la maquette ont un coin coupé **aux sommets arrondis**. Ajouter l
 
 ### Modifier l'en-tête fixe ou les langues du menu mobile
 - **En-tête fixe** (demande du 20/11) : l'en-tête reste collé en haut de l'écran pendant le défilement, sur ordinateur et sur mobile (`src/components/layout/header.tsx`, classes `sticky top-0 z-50`). Sa hauteur (76 px) sert aussi au panneau du menu mobile (`top-[76px]` dans `mobile-menu.tsx`) et à `scroll-padding-top` dans `globals.css` : si on change la hauteur de l'en-tête, changer ces trois endroits ensemble. Pour le rendre non fixe : remplacer `sticky top-0 z-50` par `relative z-40`.
-- **Langues du menu mobile** : initiales seulement (Fr En Mg Es), sur une seule ligne, zones tactiles de 44 px (`variant="list"` dans `src/components/layout/language-menu.tsx`). Le nom complet reste lu par les lecteurs d'écran et s'affiche au survol. En production, les langues pas encore ouvertes sont grisées et une ligne dessous les explique (« EN · MG · ES — bientôt »). Le menu déroulant des ordinateurs garde les noms complets.
+- **Langues du menu mobile** : initiales seulement (Fr En Mg Es), sur une seule ligne, zones tactiles de 44 px (`variant="list"` dans `src/components/layout/language-menu.tsx`). Le nom complet reste lu par les lecteurs d'écran et s'affiche au survol. Depuis le 20/11 les quatre langues sont ouvertes : toutes sont des liens. Si une langue est repassée à `live: false`, elle est grisée et une ligne dessous l'explique (par exemple « MG — bientôt »). Le menu déroulant des ordinateurs garde les noms complets.
+
+### Fond sous le pied de page (bande claire sur iPhone)
+Retour du 20/11 : sur iPhone (Safari), une bande claire apparaissait sous le pied de page de toutes les pages sauf Contact. Cause : `<html>` n'avait pas de fond propre, il reprenait celui de `<body>` (menthe), et Safari montre cette couleur sous le pied de page quand sa barre se replie ou au rebond du défilement. Correction dans `src/app/globals.css` : `html { background: var(--color-navy); }` pour **toutes** les pages. Le fond de `<body>` reste menthe (derrière les deux coins arrondis du pied de page) sauf sur les pages qui se terminent en marine (`.page-ends-navy` : Contact, Essai gratuit et page 404). Ne pas retirer le fond marine de `<html>`. Tests : `e2e/site.spec.ts`, « fond sous le pied de page ».
 
 ### Modifier le menu mobile
 `src/components/layout/mobile-menu.tsx` (+ `nav-links.tsx` pour la ligne de lien). Il suit la maquette iPhone 13/14 du 18/11 : cinq liens ancrés en bas, lignes de 54 px espacées de 24 px, filet de 0,5 px, texte de 32 px (26 px sous 390 px), flèche ↗ de 40 px, croix de fermeture de 36 px. La maquette ne montre que les cinq liens ; « Se connecter », « Essai gratuit » et la langue sont gardés en haut du panneau (écart assumé, à confirmer). Un test (`e2e/site.spec.ts`, « Menu mobile : maquette ») vérifie ces mesures.
@@ -152,8 +155,8 @@ L'adresse qui **reçoit** les formulaires : par défaut `CONTACT.email`, ou la v
 5. Référencement : ajouter la clé dans `INDEXED` de `src/app/sitemap.ts` (sinon la page n'est pas dans le sitemap).
 6. `npm run verify` puis `npm run test:e2e` : les tests de navigation prennent la nouvelle page automatiquement.
 
-### Ouvrir une langue au public
-Quand un locuteur natif a relu `en.ts`, `mg.ts` ou `es.ts` : `src/i18n/config.ts` → `live: true` pour cette langue. Rien d'autre. Tant qu'elle est `false`, la langue répond 404, n'est pas dans le sitemap et le sélecteur l'affiche « bientôt ».
+### Ouvrir ou refermer une langue
+**Depuis le 20/11, anglais, malgache et espagnol sont ouverts** (`live: true` dans `src/i18n/config.ts`), sur décision de la stagiaire, **sans relecture par un locuteur natif** : `npm run check:launch` le rappelle (« à valider »). Pour refermer une langue en urgence : repasser son `live` à `false` et redéployer ; elle répond alors 404, quitte le sitemap et le sélecteur l'affiche « bientôt ». Attention : le test `tests/i18n.test.ts` et les tests de production (`e2e/prod.spec.ts`) attendent quatre langues ouvertes et devront être ajustés.
 
 ### Ajouter une langue
 `src/i18n/config.ts` (`LOCALES` + `LOCALE_INFO`), `src/i18n/dictionaries.ts`, nouveau fichier `src/i18n/messages/<code>.ts` (même structure que `fr.ts`).
@@ -178,7 +181,7 @@ Pour un chiffre qui « monte » : `<CountUp value="+165" />` (composant `ui/coun
 | Commande | Ce qu'elle vérifie | Durée |
 |---|---|---|
 | `npm run verify` | TypeScript + règles de code + 85 tests (traductions identiques, chiffres, formulaires, e-mails) | quelques secondes |
-| `npm run test:e2e` | 327 tests dans un vrai navigateur : toutes les pages × toutes les langues, 16 largeurs d'écran sans débordement, menu, formulaires, animations, FAQ, SEO, accessibilité | plusieurs minutes |
+| `npm run test:e2e` | 332 tests dans un vrai navigateur : toutes les pages × toutes les langues, 16 largeurs d'écran sans débordement, menu, formulaires, animations, FAQ, SEO, accessibilité | plusieurs minutes |
 | `npm run check:launch` | liste ce qui bloque encore la mise en ligne | instantané |
 | `npm run test:mail -- adresse@exemple.com` | envoie un **vrai** e-mail à l'équipe + une confirmation à l'adresse donnée (voir section 6) | quelques secondes |
 
@@ -196,8 +199,8 @@ Les tests automatiques tournent dans Chromium (Chrome). Ils ne remplacent pas : 
 ## 5. Les langues
 
 - Le **français** est la source. Les 3 autres suivent exactement la même structure.
-- Une langue est ouverte seulement quand elle est relue (voir « Ouvrir une langue »).
-- En production, seul le français est public.
+- Depuis le 20/11, **les quatre langues sont publiques** (voir « Ouvrir ou refermer une langue »). La relecture native de l'anglais, du malgache et de l'espagnol reste à faire.
+- Le visiteur arrivant sur `/` est dirigé vers sa langue de navigateur (en, es, mg), sinon vers le français.
 - Les textes ne se « traduisent » pas tout seuls : si tu changes `fr.ts`, pense à `en`, `mg`, `es` (le test te le rappelle quand la structure change, pas quand seul le sens d'une phrase change).
 - Trois textes sont en français en dur, volontairement : la page 404 hors langue (`global-not-found.tsx`), la mention « À rédiger… » visible en aperçu seulement, et l'e-mail reçu par l'équipe (`mail.ts`). L'e-mail de confirmation envoyé au visiteur, lui, est traduit (bloc `mail` des fichiers de textes) ; la version malgache est un brouillon à faire relire.
 
@@ -305,14 +308,14 @@ Pour aller plus loin que ce niveau (parallaxe, terrain animé…) : c'était l'o
 
 ## 10. Où on en est
 
-Fait (19/11) : 9 pages en 4 langues, formulaires par e-mail **avec confirmation pour l'essai gratuit et la démo**, animations légères, responsive vérifié de 320 à 1920 px (zones tactiles, texte, aucun débordement), contenus mis à jour (« 8 » matchs analysés, lien Facebook), Next.js 16.4.6, 85 tests unitaires, 327 tests de navigateur (307 en mode aperçu + 20 en mode production), accessibilité automatique, référencement (canonique, hreflang, sitemap, robots).
+Fait (19/11) : 9 pages en 4 langues, formulaires par e-mail **avec confirmation pour l'essai gratuit et la démo**, animations légères, responsive vérifié de 320 à 1920 px (zones tactiles, texte, aucun débordement), contenus mis à jour (« 8 » matchs analysés, lien Facebook), Next.js 16.4.6, 85 tests unitaires, 332 tests de navigateur (311 en mode aperçu + 21 en mode production), accessibilité automatique, référencement (canonique, hreflang, sitemap, robots).
 
 Reste **avant** de parler de déploiement :
 1. Essai réel de l'envoi Gmail : **commencé le 19/11** (`test:mail` et formulaire Contact OK avec un compte de test). Reste : essai gratuit et démo par le site, confirmation vers une adresse tierce (spam), récupération de l'accès à efanamby2025 puis même test avec ce compte (section 6).
 2. Essai sur de vrais téléphones : iPhone 15, Samsung S24 Ultra, iPhone XR / un Android quelconque.
 3. Les réponses encore ouvertes de `docs/decisions.md` (D7, fin de D8).
 4. Valeurs du design system estimées (D6) : tu les ajusteras dans le code si besoin.
-5. Relecture native de l'anglais, du malgache (y compris l'e-mail de confirmation) et de l'espagnol.
+5. Relecture native de l'anglais, du malgache (y compris l'e-mail de confirmation) et de l'espagnol : ces langues sont **déjà ouvertes** depuis le 20/11, la relecture se fera en ligne.
 
 Déploiement (Vercel + e-fanamby.mg) : **démarré le 20/11, pas à pas** (section 11).
 
@@ -330,5 +333,7 @@ Chaque étape se termine par une case cochée avant de passer à la suivante. La
 6. **E-mail de domaine** (contact@…) avec SPF/DKIM/DMARC.
 7. **Contenus** : textes légaux, FAQ restantes, relecture des langues.
 8. **Jour J** : `npm run check:launch -- --strict` sans bloquant, puis `ALLOW_INDEXING=1` dans Vercel (Production) et nouveau déploiement ; Search Console ; réseaux sociaux.
+
+**Protection des déploiements Vercel (décision du 20/11 au soir, remplace celle du matin).** Le site doit pouvoir être ouvert par n'importe qui avec son adresse, sans compte Vercel : Settings → Deployment Protection → **Standard Protection** (les adresses de production sont publiques ; les aperçus de branches restent protégés). Si on choisit « All Deployments », les visiteurs voient une page de connexion Vercel : à éviter. Le site reste invisible des moteurs de recherche grâce à `ALLOW_INDEXING` (ci-dessous).
 
 **Interrupteur d'indexation.** Tant que la variable `ALLOW_INDEXING` n'est pas réglée à `1`, `robots.txt` interdit l'exploration, même sur la production : le premier déploiement sur l'adresse *.vercel.app ne sera donc pas référencé par Google. On l'active à l'étape 8, pas avant. Un test automatique (`tests/robots.test.ts`) vérifie les quatre cas (production fermée sans interrupteur, ouverte avec, aperçu fermé, mode aperçu des langues fermé).

@@ -144,24 +144,25 @@ describe("sendConfirmationMail", () => {
     expect(sent.text).toContain("demande de démo");
   });
 
-  it("reste en français quand la langue demandée n'est pas ouverte au public (ou inconnue)", async () => {
+  it("reste en français quand la langue demandée est inconnue", async () => {
     process.env.MAIL_DRY_RUN = "1";
     const log = vi.spyOn(console, "info").mockImplementation(() => {});
-    await sendConfirmationMail(visitor, { locale: "mg" });
     await sendConfirmationMail(visitor, { locale: "xx" });
+    await sendConfirmationMail(visitor, { locale: "" });
     expect(JSON.parse(String(log.mock.calls[0][1])).subject).toBe("Votre demande d'essai gratuit e-Fanamby");
     expect(JSON.parse(String(log.mock.calls[1][1])).subject).toBe("Votre demande d'essai gratuit e-Fanamby");
   });
 
-  it("écrit dans la langue de la personne quand cette langue est ouverte (mode aperçu)", async () => {
+  it("écrit dans la langue de la personne : espagnol, anglais et malgache sont ouverts (20/11)", async () => {
     process.env.MAIL_DRY_RUN = "1";
-    process.env.NEXT_PUBLIC_PREVIEW = "1";
-    vi.resetModules();
-    const { sendConfirmationMail: fresh } = await import("@/lib/mail");
     const log = vi.spyOn(console, "info").mockImplementation(() => {});
-    await fresh(visitor, { locale: "es" });
-    delete process.env.NEXT_PUBLIC_PREVIEW;
-    expect(JSON.parse(String(log.mock.calls[0][1])).subject).toBe("Su solicitud de prueba gratuita de e-Fanamby");
+    await sendConfirmationMail(visitor, { locale: "es" });
+    await sendConfirmationMail(visitor, { locale: "en" });
+    await sendConfirmationMail(visitor, { locale: "mg" });
+    const subjects = [0, 1, 2].map((i) => JSON.parse(String(log.mock.calls[i][1])).subject as string);
+    expect(subjects[0]).toBe("Su solicitud de prueba gratuita de e-Fanamby");
+    expect(subjects[1]).not.toBe("Votre demande d'essai gratuit e-Fanamby");
+    expect(subjects[2]).toBe("Ny fangatahanao andrana maimaim-poana e-Fanamby");
   });
 
   it("renvoie « send-failed » si le serveur SMTP est injoignable, sans planter", async () => {

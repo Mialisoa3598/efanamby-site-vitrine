@@ -1,2 +1,2 @@
-Version du site : 20/11/2026, matin (v3.2) — en-tête fixe en haut de l'écran, langues en initiales (Fr En Mg Es) sur une ligne dans le menu mobile, interrupteur de mise en ligne ALLOW_INDEXING
+Version du site : 20/11/2026, soir (v3.3) — fond marine sous le pied de page sur toutes les pages, langues EN/MG/ES ouvertes, en-tête fixe, langues en initiales (Fr En Mg Es), interrupteur de mise en ligne ALLOW_INDEXING
 Si cette ligne n'apparaît pas au lancement de « npm run dev », les derniers fichiers ne sont pas en place : voir GUIDE.md, « Vérifier qu'on a la dernière version ».

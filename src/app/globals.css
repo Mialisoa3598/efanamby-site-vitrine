@@ -40,6 +40,10 @@ html {
   scroll-behavior: smooth;
   /* L'en-tête reste collé en haut (76 px) : les ancres (lien d'évitement, #contenu) s'arrêtent sous lui. */
   scroll-padding-top: 76px;
+  /* Fond du « canevas » : toujours marine, sur TOUTES les pages (décision du 20/11, retour iPhone).
+     C'est la couleur qu'on voit sous le pied de page quand la barre de Safari se replie, et au rebond du défilement.
+     Si html n'avait pas de fond, il prendrait celui de body (menthe) : bande claire sous le footer, sauf sur Contact. */
+  background: var(--color-navy);
 }
 
 body {
@@ -236,7 +240,9 @@ details > summary::-webkit-details-marker { display: none; }
 
 /* Panneau de formulaire : verre sombre sans contour, comme la maquette (pages Contact et Essai gratuit). */
 .glass-panel { @apply backdrop-blur-[32px]; background: rgb(6 6 45 / 0.25); }
-/* Page dont le bas est marine (Contact, Essai gratuit) : les coins arrondis du pied de page se détachent sur le marine, pas sur la menthe. */
+/* Page dont le bas est marine (Contact, Essai gratuit) : les coins arrondis du pied de page se détachent sur le marine, pas sur la menthe.
+   (Le fond marine de <html>, plus haut, couvre déjà tout ce qui dépasse sous le pied de page sur toutes les pages ;
+   ici on ne règle que ce qui se voit DERRIÈRE les deux coins arrondis du footer.) */
 body:has(.page-ends-navy) { background: var(--color-navy); }
 /* Sur un grand écran, la page marine s'étire jusqu'au pied de page : plus de bande menthe entre la lueur du bas et le footer. */
 main:has(> .page-ends-navy) { display: flex; flex-direction: column; }

@@ -6,7 +6,7 @@ import { MAIN_PAGES, watch } from "./helpers";
 // Site construit comme en ligne : NEXT_PUBLIC_PREVIEW absente, NEXT_PUBLIC_SITE_URL = https://e-fanamby.mg, next start (NODE_ENV=production).
 const SITE = "https://e-fanamby.mg";
 
-test.describe("production : seul le français est ouvert", () => {
+test.describe("production : les quatre langues sont ouvertes", () => {
   for (const [, suffix] of MAIN_PAGES) {
     test(`/fr${suffix} répond 200 sans erreur`, async ({ page }) => {
       const w = watch(page);
@@ -18,38 +18,43 @@ test.describe("production : seul le français est ouvert", () => {
   }
 
   for (const lang of ["en", "mg", "es"]) {
-    test(`/${lang} et /${lang}/tarifs : 404 (langue pas encore relue)`, async ({ page }) => {
-      for (const s of ["", "/tarifs", "/contact"]) {
+    test(`/${lang} et ses pages répondent 200, sans erreur ni « bientôt »`, async ({ page }) => {
+      const w = watch(page);
+      for (const [, s] of MAIN_PAGES) {
         const res = await page.goto(`/${lang}${s}`, { waitUntil: "domcontentloaded" });
-        expect(res?.status(), `/${lang}${s}`).toBe(404);
+        expect(res?.status(), `/${lang}${s}`).toBe(200);
+        await expect(page.locator("html"), `/${lang}${s}`).toHaveAttribute("lang", lang);
       }
+      await page.waitForLoadState("networkidle");
+      expect(w.problems).toEqual([]);
     });
   }
 
-  test("la racine renvoie vers /fr, même pour un navigateur en anglais, en espagnol ou en malgache", async ({ browser }) => {
-    for (const locale of ["en-US", "es-ES", "mg-MG"]) {
+  test("la racine suit la langue du navigateur : en, es, mg → leur langue ; allemand → français", async ({ browser }) => {
+    for (const [locale, expected] of [["en-US", "en"], ["es-ES", "es"], ["mg-MG", "mg"], ["de-DE", "fr"], ["fr-FR", "fr"]] as const) {
       const ctx = await browser.newContext({ locale });
       const page = await ctx.newPage();
       await page.goto("/");
-      await expect(page).toHaveURL(/\/fr$/);
+      await expect(page, locale).toHaveURL(new RegExp(`/${expected}$`));
       await ctx.close();
     }
   });
 
-  test("le sélecteur de langue montre les langues à venir, sans lien", async ({ page }) => {
+  test("le sélecteur de langue propose les quatre langues, toutes avec un lien, sans « bientôt »", async ({ page }) => {
     await page.goto("/fr/tarifs");
     await page.getByRole("button", { name: new RegExp(fr.nav.language) }).click();
-    for (const [code, label] of [["en", "English"], ["mg", "Malagasy"], ["es", "Español"]] as const) {
-      await expect(page.getByRole("link", { name: label })).toHaveCount(0);
-      const item = page.locator(`span[lang="${code}"]`);
-      await expect(item).toBeVisible();
-      await expect(item).toContainText(label);
-      await expect(item).toContainText(fr.nav.languageSoon);
+    for (const [code, label] of [["fr", "Français"], ["en", "English"], ["mg", "Malagasy"], ["es", "Español"]] as const) {
+      const link = page.getByRole("link", { name: label });
+      await expect(link).toHaveCount(1);
+      await expect(link).toHaveAttribute("href", `/${code}/tarifs`);
     }
     await expect(page.getByRole("link", { name: "Français" })).toHaveAttribute("aria-current", "true");
+    // « bientôt » existe ailleurs sur la page (tableau des prix : « Accès API (bientôt disponible) ») : on ne regarde que la liste des langues.
+    const list = page.getByRole("link", { name: "English" }).locator("xpath=ancestor::ul[1]");
+    await expect(list).not.toContainText(fr.nav.languageSoon);
   });
 
-  test("menu mobile : langues en initiales sur une ligne ; les langues à venir sont grisées, sans lien, avec une explication", async ({ page }) => {
+  test("menu mobile : Fr En Mg Es sur une ligne, quatre liens, aucune langue grisée", async ({ page }) => {
     await page.setViewportSize({ width: 360, height: 800 });
     await page.goto("/fr");
     await page.getByRole("button", { name: fr.nav.openMenu }).click();
@@ -58,10 +63,16 @@ test.describe("production : seul le français est ouvert", () => {
     await expect(items).toHaveCount(4);
     const boxes = (await Promise.all([0, 1, 2, 3].map((i) => items.nth(i).boundingBox()))).map((b) => b!);
     for (const b of boxes) expect(Math.abs(b.y - boxes[0].y)).toBeLessThan(1);
-    await expect(group.getByRole("link")).toHaveCount(1);
+    await expect(group.getByRole("link")).toHaveCount(4);
     await expect(group.getByRole("link", { name: "Français" })).toHaveAttribute("aria-current", "true");
-    await expect(group).toContainText("En · Mg · Es");
-    await expect(group).toContainText(fr.nav.languageSoon);
+    await expect(group).not.toContainText(fr.nav.languageSoon);
+  });
+
+  test("un changement de langue garde la page : /fr/tarifs → /en/tarifs", async ({ page }) => {
+    await page.goto("/fr/tarifs");
+    await page.getByRole("button", { name: new RegExp(fr.nav.language) }).click();
+    await page.getByRole("link", { name: "English" }).click();
+    await expect(page).toHaveURL(/\/en\/tarifs$/);
   });
 });
 
@@ -102,11 +113,11 @@ test.describe("production : référencement", () => {
     expect(body).not.toMatch(/Disallow: \/\s*$/m);
   });
 
-  test("sitemap.xml : six pages en français, adresses complètes sur e-fanamby.mg", async ({ request }) => {
+  test("sitemap.xml : six pages dans chacune des quatre langues, adresses complètes sur e-fanamby.mg", async ({ request }) => {
     const xml = await (await request.get("/sitemap.xml")).text();
     const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
-    expect(locs.sort()).toEqual(MAIN_PAGES.map(([, s]) => `${SITE}/fr${s}`).sort());
-    expect(xml).not.toMatch(/\/(en|mg|es)\//);
+    const expected = ["fr", "en", "mg", "es"].flatMap((l) => MAIN_PAGES.map(([, s]) => `${SITE}/${l}${s}`));
+    expect(locs.sort()).toEqual(expected.sort());
     expect(xml).not.toMatch(/mentions-legales|cgu|confidentialite/);
   });
 
@@ -114,7 +125,7 @@ test.describe("production : référencement", () => {
     await page.goto("/fr/references");
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", `${SITE}/fr/references`);
     const alt = await page.$$eval('link[rel="alternate"][hreflang]', (ls) => ls.map((l) => l.getAttribute("hreflang")));
-    expect(alt.sort()).toEqual(["fr", "x-default"]);
+    expect(alt.sort()).toEqual(["en", "es", "fr", "mg", "x-default"]);
     await expect(page.locator('meta[name="robots"]')).toHaveCount(0);
   });
 

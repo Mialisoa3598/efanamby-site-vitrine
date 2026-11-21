@@ -15,7 +15,7 @@ export function NotFoundContent({ copy }: { copy: NotFoundCopy }) {
   const first = (usePathname() ?? "").split("/")[1] ?? "";
   const c = copy[hasLocale(first) ? first : DEFAULT_LOCALE];
   return (
-    <div className="bg-navy pb-[120px] pt-[100px] text-center text-mint max-md:pb-20 max-md:pt-16">
+    <div className="page-ends-navy bg-navy pb-[120px] pt-[100px] text-center text-mint max-md:pb-20 max-md:pt-16">
       <div className="wrap">
         <p className="m-0 text-[14px] font-semibold uppercase tracking-[0.08em] text-green">404</p>
         <h1 className="m-0 mt-3 text-[52px] font-bold leading-[1.1] tracking-[-0.025em] max-md:text-[34px]">{c.title}</h1>

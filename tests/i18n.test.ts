@@ -25,18 +25,14 @@ describe("langues", () => {
     expect(hasLocale("")).toBe(false);
   });
 
-  it("seul le français est ouvert au public tant que les autres langues ne sont pas relues", () => {
-    expect(LIVE_LOCALES).toEqual(["fr"]);
-    expect(LOCALE_INFO.fr.live).toBe(true);
-    for (const l of ["en", "mg", "es"] as const) expect(LOCALE_INFO[l].live).toBe(false);
+  it("les quatre langues sont ouvertes au public (décision du 20/11)", () => {
+    expect([...LIVE_LOCALES].sort()).toEqual(["en", "es", "fr", "mg"]);
+    for (const l of LOCALES) expect(LOCALE_INFO[l].live).toBe(true);
   });
 
-  it("isOpen : hors aperçu, seules les langues relues sont ouvertes", () => {
+  it("isOpen : toutes les langues sont ouvertes ; une langue repassée à live: false se refermerait hors aperçu", () => {
     // Les tests tournent sans NEXT_PUBLIC_PREVIEW.
-    expect(isOpen("fr")).toBe(true);
-    expect(isOpen("en")).toBe(false);
-    expect(isOpen("mg")).toBe(false);
-    expect(isOpen("es")).toBe(false);
+    for (const l of LOCALES) expect(isOpen(l)).toBe(true);
   });
 });
 

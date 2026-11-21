@@ -205,6 +205,51 @@ test.describe("navigation (mobile)", () => {
 });
 
 // ───────────────────────────── En-tête fixe ─────────────────────────────
+// Retour iPhone du 20/11 : sous le pied de page, Safari montrait une bande claire sur toutes les pages sauf Contact.
+// Cause : <html> n'avait pas de fond propre et prenait celui de <body> (menthe). Désormais <html> est marine partout.
+test.describe("fond sous le pied de page (aucune bande claire après le footer)", () => {
+  const NAVY = "rgb(6, 6, 45)";
+  const suffixes = [...MAIN_PAGES.map(([, s]) => s), PAGES.legal, "/page-qui-n-existe-pas"];
+
+  for (const [width, height] of [[390, 844], [1280, 900]] as const) {
+    test(`le fond de la page est marine et le pied de page termine le document, sur toutes les pages (${width} px)`, async ({ page }) => {
+      await page.setViewportSize({ width, height });
+      for (const lang of ["fr", "en", "mg", "es"]) {
+        for (const s of suffixes) {
+          await page.goto(`/${lang}${s}`, { waitUntil: "domcontentloaded" });
+          const r = await page.evaluate(() => {
+            const f = document.querySelector("footer")!.getBoundingClientRect();
+            return { canvas: getComputedStyle(document.documentElement).backgroundColor, footerBottom: Math.round(f.bottom + window.scrollY), docHeight: document.documentElement.scrollHeight };
+          });
+          expect(r.canvas, `/${lang}${s}`).toBe(NAVY);
+          expect(Math.abs(r.footerBottom - r.docHeight), `/${lang}${s} : quelque chose dépasse sous le pied de page`).toBeLessThanOrEqual(1);
+        }
+      }
+    });
+  }
+
+  test("page 404 sur un grand écran : le bloc marine rejoint le pied de page, sans bande menthe entre les deux", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 1400 });
+    await page.goto("/fr/page-qui-n-existe-pas");
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    const r = await page.evaluate(() => {
+      const block = document.querySelector("main > div")!.getBoundingClientRect();
+      const footer = document.querySelector("footer")!.getBoundingClientRect();
+      return { blockBottom: Math.round(block.bottom), footerTop: Math.round(footer.top), body: getComputedStyle(document.body).backgroundColor };
+    });
+    expect(Math.abs(r.blockBottom - r.footerTop)).toBeLessThanOrEqual(1);
+    expect(r.body).toBe(NAVY);
+  });
+
+  test("les pages claires gardent un pied de page dont les coins arrondis se détachent sur la menthe", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    for (const s of ["", PAGES.references, PAGES.features]) {
+      await page.goto(`/fr${s}`, { waitUntil: "domcontentloaded" });
+      expect(await page.evaluate(() => getComputedStyle(document.body).backgroundColor), `/fr${s}`).toBe("rgb(235, 255, 247)");
+    }
+  });
+});
+
 test.describe("en-tête fixe (reste en haut pendant le défilement)", () => {
   const scrollToBottom = (page: import("@playwright/test").Page) =>
     page.evaluate(() => {
@@ -538,18 +583,20 @@ test.describe("redirection de la racine", () => {
 
 // ───────────────────────────── Référencement ─────────────────────────────
 test.describe("SEO (mode aperçu)", () => {
-  test("adresse canonique, hreflang des langues relues et x-default", async ({ page, baseURL }) => {
+  test("adresse canonique, hreflang des quatre langues et x-default", async ({ page, baseURL }) => {
     await page.goto("/fr/tarifs");
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", `${baseURL}/fr/tarifs`);
     const alt = await page.$$eval('link[rel="alternate"][hreflang]', (ls) => ls.map((l) => `${l.getAttribute("hreflang")}=${l.getAttribute("href")}`));
-    expect(alt.sort()).toEqual([`fr=${baseURL}/fr/tarifs`, `x-default=${baseURL}/fr/tarifs`].sort());
+    expect(alt.sort()).toEqual(["fr", "en", "mg", "es"].map((l) => `${l}=${baseURL}/${l}/tarifs`).concat(`x-default=${baseURL}/fr/tarifs`).sort());
   });
 
-  test("une langue en brouillon est en noindex, le français non", async ({ page }) => {
-    await page.goto("/en");
-    await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
-    await page.goto("/fr");
-    await expect(page.locator('meta[name="robots"]')).toHaveCount(0);
+  test("les quatre langues sont indexables (pas de noindex) ; l'anglais a sa propre adresse canonique", async ({ page, baseURL }) => {
+    for (const lang of ["fr", "en", "mg", "es"]) {
+      await page.goto(`/${lang}`);
+      await expect(page.locator('meta[name="robots"]'), lang).toHaveCount(0);
+    }
+    await page.goto("/en/tarifs");
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", `${baseURL}/en/tarifs`);
   });
 
   test("les pages juridiques (texte en attente) sont en noindex", async ({ page }) => {
@@ -578,12 +625,14 @@ test.describe("SEO (mode aperçu)", () => {
     expect(body).not.toMatch(/Allow: \//);
   });
 
-  test("sitemap.xml : les six pages du français, sans pages juridiques ni brouillons", async ({ request, baseURL }) => {
+  test("sitemap.xml : les six pages dans chacune des quatre langues, sans pages juridiques", async ({ request, baseURL }) => {
     const res = await request.get("/sitemap.xml");
     expect(res.status()).toBe(200);
     const xml = await res.text();
     const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
-    expect(locs.sort()).toEqual(MAIN_PAGES.map(([, s]) => `${baseURL}/fr${s}`).sort());
+    const expected = ["fr", "en", "mg", "es"].flatMap((l) => MAIN_PAGES.map(([, s]) => `${baseURL}/${l}${s}`));
+    expect(locs.sort()).toEqual(expected.sort());
+    expect(xml).not.toMatch(/mentions-legales|cgu|confidentialite/);
   });
 
   test("icônes : favicon, apple-touch-icon et thème", async ({ page, request }) => {

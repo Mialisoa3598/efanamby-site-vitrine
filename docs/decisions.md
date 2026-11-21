@@ -1,6 +1,6 @@
 # Site vitrine e-Fanamby — points de décision
 
-État au 20/11/2026 (v3.2). Déploiement démarré (étape 1, voir D10) ; rien n'est encore en ligne. Ce fichier a deux parties : ce qui reste à trancher (A, B), puis ce qui est déjà décidé et fait (C, D).
+État au 20/11/2026, soir (v3.3). Déploiement démarré (étape 1, voir D10) ; rien n'est encore en ligne. Ce fichier a deux parties : ce qui reste à trancher (A, B), puis ce qui est déjà décidé et fait (C, D).
 
 ---
 
@@ -43,10 +43,10 @@ Réponse du 18/11 : « ok, mais je changerai par moi-même dans le code si jamai
 ## B. À lancer tôt (délais extérieurs, avant la mise en ligne)
 
 1. **Date de mise en ligne et validateur** (qui dit « go »).
-2. **Compte Vercel et dépôt GitHub** : qui est propriétaire. L'offre Hobby est réservée à un usage non commercial : à vérifier dans les conditions Vercel (sinon Pro, ≈ 20 $/utilisateur/mois).
+2. **Compte Vercel et dépôt GitHub** : **décidé le 20/11** : comptes de la stagiaire pour l'instant, offre Hobby (gratuite) pour la phase de test ; à transférer à e-Fanamby avant le lancement officiel. Reste à vérifier dans les conditions Vercel que Hobby autorise un site d'entreprise (sinon Pro, ≈ 20 $/utilisateur/mois). **Adresse de test limitée à l'équipe** jusqu'au « go » ; e-mails de test depuis un Gmail personnel de la stagiaire (`MAIL_TO` = la même adresse), à remplacer avant le lancement.
 3. **Nom de domaine** `e-fanamby.mg` (repli : `efanamby.mg`) : achat via un revendeur accrédité NIC.MG, puis DNS. Délai inconnu : à lancer en premier.
 4. **Entité éditrice, NIF/STAT, déclaration CMIL** (loi 2014-038, art. 43 et 45) et **3 textes juridiques** (mentions légales, CGU, confidentialité). Tant qu'ils ne sont pas rédigés : pages en `noindex`. L'e-mail de confirmation et le formulaire collectent des données personnelles : la politique de confidentialité doit les couvrir.
-5. **Relecteurs natifs** pour anglais, malgache, espagnol, puis `live: true` dans `src/i18n/config.ts`.
+5. **Relecteurs natifs** pour anglais, malgache, espagnol : ces langues sont **ouvertes depuis le 20/11** (`live: true`) sans relecture formelle (voir D12). Relecture à organiser en ligne ; en cas de doute sur un texte, repasser la langue à `live: false`.
 6. **Mesure d'audience** : sans cookie (Plausible, Umami, Vercel Analytics) ou bandeau de consentement. Et **service d'envoi d'e-mails final** : l'envoi se fait depuis le compte Gmail (limites d'envoi, risque de classement en indésirable) ; pour la production, prévoir une adresse `contact@` sur le domaine avec SPF/DKIM.
 7. **Images de partage** (Open Graph 1200×630) et **sources des photos** (liens Pexels/Pixabay, origine de « joueurs-3 » dans `docs/registre-images.txt`).
 8. **Mesurer la vitesse sur un déploiement d'aperçu Vercel** (page d'accueil, mobile, réseau moyen) avant la mise en ligne : les tests automatiques ne mesurent pas la performance réelle.
@@ -94,12 +94,14 @@ Réponse du 18/11 : « ok, mais je changerai par moi-même dans le code si jamai
 - **Déploiement : démarré le 20/11, pas à pas** (feuille de route : `claude/site_vitrine_deploiement_pas_a_pas_20_11.md`, résumé dans `GUIDE.md`, section 11). Étape 1 : révoquer et recréer le mot de passe d'application Gmail (l'ancien a été collé dans une conversation), puis dépôt GitHub privé, puis premier déploiement Vercel sur l'adresse *.vercel.app, fermé aux moteurs de recherche.
 - **D11 — En-tête fixe et langues en initiales (20/11) : fait.** Demande de la stagiaire pendant la relecture du menu mobile. (1) L'en-tête reste collé en haut de l'écran pendant le défilement (ordinateur et mobile) ; le panneau du menu mobile s'ouvre toujours juste dessous, même en bas de page ; les ancres s'arrêtent sous l'en-tête (`scroll-padding-top`). (2) Dans le menu mobile, les langues sont affichées en initiales « Fr En Mg Es » sur une seule ligne (avant : noms complets qui passaient à la ligne), zones tactiles de 44 px, nom complet conservé pour les lecteurs d'écran. En production, les langues non ouvertes sont grisées avec une ligne d'explication (« EN · MG · ES — bientôt »). Le menu déroulant des ordinateurs garde les noms complets (écart assumé, à dire si l'on préfère aussi les initiales). 5 tests ajoutés en aperçu (initiales à 320, 360, 390 et 430 px ; en-tête fixe en bureau et mobile ; menu ouvert après défilement ; lien d'évitement) et 1 en production. Totaux : 85 tests unitaires + 307 + 20 tests de navigateur.
 
+- **D12 — Retours iPhone du 20/11 au soir (v3.3) : fait.** (1) **Fond sous le pied de page** : `<html>` est marine sur toutes les pages (plus de bande claire sous le footer sur iPhone), la page 404 se termine en marine comme Contact ; tests dédiés. (2) **Langues EN, MG, ES ouvertes** (`live: true`), sur demande de la stagiaire (« ça doit déjà être ok ») : sitemap à 24 adresses (6 pages × 4 langues), hreflang des quatre langues, redirection de `/` selon la langue du navigateur, e-mail de confirmation dans la langue du visiteur. Risque connu et accepté : pas de relecture native, textes malgaches et espagnols à confirmer ; retour arrière possible en repassant une langue à `live: false`. (3) **Adresse de test publique** : la protection « All Deployments » de Vercel (connexion obligatoire) est remplacée par « Standard Protection », car le site doit s'ouvrir sans compte pour les visiteurs et les clients. Conséquences à garder en tête : les formulaires envoient encore vers l'adresse Gmail de test (`MAIL_TO`) ; les pages légales sont des textes d'attente (noindex) ; `robots.txt` reste fermé (`ALLOW_INDEXING` non réglée) jusqu'au jour J.
+
 ## D. Décidé plus tôt (ne pas rouvrir)
 
 - Prix tels que dans la maquette (« 150.000 Ar »).
 - Pages légales : droit national seulement, textes d'attente, `noindex`.
 - Icônes : Phosphor uniquement.
-- Seul le français est public ; en/mg/es derrière `NEXT_PUBLIC_PREVIEW=1`.
+- ~~Seul le français est public~~ : remplacé le 20/11 (D12) par quatre langues publiques.
 - Logo inchangé.
 - Formulaires → efanamby2025@gmail.com.
 - Hébergement Vercel + domaine e-fanamby.mg.

@@ -21,8 +21,11 @@ function nullAnswers(value: unknown, path = ""): string[] {
 }
 for (const q of nullAnswers(fr)) add("à valider", `Réponse de FAQ à rédiger (masquée en production) → ${q}`);
 
-// 2. Langues pas encore ouvertes.
-for (const l of LOCALES) if (!LOCALE_INFO[l].live) add("à valider", `Langue « ${LOCALE_INFO[l].label} » fermée au public : à faire relire par un locuteur natif, puis mettre live: true dans src/i18n/config.ts`);
+// 2. Langues : fermées, ou ouvertes sans relecture native.
+for (const l of LOCALES) {
+  if (!LOCALE_INFO[l].live) add("à valider", `Langue « ${LOCALE_INFO[l].label} » fermée au public (live: false dans src/i18n/config.ts) : elle ne sera pas visible en ligne`);
+  else if (l !== "fr") add("à valider", `Langue « ${LOCALE_INFO[l].label} » ouverte (décision du 20/11) sans relecture par un locuteur natif : à faire relire dès que possible`);
+}
 if (!LIVE_LOCALES.includes("fr")) add("bloquant", "Le français n'est pas ouvert.");
 
 // 3. Variables d'environnement (Vercel → Settings → Environment Variables).
