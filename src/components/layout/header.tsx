@@ -2,7 +2,7 @@ import Link from "next/link";
 import { LOCALES, LOCALE_INFO, isOpen, type Locale } from "@/i18n/config";
 import type { Messages } from "@/i18n/types";
 import { path } from "@/lib/paths";
-import { NAV_KEYS, PLATFORM_URL } from "@/lib/site";
+import { NAV_KEYS } from "@/lib/site";
 import { Logo } from "../logo";
 import { Button } from "../ui/button";
 import { LanguageMenu } from "./language-menu";
@@ -25,9 +25,6 @@ export function Header({ locale, t }: { locale: Locale; t: Messages }) {
 
         <div className="flex items-center gap-[30px] max-lg:hidden lg:max-xl:gap-5">
           <LanguageMenu current={locale} items={languages} label={t.nav.language} soon={t.nav.languageSoon} />
-          <a href={PLATFORM_URL} target="_blank" rel="noopener noreferrer" className="text-[14px] font-bold text-mint hover:opacity-80">
-            {t.common.login}
-          </a>
           <Button href={trialHref} icon="arrow-box" tight className="!h-10 !px-5">
             {t.common.trial}
           </Button>
@@ -38,8 +35,6 @@ export function Header({ locale, t }: { locale: Locale; t: Messages }) {
           navLabel={t.nav.label}
           openLabel={t.nav.openMenu}
           closeLabel={t.nav.closeMenu}
-          login={t.common.login}
-          loginHref={PLATFORM_URL}
           trial={t.common.trial}
           trialHref={trialHref}
           locale={locale}

@@ -5,9 +5,6 @@ export const SITE_NAME = "e-Fanamby";
 /** Adresse publique du site (sans « / » final). À régler dans Vercel : NEXT_PUBLIC_SITE_URL=https://e-fanamby.mg */
 export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/$/, "");
 
-/** Lien vers la vraie plateforme (sort du site vitrine). */
-export const PLATFORM_URL = "https://e-fanamby.run.place/";
-
 /** Pages, dans l'ordre de la navigation. */
 export const PAGES = {
   home: "",

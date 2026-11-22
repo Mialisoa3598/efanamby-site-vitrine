@@ -1,11 +1,11 @@
 # Site vitrine e-Fanamby
 
-« Parions sur la data. ». Football analytics, made in Madagascar.
+« Parions sur la data. » — Football analytics, made in Madagascar.
 Next.js 16 (App Router) · React 19 · TypeScript · Tailwind CSS 4 · Phosphor Icons · polices Mozilla Text.
 6 pages (Accueil, Fonctionnalités, Références, Tarifs, Contact, Essai gratuit) + 3 pages juridiques, en 4 langues (fr, en, mg, es).
 
 **Pour modifier ou ajouter quelque chose : lire [`GUIDE.md`](GUIDE.md)** (où est chaque chose, comment la changer, comment vérifier). Les points encore à trancher sont dans [`docs/decisions.md`](docs/decisions.md).
-
+État au 18/11/2026 : pas encore déployé. Responsive, formulaires (avec e-mail de confirmation pour l'essai gratuit et la démo) et animations légères sont codés et testés ; restent les essais réels (envoi Gmail, vrais téléphones) et les décisions ouvertes.
 
 ## Démarrer
 
@@ -35,7 +35,7 @@ npm run verify         # typecheck + lint + tests unitaires, d'un coup (à lance
 npm run typecheck      # TypeScript
 npm run lint           # ESLint
 npm test               # 85 tests unitaires (traductions, validation, e-mails, anti-spam)
-npm run test:e2e       # 332 tests de navigateur (Chromium) : construit le site puis le teste en mode aperçu (311), puis en mode production (21)
+npm run test:e2e       # 336 tests de navigateur (Chromium) : construit le site puis le teste en mode aperçu (315), puis en mode production (21)
 npm run check:launch   # liste ce qui bloque encore la mise en ligne (--strict : code de sortie 1 s'il reste un point bloquant)
 npm run test:mail -- adresse@exemple.com   # envoi RÉEL d'un message à l'équipe + d'une confirmation (voir GUIDE.md, section 6)
 ```

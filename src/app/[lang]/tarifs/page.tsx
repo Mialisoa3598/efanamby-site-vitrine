@@ -23,13 +23,13 @@ export default async function PricingPage({ params }: PageProps) {
       <div className="relative bg-navy pb-0">
         <div aria-hidden="true" className="absolute inset-x-0 top-[99px] h-[500px] bg-[radial-gradient(ellipse_700px_500px_at_50%_100%,rgb(172_221_205)_0%,rgb(157_215_197)_15%,rgb(74_168_141)_35%,rgb(26_106_94)_55%,rgb(18_67_75)_69%,rgb(11_35_59)_85%,rgb(6_6_45)_100%)] max-lg:top-[60px]" />
         <div aria-hidden="true" className="absolute inset-x-0 bottom-0 top-[599px] rounded-t-[24px] bg-mint max-xl:top-[460px]" />
-        <div className="wrap relative pt-[80px] max-md:pt-12">
+        <div className="wrap relative pt-[80px] max-md:pt-5">
           <h1 className="m-0 text-center text-[52px] font-bold leading-[1.1] tracking-[-0.025em] text-mint max-md:text-[34px]">{p.title}</h1>
           <p className="m-0 mt-1.5 text-center text-[16px] font-medium leading-[1.7] text-mint">{p.text}</p>
 
           {/* Les quatre cartes sont identiques (même largeur, même hauteur, même gabarit). Contour violet, pastille et prix violets, bouton plus clair :
               c'est l'état « survol / appui / focus clavier » de la maquette, appliqué à la carte touchée, pas une carte mise en avant. */}
-          <ul className="mt-[80px] grid list-none grid-cols-4 gap-x-[17px] p-0 max-xl:auto-rows-fr max-xl:grid-cols-2 max-xl:gap-5 max-md:mt-10 max-md:grid-cols-1">
+          <ul className="mt-[80px] grid list-none grid-cols-4 gap-x-[17px] p-0 max-xl:auto-rows-fr max-xl:grid-cols-2 max-xl:gap-5 max-md:mt-7 max-md:grid-cols-1">
             {p.plans.map((plan, i) => (
               <li
                 key={plan.tag}

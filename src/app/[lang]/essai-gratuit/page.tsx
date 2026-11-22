@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function TrialPage({ params }: PageProps) {
   const { lang, t } = await loadPage(params);
   return (
-    <div className="page-ends-navy relative isolate overflow-hidden bg-navy pb-[141px] pt-[115px] max-md:pb-16 max-md:pt-14">
+    <div className="page-ends-navy relative isolate overflow-hidden bg-navy pb-[141px] pt-[115px] max-md:pb-16 max-md:pt-8">
       {/* Photo de terrain en fond : le voile marine (relevé sur la maquette) est plein en haut et en bas, à 50 % au milieu. */}
       <div aria-hidden="true" className="absolute inset-x-0 -top-[5px] -z-10 h-[855px] max-md:h-[700px]">
         <Photo name="pitch" alt="" className="size-full object-cover" sizes="100vw" />

@@ -32,19 +32,19 @@ export default async function HomePage({ params }: PageProps) {
       {/* HERO */}
       <section className="relative overflow-clip bg-navy pb-10">
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(70%_95%_at_80%_92%,#411aff_0%,rgb(65_26_255/0.55)_38%,transparent_72%)] max-lg:bg-[radial-gradient(150%_620px_at_78%_100%,#411aff_0%,rgb(65_26_255/0.62)_34%,rgb(65_26_255/0.2)_62%,transparent_82%)]" />
-        <div className="wrap relative grid min-h-[595px] items-center max-xl:min-h-[500px] max-lg:min-h-0 max-lg:py-14">
+        <div className="wrap relative grid min-h-[595px] items-center max-xl:min-h-[500px] max-lg:min-h-0 max-lg:py-14 max-md:pb-3 max-md:pt-5">
           <div className="relative z-10 max-w-[640px] pt-2 max-xl:max-w-[470px] max-lg:max-w-none">
             <h1 className="t-h1 m-0 text-mint">
               {h.heroTitle[0]}
               <br />
               {h.heroTitle[1]}
             </h1>
-            <p className="t-body-lg mt-8 max-w-[560px] font-normal text-mint/85">{h.heroText}</p>
-            <div className="mt-[26px] flex flex-wrap gap-3">
-              <Button href={trialHref} icon="arrow-box" size="lg" className="min-w-[224px]">
+            <p className="t-body-lg mt-8 max-w-[560px] font-normal text-mint/85 max-md:mt-4">{h.heroText}</p>
+            <div className="mt-[26px] flex flex-wrap gap-3 max-md:mt-5 max-md:flex-col">
+              <Button href={trialHref} icon="arrow-box" size="lg" className="min-w-[224px] max-md:h-[60px] max-md:w-full max-md:min-w-0 max-md:[--cut:14px] max-md:[--r:10px]">
                 {t.common.trial}
               </Button>
-              <Button href={`${trialHref}?formule=demo`} variant="outline-light" icon="play" size="lg" className="min-w-[224px]">
+              <Button href={`${trialHref}?formule=demo`} variant="outline-light" icon="play" size="lg" className="min-w-[224px] max-md:h-[60px] max-md:w-full max-md:min-w-0 max-md:[--cut:14px] max-md:[--r:10px]">
                 {t.common.demo}
               </Button>
             </div>

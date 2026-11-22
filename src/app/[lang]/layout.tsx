@@ -47,10 +47,14 @@ export default async function RootLayout({ children, params }: { children: React
           {t.common.skip}
         </a>
         <Header locale={lang} t={t} />
-        <main id="contenu" className="flex-1">
-          {children}
-        </main>
-        <Footer locale={lang} t={t} />
+        {/* Le fond de <body> est marine (voir globals.css) : c'est la couleur que Safari iPhone étend sous le pied de page.
+            La menthe est portée par ce conteneur, qui s'arrête exactement en bas du pied de page. */}
+        <div className="page-body flex flex-1 flex-col">
+          <main id="contenu" className="flex-1">
+            {children}
+          </main>
+          <Footer locale={lang} t={t} />
+        </div>
         <ScrollReveal />
       </body>
     </html>

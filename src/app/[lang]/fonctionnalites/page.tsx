@@ -38,11 +38,11 @@ export default async function FeaturesPage({ params }: PageProps) {
             dégradé vertical marine → violet, halo lavande en haut à droite et halo vif derrière l'ordinateur. */}
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(45%_55%_at_100%_8%,rgb(120_105_255/0.55)_0%,transparent_70%),radial-gradient(80%_100%_at_35%_90%,#3b17e8_0%,rgb(65_26_255/0.5)_40%,transparent_75%)] max-lg:bg-[radial-gradient(460px_380px_at_100%_0%,rgb(125_110_255/0.5)_0%,transparent_72%),radial-gradient(560px_430px_at_62%_calc(100%-150px),rgb(88_58_255/0.75)_0%,rgb(65_26_255/0.38)_50%,transparent_78%),linear-gradient(180deg,#06062d_0%,#0c0a66_34%,#2412c8_72%,#3517e6_100%)]" />
         <div className="wrap relative min-h-[600px] max-xl:min-h-[540px] max-lg:min-h-0 max-lg:pb-6">
-          <div className="max-w-[560px] pt-[76px] max-xl:max-w-[400px] max-xl:pt-12 max-lg:max-w-none">
+          <div className="max-w-[560px] pt-[76px] max-xl:max-w-[400px] max-xl:pt-12 max-lg:max-w-none max-md:pt-5">
             <h1 className="t-h1 m-0 text-mint">{f.title}</h1>
             <p className="t-body mt-4 max-w-[470px] text-mint/85 max-lg:max-w-none">{f.text}</p>
           </div>
-          <ul className="absolute bottom-[63px] left-0 flex gap-7 max-xl:bottom-10 max-xl:gap-4 max-lg:static max-lg:mt-10 max-md:flex-col max-md:gap-4">
+          <ul className="absolute bottom-[63px] left-0 flex gap-7 max-xl:bottom-10 max-xl:gap-4 max-lg:static max-lg:mt-10 max-md:mt-6 max-md:flex-col max-md:gap-4">
             {f.modes.map((m) => (
               <li key={m.title} className="glass cut-br rc flex h-[95px] w-[238px] flex-col justify-center rounded-[16px] px-4 text-mint [--cut:24px] [--r:16px] max-xl:w-[232px] max-md:w-full">
                 <p className="m-0 text-[24px] font-bold leading-[1.2] tracking-[-0.02em] max-xl:text-[22px] max-md:text-[24px]">{m.title}</p>

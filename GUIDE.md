@@ -1,7 +1,7 @@
 # Guide d'utilisation — site vitrine e-Fanamby
 
 Pour ne pas se perdre : où est chaque chose, comment la modifier, comment vérifier que rien n'est cassé.
-Dernière mise à jour : 20/11/2026 (soir, version v3.3). Le site n'est **pas encore en ligne** : le code du responsive, des formulaires (avec e-mail de confirmation) et des animations est fait ; le déploiement a démarré pas à pas (section 11), les essais réels (envoi Gmail, vrais téléphones, section 10) se font sur l'adresse de test.
+Dernière mise à jour : 22/11/2026 (soir, version v3.4). Le site est **déployé sur l'adresse de test *.vercel.app** (pas encore de nom de domaine, fermé aux moteurs de recherche) : le code du responsive, des formulaires (avec e-mail de confirmation) et des animations est fait ; le déploiement a démarré pas à pas (section 11), les essais réels (envoi Gmail, vrais téléphones, section 10) se font sur l'adresse de test.
 
 Autres fichiers utiles : `README.md` (résumé technique), `docs/decisions.md` (ce qu'il reste à trancher), `docs/design-system-jetons.txt` (valeurs du design system), `docs/registre-images.txt` (légende et origine de chaque photo).
 
@@ -124,10 +124,10 @@ Les cartes de la maquette ont un coin coupé **aux sommets arrondis**. Ajouter l
 - **Langues du menu mobile** : initiales seulement (Fr En Mg Es), sur une seule ligne, zones tactiles de 44 px (`variant="list"` dans `src/components/layout/language-menu.tsx`). Le nom complet reste lu par les lecteurs d'écran et s'affiche au survol. Depuis le 20/11 les quatre langues sont ouvertes : toutes sont des liens. Si une langue est repassée à `live: false`, elle est grisée et une ligne dessous l'explique (par exemple « MG — bientôt »). Le menu déroulant des ordinateurs garde les noms complets.
 
 ### Fond sous le pied de page (bande claire sur iPhone)
-Retour du 20/11 : sur iPhone (Safari), une bande claire apparaissait sous le pied de page de toutes les pages sauf Contact. Cause : `<html>` n'avait pas de fond propre, il reprenait celui de `<body>` (menthe), et Safari montre cette couleur sous le pied de page quand sa barre se replie ou au rebond du défilement. Correction dans `src/app/globals.css` : `html { background: var(--color-navy); }` pour **toutes** les pages. Le fond de `<body>` reste menthe (derrière les deux coins arrondis du pied de page) sauf sur les pages qui se terminent en marine (`.page-ends-navy` : Contact, Essai gratuit et page 404). Ne pas retirer le fond marine de `<html>`. Tests : `e2e/site.spec.ts`, « fond sous le pied de page ».
+Retours iPhone des 20 et 22/11 : une bande claire (menthe) apparaissait sous le pied de page, derrière la barre d'outils flottante de Safari, sur toutes les pages sauf Contact et Essai gratuit. Première tentative (20/11) : fond marine sur `<html>` seulement, **insuffisante** : Safari sur iPhone prolonge la couleur du **`<body>`**, pas celle de `<html>`. Correction définitive (`src/app/globals.css` et `src/app/[lang]/layout.tsx`) : **`<body>` est marine sur toutes les pages** ; la couleur menthe des pages claires est portée par une enveloppe `.page-body` qui contient `<main>` et le pied de page et se termine exactement en bas du pied de page. Sur les pages qui finissent en marine (`.page-ends-navy` : Contact, Essai gratuit, 404), l'enveloppe est marine elle aussi. Ne pas remettre de fond menthe sur `<body>` ni retirer le marine de `<html>`. Chromium ne reproduit pas ce défaut : seul un iPhone le confirme. Tests : `e2e/site.spec.ts`, « fond sous le pied de page » (body marine partout, enveloppe menthe sur les pages claires, marine sur Contact, Essai gratuit et 404).
 
 ### Modifier le menu mobile
-`src/components/layout/mobile-menu.tsx` (+ `nav-links.tsx` pour la ligne de lien). Il suit la maquette iPhone 13/14 du 18/11 : cinq liens ancrés en bas, lignes de 54 px espacées de 24 px, filet de 0,5 px, texte de 32 px (26 px sous 390 px), flèche ↗ de 40 px, croix de fermeture de 36 px. La maquette ne montre que les cinq liens ; « Se connecter », « Essai gratuit » et la langue sont gardés en haut du panneau (écart assumé, à confirmer). Un test (`e2e/site.spec.ts`, « Menu mobile : maquette ») vérifie ces mesures.
+`src/components/layout/mobile-menu.tsx` (+ `nav-links.tsx` pour la ligne de lien). Il suit la maquette iPhone 13/14 du 18/11 : cinq liens ancrés en bas, lignes de 54 px espacées de 24 px, filet de 0,5 px, texte de 32 px (26 px sous 390 px), flèche ↗ de 40 px, croix de fermeture de 36 px. La maquette ne montre que les cinq liens ; « Essai gratuit » et la langue sont gardés en haut du panneau (écart assumé, à confirmer). Il n'y a **plus de « Se connecter »** (retiré du site vitrine le 22/11). Le panneau se ferme au clic sur **n'importe quel lien** (y compris « Essai gratuit »). Un test (`e2e/site.spec.ts`, « Menu mobile : maquette ») vérifie ces mesures.
 
 ### Changer un contact (e-mail, WhatsApp, LinkedIn, Facebook)
 `src/lib/site.ts`, bloc `CONTACT`. La page Facebook : `facebookHref` (renseigné depuis le 18/11 ; s'il est vidé, le nom s'affiche sans lien).
@@ -181,7 +181,7 @@ Pour un chiffre qui « monte » : `<CountUp value="+165" />` (composant `ui/coun
 | Commande | Ce qu'elle vérifie | Durée |
 |---|---|---|
 | `npm run verify` | TypeScript + règles de code + 85 tests (traductions identiques, chiffres, formulaires, e-mails) | quelques secondes |
-| `npm run test:e2e` | 332 tests dans un vrai navigateur : toutes les pages × toutes les langues, 16 largeurs d'écran sans débordement, menu, formulaires, animations, FAQ, SEO, accessibilité | plusieurs minutes |
+| `npm run test:e2e` | 336 tests dans un vrai navigateur : toutes les pages × toutes les langues, 16 largeurs d'écran sans débordement, menu, formulaires, animations, FAQ, SEO, accessibilité | plusieurs minutes |
 | `npm run check:launch` | liste ce qui bloque encore la mise en ligne | instantané |
 | `npm run test:mail -- adresse@exemple.com` | envoie un **vrai** e-mail à l'équipe + une confirmation à l'adresse donnée (voir section 6) | quelques secondes |
 
@@ -308,7 +308,7 @@ Pour aller plus loin que ce niveau (parallaxe, terrain animé…) : c'était l'o
 
 ## 10. Où on en est
 
-Fait (19/11) : 9 pages en 4 langues, formulaires par e-mail **avec confirmation pour l'essai gratuit et la démo**, animations légères, responsive vérifié de 320 à 1920 px (zones tactiles, texte, aucun débordement), contenus mis à jour (« 8 » matchs analysés, lien Facebook), Next.js 16.4.6, 85 tests unitaires, 332 tests de navigateur (311 en mode aperçu + 21 en mode production), accessibilité automatique, référencement (canonique, hreflang, sitemap, robots).
+Fait (19/11) : 9 pages en 4 langues, formulaires par e-mail **avec confirmation pour l'essai gratuit et la démo**, animations légères, responsive vérifié de 320 à 1920 px (zones tactiles, texte, aucun débordement), contenus mis à jour (« 8 » matchs analysés, lien Facebook), Next.js 16.4.6, 85 tests unitaires, 336 tests de navigateur (315 en mode aperçu + 21 en mode production), accessibilité automatique, référencement (canonique, hreflang, sitemap, robots).
 
 Reste **avant** de parler de déploiement :
 1. Essai réel de l'envoi Gmail : **commencé le 19/11** (`test:mail` et formulaire Contact OK avec un compte de test). Reste : essai gratuit et démo par le site, confirmation vers une adresse tierce (spam), récupération de l'accès à efanamby2025 puis même test avec ce compte (section 6).

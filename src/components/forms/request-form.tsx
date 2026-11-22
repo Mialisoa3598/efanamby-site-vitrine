@@ -260,7 +260,7 @@ export function RequestForm({ variant, locale, pageHref, privacyHref, recipient,
           variant={variant === "trial" ? "green" : "mint"}
           full={variant === "trial"}
           icon={variant === "trial" ? null : "arrow"}
-          className={variant === "trial" ? "" : "min-w-[121px]"}
+          className={variant === "trial" ? "" : "min-w-[121px] max-md:w-full"}
         >
           {pending ? t.sending : t.send}
         </Button>

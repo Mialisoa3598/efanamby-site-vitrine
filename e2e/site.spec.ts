@@ -117,11 +117,60 @@ test.describe("navigation (bureau)", () => {
     await expect(page.getByRole("radio", { name: fr.trial.tabDemo })).toBeChecked();
   });
 
-  test("le lien de connexion ouvre la plateforme dans un nouvel onglet", async ({ page }) => {
+  test("aucun lien « Se connecter » sur le site vitrine (en-tête ni menu mobile), dans les quatre langues", async ({ page }) => {
+    const labels = ["Se connecter", "Log in", "Hiditra", "Iniciar sesión"];
+    for (const [lang, label] of [["fr", labels[0]], ["en", labels[1]], ["mg", labels[2]], ["es", labels[3]]]) {
+      await page.setViewportSize({ width: 1280, height: 800 });
+      await page.goto(`/${lang}`);
+      await expect(page.getByRole("link", { name: label, exact: true }), `${lang} bureau`).toHaveCount(0);
+      await expect(page.locator('a[href*="run.place"]'), `${lang} bureau`).toHaveCount(0);
+      await page.setViewportSize({ width: 390, height: 800 });
+      await page.locator('button[aria-controls="menu-mobile"]').click();
+      await expect(page.locator("#menu-mobile"), `${lang} mobile : menu ouvert`).toBeVisible();
+      await expect(page.getByRole("link", { name: label, exact: true }), `${lang} mobile`).toHaveCount(0);
+    }
+  });
+
+  test("menu mobile : « Essai gratuit » ouvre la page et ferme le menu, comme les autres liens", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 800 });
+    for (const lang of ["fr", "en"]) {
+      await page.goto(`/${lang}`);
+      await page.getByRole("button", { name: fr.nav.openMenu }).or(page.locator('button[aria-controls="menu-mobile"]')).first().click();
+      const menu = page.locator("#menu-mobile");
+      await expect(menu).toBeVisible();
+      await menu.getByRole("link", { name: /essai gratuit|free trial/i }).click();
+      await expect(page, lang).toHaveURL(new RegExp(`/${lang}/essai-gratuit$`));
+      await expect(menu, `${lang} : menu fermé après « Essai gratuit »`).toHaveCount(0);
+    }
+  });
+
+  test("mobile : les deux boutons de l'accueil et « Envoyer » du formulaire de contact remplissent la largeur", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 800 });
     await page.goto("/fr");
-    const link = page.getByRole("link", { name: fr.common.login }).first();
-    await expect(link).toHaveAttribute("href", "https://e-fanamby.run.place/");
-    await expect(link).toHaveAttribute("target", "_blank");
+    const hero = page.locator("main section").first();
+    const boxes = await hero.locator("a.t-button, a[class*='cut-br']").evaluateAll((els) =>
+      els.slice(0, 2).map((e) => {
+        const r = e.getBoundingClientRect();
+        return { w: Math.round(r.width), h: Math.round(r.height) };
+      }),
+    );
+    expect(boxes).toHaveLength(2);
+    for (const b of boxes) {
+      expect(b.w, "bouton de l'accueil : pleine largeur du contenu (390 − 2 × 24)").toBeGreaterThanOrEqual(330);
+      expect(b.h, "bouton de l'accueil : hauteur du modèle (≈ 60 px)").toBeGreaterThanOrEqual(58);
+    }
+
+    await page.goto("/fr/contact");
+    const form = page.locator("form").first();
+    const send = form.getByRole("button", { name: fr.common.send });
+    const sendBox = (await send.boundingBox())!;
+    const fieldBox = (await form.getByLabel(fr.form.email, { exact: false }).boundingBox())!;
+    // Le bouton garde le léger retrait de 8 px du modèle (identique à « Essai gratuit ») : il remplit tout le reste de la largeur.
+    expect(fieldBox.width - sendBox.width, "« Envoyer » : remplit la largeur du formulaire").toBeLessThanOrEqual(10);
+
+    await page.goto("/fr/essai-gratuit");
+    const trialSend = (await page.locator("form").first().getByRole("button", { name: fr.common.send }).boundingBox())!;
+    expect(Math.abs(sendBox.width - trialSend.width), "« Envoyer » (Contact) : même largeur que « Envoyer » d'Essai gratuit").toBeLessThanOrEqual(2);
   });
 
   test("le lien d'évitement mène au contenu", async ({ page }) => {
@@ -219,9 +268,16 @@ test.describe("fond sous le pied de page (aucune bande claire après le footer)"
           await page.goto(`/${lang}${s}`, { waitUntil: "domcontentloaded" });
           const r = await page.evaluate(() => {
             const f = document.querySelector("footer")!.getBoundingClientRect();
-            return { canvas: getComputedStyle(document.documentElement).backgroundColor, footerBottom: Math.round(f.bottom + window.scrollY), docHeight: document.documentElement.scrollHeight };
+            return {
+              canvas: getComputedStyle(document.documentElement).backgroundColor,
+              // Safari sur iPhone prolonge la couleur du <body> sous le pied de page et sous la barre d'outils flottante : elle doit être marine.
+              body: getComputedStyle(document.body).backgroundColor,
+              footerBottom: Math.round(f.bottom + window.scrollY),
+              docHeight: document.documentElement.scrollHeight,
+            };
           });
           expect(r.canvas, `/${lang}${s}`).toBe(NAVY);
+          expect(r.body, `/${lang}${s} : le <body> doit être marine (Safari iPhone)`).toBe(NAVY);
           expect(Math.abs(r.footerBottom - r.docHeight), `/${lang}${s} : quelque chose dépasse sous le pied de page`).toBeLessThanOrEqual(1);
         }
       }
@@ -241,11 +297,25 @@ test.describe("fond sous le pied de page (aucune bande claire après le footer)"
     expect(r.body).toBe(NAVY);
   });
 
-  test("les pages claires gardent un pied de page dont les coins arrondis se détachent sur la menthe", async ({ page }) => {
+  test("les pages claires gardent un pied de page dont les coins arrondis se détachent sur la menthe (enveloppe .page-body)", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     for (const s of ["", PAGES.references, PAGES.features]) {
       await page.goto(`/fr${s}`, { waitUntil: "domcontentloaded" });
-      expect(await page.evaluate(() => getComputedStyle(document.body).backgroundColor), `/fr${s}`).toBe("rgb(235, 255, 247)");
+      const r = await page.evaluate(() => ({
+        body: getComputedStyle(document.body).backgroundColor,
+        wrap: getComputedStyle(document.querySelector(".page-body")!).backgroundColor,
+      }));
+      expect(r.wrap, `/fr${s}`).toBe("rgb(235, 255, 247)");
+      expect(r.body, `/fr${s}`).toBe(NAVY);
+    }
+  });
+
+  test("les pages qui finissent en marine (contact, essai gratuit, 404) n'ont aucune menthe derrière le pied de page", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    for (const s of [PAGES.contact, PAGES.trial, "/page-qui-n-existe-pas"]) {
+      await page.goto(`/fr${s}`, { waitUntil: "domcontentloaded" });
+      const wrap = await page.evaluate(() => getComputedStyle(document.querySelector(".page-body")!).backgroundColor);
+      expect(wrap, `/fr${s}`).toBe(NAVY);
     }
   });
 });
@@ -314,6 +384,15 @@ test.describe("contenu (français)", () => {
     await page.goto("/fr/references");
     await expect(page.locator("details")).not.toHaveCount(0);
     await expect(page.locator("blockquote")).toHaveCount(1);
+  });
+
+  test("Références : POESAM 2026 = finaliste (pas de présence à la cérémonie), et le cas « CFFA vs COSFA » ne laisse pas croire à un contrat", async ({ page }) => {
+    await page.goto("/fr/references");
+    const text = await page.locator("main").innerText();
+    expect(text).toMatch(/finaliste/i);
+    expect(text).not.toMatch(/pr[ée]sence|pr[ée]sents? (à|lors)/i);
+    expect(text).toContain("CFFA vs COSFA");
+    expect(text).not.toMatch(/CFFA\s*[-–]\s*PFL/);
   });
 
   test("Accueil : le slogan est dans le pied de page", async ({ page }) => {
