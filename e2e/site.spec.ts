@@ -1206,13 +1206,44 @@ test.describe("Fonctionnalités : cartes ouvertes au survol (ordinateur)", () =>
     expect(await opacity(2)).toBe("1");
     expect(await opacity(1)).toBe("0");
 
-    // Second clic sur la carte épinglée : elle est libérée, et se referme dès que la souris la quitte.
+    // Second clic sur la carte épinglée, souris toujours dessus : elle revient tout de suite à l'état normal (fermée, flèche ↗), sans attendre.
     await cards.nth(2).hover();
-    await page.mouse.click((await cards.nth(2).boundingBox())!.x + 100, (await cards.nth(2).boundingBox())!.y + 60);
+    const b2 = (await cards.nth(2).boundingBox())!;
+    await page.mouse.click(b2.x + 100, b2.y + 60);
     await expect(cards.nth(2)).toHaveAttribute("data-open", "false");
+    await expect(cards.nth(2)).toHaveAttribute("data-closed", "true");
+    await expect(cards.nth(2).locator(".fc-more")).toHaveCSS("opacity", "0");
+    await expect(cards.nth(2).locator(".fc-ar-up")).toHaveCSS("opacity", "1");
+    await expect(cards.nth(2).locator(".fc-ar-down")).toHaveCSS("opacity", "0");
+    await expect(cards.nth(2)).toHaveCSS("color", "rgb(6, 6, 45)");
+    await expect(cards.nth(2).locator("button.fc-btn")).toHaveAttribute("aria-expanded", "false");
+    // Elle reste fermée tant que la souris bouge sur elle…
+    await page.mouse.move(b2.x + 150, b2.y + 120);
+    expect(await opacity(2)).toBe("0");
+    // …et le survol fonctionne de nouveau dès qu'on l'a quittée puis retrouvée.
+    await page.mouse.move(0, 0);
+    await expect(cards.nth(2)).toHaveAttribute("data-closed", "false");
+    await cards.nth(2).hover();
+    expect(await opacity(2)).toBe("1");
     await page.mouse.move(0, 0);
     expect(await opacity(2)).toBe("0");
-    await expect(cards.nth(2).locator(".fc-ar-up")).toHaveCSS("opacity", "1");
+  });
+
+  test("clavier : Entrée sur le titre épingle la carte, Entrée à nouveau la referme tout de suite", async ({ page }) => {
+    await ready(page);
+    await page.addStyleTag({ content: "*,*::before,*::after{transition:none !important}" });
+    const btn = page.locator("li.fc button.fc-btn").nth(1);
+    const card = page.locator("li.fc").nth(1);
+    for (let i = 0; i < 80 && !(await btn.evaluate((e) => e === document.activeElement)); i++) await page.keyboard.press("Tab");
+    await expect(btn).toBeFocused();
+    await page.keyboard.press("Enter");
+    await expect(card).toHaveAttribute("data-open", "true");
+    await expect(card.locator(".fc-more")).toHaveCSS("opacity", "1");
+    await page.keyboard.press("Enter");
+    await expect(card).toHaveAttribute("data-open", "false");
+    await expect(card.locator(".fc-more")).toHaveCSS("opacity", "0"); // le focus clavier est encore là, mais la carte est fermée
+    await page.keyboard.press("Enter");
+    await expect(card.locator(".fc-more")).toHaveCSS("opacity", "1");
   });
 
   // Aucune carte ne doit grandir à l'ouverture, ni laisser un texte sortir ou toucher la pastille, quelles que soient la langue et la largeur.

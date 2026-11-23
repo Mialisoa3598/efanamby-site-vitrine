@@ -23,13 +23,27 @@ function openHeight(li: HTMLElement): number {
  * Grille des 9 fonctionnalités (page Fonctionnalités). Modèle Figma du 23/11 : carte #DDECF4 au repos, violette quand elle est ouverte.
  *
  * - Ordinateur (souris) : la carte s'ouvre au survol, et aussi quand elle prend le focus au clavier (Tab). Tout est géré par le CSS (.fc dans globals.css).
- *   Un clic sur la carte (flèche comprise) l'« épingle » : elle reste sur son détail même quand la souris la quitte, jusqu'à un second clic ou un clic sur une autre carte.
+ *   Un clic sur la carte (flèche comprise) l'« épingle » : elle reste sur son détail même quand la souris la quitte. Un second clic la referme tout de suite (même souris dessus) ;
+ *   un clic sur une autre carte déplace l'épinglage. Après un second clic, la carte reste fermée jusqu'à ce que la souris la quitte (`data-closed`).
  * - Tactile (téléphone, tablette) : un clic ouvre la carte, un second clic la referme ; une seule carte est ouverte à la fois. C'est `data-open` qui l'indique (le même état sert à l'épinglage sur ordinateur).
  * - Le texte détaillé est toujours dans la page (il est seulement replié) : Google et les lecteurs d'écran le lisent, carte ouverte ou non.
  */
 export function FeatureCards({ items }: { items: readonly Item[] }) {
   const [open, setOpen] = useState<number | null>(null);
+  // Carte refermée par un second clic alors que la souris (ou le focus) est encore dessus : elle reste fermée jusqu'à ce que la souris la quitte,
+  // sinon le survol la rouvrirait aussitôt et le second clic n'aurait aucun effet visible.
+  const [calm, setCalm] = useState<number | null>(null);
   const grid = useRef<HTMLUListElement>(null);
+  const toggle = (i: number) => {
+    if (open === i) {
+      setOpen(null);
+      setCalm(i);
+    } else {
+      setOpen(i);
+      setCalm(null);
+    }
+  };
+  const release = (i: number) => setCalm((c) => (c === i ? null : c));
 
   // Toutes les cartes prennent la hauteur de la plus chargée une fois ouverte (selon la langue et la largeur de l'écran) :
   // aucune carte ne grandit au survol, les espacements restent ceux du modèle. Sans JavaScript, le CSS garde les 305 px du modèle.
@@ -58,14 +72,14 @@ export function FeatureCards({ items }: { items: readonly Item[] }) {
         const Icon = FeatureIcons[ICON_ORDER[i]];
         const isOpen = open === i;
         return (
-          <li key={item.title} data-reveal data-reveal-delay={i % 3} data-open={isOpen} className="fc">
+          <li key={item.title} data-reveal data-reveal-delay={i % 3} data-open={isOpen} data-closed={calm === i} className="fc" onMouseLeave={() => release(i)}>
             <span aria-hidden="true" className="fc-tile">
               <Icon size={28} />
             </span>
             <div className="fc-body">
               <div className="fc-head">
                 <h3 className="fc-title">
-                  <button type="button" className="fc-btn" aria-expanded={isOpen} aria-controls={`fc-more-${i}`} onClick={() => setOpen(isOpen ? null : i)}>
+                  <button type="button" className="fc-btn" aria-expanded={isOpen} aria-controls={`fc-more-${i}`} onClick={() => toggle(i)} onBlur={() => release(i)}>
                     {item.title}
                   </button>
                 </h3>
