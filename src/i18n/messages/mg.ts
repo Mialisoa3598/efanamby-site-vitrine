@@ -14,7 +14,7 @@ export const mg: Messages = {
   seo: {
     features: { title: "Endri-javatra", description: "Izay rehetra ilaina hanovana ny lalao ho angon-drakitra azo ampiasaina, hatramin'ny fanombohana ka hatramin'ny tatitra farany." },
     pricing: { title: "Vidiny", description: "Vidiny manodidina isaky ny drafitra : Klioba/Mpanazatra, Haino aman-jery, Federasiona ary Scouting." },
-    references: { title: "Porofo", description: "Porofo, fa tsy teny fikasana : tranga tena izy, fanambarana ary fanontaniana matetika apetraka." },
+    references: { title: "Porofo", description: "Porofo, fa tsy teny fikasana : tranga tena izy sy fanontaniana matetika apetraka." },
     contact: { title: "Fifandraisana", description: "Manana fanontaniana alohan'ny hanombohana ve ianao? Soraty aminay." },
     trial: { title: "Andrana maimaim-poana", description: "Ny lalaonao voalohany nodinihina : tatitra, fanangonana horonan-tsary ary antontanisa, afaka 3 andro." },
     legal: { title: "Fanamarihana ara-dalàna" },
@@ -60,6 +60,7 @@ export const mg: Messages = {
     heroTitle: ["Miditra an-kianja", "ny angon-drakitra."],
     heroText: "Hatramin'ny fanadihadiana horonan-tsary ka hatrany amin'ny antontanisa, e-Fanamby no miaraka aminao amin'ny fanapahan-kevitra, ao anaty kianja sy ivelan'ny kianja.",
     problemsTitle: "Tsy mahita ny baolina kitra eto an-toerana ny fitaovana iraisam-pirenena.",
+    problemsIntro: "Noho ny tsy fisian'ny fitaovana mifanaraka amin'ny fifaninanana eto an-toerana, ireto no iainan'ny klioba :",
     problems: ["Fanadihadiana araka ny fihetseham-po, tsy misy tantara", "Fanomanana fanoherana tsy misy angon-drakitra", "Fanaovana horonan-tsary lava sy lafo", "Tsy misy amin'ny fotoana tena izy"],
     analyticsTitle: "e-Fanamby dia",
     analyticsAccent: "football analytics.",
@@ -98,7 +99,7 @@ export const mg: Messages = {
       {
         title: "Lisitry ny lalao",
         text: "Azo sivanina araka ny ekipa, ny fifaninanana, ny toetra",
-        details: ["Sivana araka ny ekipa, fifaninanana, toetra", "An-trano sy ivelany alamina aloha"],
+        details: ["Voalahatra, mandeha, vita, voamarina, nofoanana", "Voatahiry ny fiovan'ny toetra rehetra", "An-trano sy ivelany alamina aloha"],
       },
       {
         title: "Antontanisa isaky ny lalao",
@@ -108,7 +109,7 @@ export const mg: Messages = {
       {
         title: "Mombamomba ny mpilalao",
         text: "OVR, POT, toetra, tantara",
-        details: ["Naoty OVR amin'ny 100 sy POT", "Toetra enina : TIR, PAS, DRI, DEF, PHY, GK", "Tantaran'ny lalao tsirairay sy ny fironana"],
+        details: ["Naoty OVR amin'ny 100 sy POT", "Toetra enina : SHO, PAS, DRI, DEF, PHY, GK", "Tantaran'ny lalao tsirairay sy ny fironana"],
       },
       {
         title: "Fanadihadiana lalao maro",
@@ -122,7 +123,7 @@ export const mg: Messages = {
       },
       {
         title: "Tatitra momba ny lalao",
-        text: "Fanondranana PDF/CSV. Fizarana amin'ny WhatsApp : alefa an-tanana",
+        text: "Fanondranana PDF/CSV. Fizarana amin'ny WhatsApp araka ny fangatahana",
         details: ["PDF isaky ny ekipa : fohy na feno", "PDF isaky ny mpilalao, amin'ny lalao maro", "Fanondranana CSV ho an'ny fitaovanao"],
       },
       {
@@ -150,16 +151,12 @@ export const mg: Messages = {
     casesTitle: "Avy eny an-kianja",
     casesAccent: "ho amin'ny angon-drakitra.",
     cases: [
-      { title: "CFFA vs COSFA - PFL 2025-2026", text: "Famakafakana ny lalao sy famantarana momba ny zava-bita" },
+      { title: "CFFA vs COSFA - PFL 2025-2026", text: "Dingana 1/4 famaranana : famakafakana ny lalao sy famantarana momba ny zava-bita" },
       { title: "Barea vs Burkina Faso - CHAN 2024", text: "Fanadihadiana amin'ny antsipiriany, baolina niditra sy kornera" },
       { title: "Toki Rakotondraibe - COSFA", text: "Fanangonana hetsika 4, vanim-potoana 2026" },
       { title: "Disciples FC vs Elgeco Plus", text: "Isa tamin'ny lalao raha oharina amin'ny antontanisa tena izy" },
+      { title: "Barea vs Guinea-Bissau - Fanasokajiana CAN 2027", text: "Tolona sy tifitra nodinihina, isaky ny fizaràna" },
     ],
-    testimonial: {
-      name: "Coach Lalaina",
-      org: "COSFA",
-      text: "Ny tatitra sy ny fanangonana horonan-tsary vitsivitsy dia nahafahan'ny ekipa nanomana tao anatiny ny semi-finaly tamin'ny playoff PFL farany.",
-    },
     faqTitle: "Fanontaniana",
     faqAccent: "matetika apetraka",
     faqIntro: "Manana fanontaniana ve ianao? Hitanao eto ny valiny na mifandraisa aminay, vonona hanampy anao izahay.",
@@ -195,7 +192,7 @@ export const mg: Messages = {
           "Antontanisan'ny ekipany sy tatitra PDF momba ny lalao",
           "Fandrafetana taktika",
           "Fanadihadiana lalina sy sary, fanondranana antontanisa",
-          "Alefa an-tanana : fizarana tatitra (WhatsApp) sy fanangonana horonan-tsary",
+          "Araka ny fangatahana : fizarana tatitra (WhatsApp) sy fanangonana horonan-tsary",
         ],
       },
       {
@@ -207,7 +204,7 @@ export const mg: Messages = {
           "Tsy misy fidirana amin'ny tranokala, vokatra alefa ihany",
           "Fonosana feno ny angon-drakitry ny lalao, anisan'izany ny hetsika",
           "Tatitra PDF momba ny lalao",
-          "Alefa an-tanana : fizarana tatitra sy fanangonana horonan-tsary",
+          "Araka ny fangatahana : fizarana tatitra sy fanangonana horonan-tsary",
         ],
       },
       {
@@ -220,7 +217,7 @@ export const mg: Messages = {
           "Fijerena ny ekipa, ny mpilalao, ny lalao, ny angon-drakitra ary ny hetsika amin'ny fifaninanana",
           "Antontanisan'ny fifaninanana sy tatitra PDF (lalao na fifaninanana)",
           "Fanadihadiana lalina sy sary, fanondranana antontanisa",
-          "Alefa an-tanana : fizarana tatitra",
+          "Araka ny fangatahana : fizarana tatitra",
         ],
       },
       {
@@ -232,7 +229,7 @@ export const mg: Messages = {
           "Taratasy teknika mpilalao, fijerena fotsiny",
           "Antontanisan'ny mpilalao",
           "Tatitra PDF momba ny mpilalao, amin'ny lalao maro",
-          "Alefa an-tanana : fizarana ny tatitra",
+          "Araka ny fangatahana : fizarana ny tatitra",
         ],
       },
     ],
@@ -252,13 +249,13 @@ export const mg: Messages = {
       { label: "Hetsika amin'ny lalao (fijerena)", cells: ["Ny ekipany", "Tafiditra ao amin'ny alefa", "Fifaninanana", "no"] },
       { label: "Antontanisa sy tatitra", cells: ["Antontanisan'ny ekipany", "Tatitra momba ny lalao (PDF)", "Antontanisan'ny fifaninanana", "Antontanisan'ny mpilalao"] },
       { label: "Famoronana tatitra PDF", cells: ["Tatitra momba ny lalao", "Tatitra momba ny lalao", "Tatitra momba ny lalao / fifaninanana", "Tatitra momba ny mpilalao (amin'ny lalao maro)"] },
-      { label: "Fizarana tatitra. Alefa an-tanana.", cells: ["yes", "yes", "yes", "yes"] },
+      { label: "Fizarana tatitra. Araka ny fangatahana.", cells: ["yes", "yes", "yes", "yes"] },
       { label: "Fandrafetana taktika", cells: ["yes", "no", "empty", "no"] },
       { label: "Fanadihadiana lalina sy sary", cells: ["yes", "no", "yes", "no"] },
       { label: "Fanondranana antontanisa (fanadihadiana lalina/ankapobeny)", cells: ["yes", "no", "yes", "no"] },
       { label: "Fitantanana fifaninanana", cells: ["no", "no", "yes:Fifaninanana", "no"] },
       { label: "Taratasy scouting mpilalao", cells: ["no", "no", "no", "no"] },
-      { label: "Fanangonana horonan-tsary. Alefa an-tanana.", cells: ["yes", "yes", "no", "no"] },
+      { label: "Fanangonana horonan-tsary. Araka ny fangatahana.", cells: ["yes", "yes", "no", "no"] },
       { label: "Fidirana API (tsy ho ela)", cells: ["no", "no", "no", "no"] },
     ],
     yes: "Tafiditra",
@@ -276,7 +273,7 @@ export const mg: Messages = {
       },
       {
         q: "Mandeha ho azy ve ny fizarana amin'ny WhatsApp sy ny fanangonana horonan-tsary?",
-        a: "Tsia. Ny fizarana tatitra (WhatsApp) sy ny fanangonana horonan-tsary dia alefan'ny ekipan'e-Fanamby an-tanana, araka ny fangatahanao.",
+        a: "Tsia. Ny fizarana tatitra (WhatsApp) sy ny fanangonana horonan-tsary dia ataon'ny ekipan'e-Fanamby araka ny fangatahanao.",
       },
       {
         q: "Afaka manaraka ekipa hafa ankoatra ny azy ve ny klioba?",
@@ -348,7 +345,6 @@ export const mg: Messages = {
     audienceFederation: "Vondrona mpilalao amin'ny hariva",
     ceremony: "Mpandahateny eo amin'ny lampihazo nandritra ny lanonana POESAM 2026",
     tacticalBoard: "Tabilao taktika apetraka eo ambony ahitry ny kianjan'ny baolina kitra",
-    handshake: "Fifandraisan-tanana eo amin'ny olona roa",
     keyboard: "Tanana mikitika amin'ny kitendry solosaina",
     pitch: "Mpilalao eo an-kianja mandritra ny fanazarana",
   },

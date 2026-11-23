@@ -1,7 +1,7 @@
 # Guide d'utilisation — site vitrine e-Fanamby
 
 Pour ne pas se perdre : où est chaque chose, comment la modifier, comment vérifier que rien n'est cassé.
-Dernière mise à jour : 23/11/2026 (soir, version v3.5). Le site est **déployé sur l'adresse de test *.vercel.app** (pas encore de nom de domaine, fermé aux moteurs de recherche) : le code du responsive, des formulaires (avec e-mail de confirmation) et des animations est fait ; le déploiement a démarré pas à pas (section 11), les essais réels (envoi Gmail, vrais téléphones, section 10) se font sur l'adresse de test.
+Dernière mise à jour : 23/11/2026 (22 h, version v3.6). Le site est **déployé sur l'adresse de test *.vercel.app** (pas encore de nom de domaine, fermé aux moteurs de recherche) : le code du responsive, des formulaires (avec e-mail de confirmation) et des animations est fait ; le déploiement a démarré pas à pas (section 11), les essais réels (envoi Gmail, vrais téléphones, section 10) se font sur l'adresse de test.
 
 Autres fichiers utiles : `README.md` (résumé technique), `docs/decisions.md` (ce qu'il reste à trancher), `docs/design-system-jetons.txt` (valeurs du design system), `docs/registre-images.txt` (légende et origine de chaque photo).
 
@@ -51,7 +51,7 @@ Après avoir remplacé les fichiers par ceux d'un nouveau zip :
 ```
 site/
 ├─ GUIDE.md, README.md          ← ces fichiers
-├─ docs/                        ← décisions, design system, registre des images
+├─ docs/                        ← décisions, design system, registre des images (images-retirees/ : photos plus utilisées)
 ├─ public/
 │  ├─ images/                   ← les photos (WebP)
 │  └─ logo/                     ← logo SVG, favicon
@@ -112,7 +112,7 @@ Les valeurs que j'ai estimées (pas dans la maquette) sont notées « à confirm
 
 ### Arrondir les coins coupés (maquette)
 Règle en vigueur (demande du 19/11 au soir) : **cartes, lignes et cartes à coin coupé à 16 px ; boutons et champs à 10 px, sur leurs QUATRE coins, y compris les coins coupés.** Elle prime sur les rayons mesurés dans les exports de la maquette. Des tests automatiques (« Angles arrondis relevés sur les maquettes ») vérifient chaque valeur ci-dessous, y compris les lignes de l'Accueil une fois ouvertes.
-- **16 px** : lignes « football analytics » de l'Accueil (fermées **et ouvertes**), cartes « problèmes » et cartes de chiffres de l'Accueil, questions fréquentes (Tarifs), cartes de prix, **tableau comparatif (les quatre coins)**, section violette et panneau de photo des Tarifs, hero de Références, cartes de cas, photo du tableau et témoignage de Références, cartes « verre » de Références et de Fonctionnalités, tuiles de la grille de Fonctionnalités, bandeau marine de fin de page.
+- **16 px** : lignes « football analytics » de l'Accueil (fermées **et ouvertes**), cartes « problèmes » et cartes de chiffres de l'Accueil, questions fréquentes (Tarifs), cartes de prix, **tableau comparatif (les quatre coins)**, section violette et panneau de photo des Tarifs, hero de Références, cartes de cas et photo du tableau de Références, cartes « verre » de Références et de Fonctionnalités, tuiles de la grille de Fonctionnalités, bandeau marine de fin de page.
 - **10 px** : tous les boutons (`src/components/ui/button.tsx`) et champs de formulaire. Coupe des boutons : 7 px (grands boutons et bouton d'en-tête, prop `tight`, sommets arrondis à 8 px), 10 px (formulaires), 14 px (haut-droit / bas-gauche des boutons violets et « Demander une démo » ; sommets arrondis à 10 px). Un test vérifie sur toutes les pages qu'aucun bouton n'a de coin vif.
 - **Rayons du design system conservés** (la maquette les définit : 20, 24, 30 px ; à dire si ceux-là aussi doivent passer à 16 px) : panneaux de formulaire Contact et Essai gratuit, panneau marine de Fonctionnalités, photo « maillot » de l'Accueil : 20 px ; photo « but » de l'Accueil : 30 px ; panneau marine « football analytics » de l'Accueil, feuille claire (haut) et pied de page : 24 px.
 Les panneaux « verre » n'ont plus de contour (la maquette n'en a pas).
@@ -154,7 +154,21 @@ Modèle suivi : le fichier Figma « MacBook Air - 1 » du 23/11 (carte « Multil
 - **Hauteur** : 305 px comme le modèle, mais toutes les cartes prennent la hauteur de la plus chargée une fois ouverte (mesurée au chargement, selon la langue et la largeur d'écran) : aucune carte ne grandit au survol. Une ligne de détail trop longue ou un titre sur deux lignes peut donc agrandir **toutes** les cartes d'une vingtaine de pixels : garder les lignes courtes (environ 44 caractères, une seule ligne).
 - ⚠ Les icônes sont associées aux cartes **par leur position dans la liste** : `ICON_ORDER` (dans `feature-cards.tsx`) doit avoir autant d'éléments que `features.items` (9), dans le même ordre. La grille est dessinée pour 9 cartes (3 × 3) : en ajouter une demande un ajustement de la mise en page.
 - Étapes pour une nouvelle carte : texte + détail dans les 4 langues → icône dans `FeatureIcons` (`components/icons.tsx`) → ligne dans `ICON_ORDER`.
+- **Acronymes des attributs (carte « Profil joueur »)** : ils suivent la langue du site : FR « TIR, PAS, DRI, DEF, PHY, GK » ; EN et MG « SHO, PAS, DRI, DEF, PHY, GK » ; ES « TIR, PAS, REG, DEF, FÍS, POR ». **À confirmer** : ce que la plateforme affiche réellement pour chaque langue (un test vérifie seulement que les langues ne se mélangent pas).
+- **Pas de doublon** : la ligne de détail ne répète pas le texte court de la carte (ex. « Filtrer par équipe, compétition, statut » reste sur la carte « Liste des matchs » ; le détail donne les statuts et l'historique).
+- **Aucun mot rogné** : le détail est dans une boîte qui masque ce qui dépasse (`.fc-more-in`) ; le retrait négatif de droite (`--fc-bleed`) est donc posé **sur cette boîte** et non sur la liste (sinon le dernier mot, « and » en anglais, est coupé). Un test vérifie 4 langues × 6 largeurs.
+- **« Sur demande »** : le partage des rapports par WhatsApp et les compilations vidéo se font à la demande du client, pas automatiquement. Formules : FR « sur demande », EN « on request », ES « a petición », MG « araka ny fangatahana ». Appliqué à la carte « Rapport de match », au tableau des Tarifs, aux lignes des formules et à la FAQ des Tarifs.
 - Source du contenu des lignes de détail : « site actuel » (texte déjà validé) ou « plateforme » (fiche plateforme et publications, **à re-confirmer avec Nomena**). Les 4 lignes sans source de la maquette du 23/11 ont été retirées. Les traductions malgaches sont à faire relire par une personne de langue malgache (étape 7).
+
+### Phrase de transition de l'Accueil (sous « Les outils globaux ignorent le foot local. »)
+Texte : `home.problemsIntro` dans les 4 fichiers de textes (une phrase qui explique le lien entre le titre et les cartes de problèmes en dessous). Elle est affichée dans `src/app/[lang]/page.tsx`, juste sous le titre. Un test vérifie qu'elle est visible, sous le titre et au-dessus de la première carte, dans les 4 langues.
+
+### Cartes de cas de la page Références
+Texte : `references.cases` dans les 4 fichiers de textes (5 cas, **le plus récent en dernier dans la liste mais affiché en premier** : les Barea contre la Guinée-Bissau, qualifications CAN 2027). Icônes et couleurs : `CASE_STYLE` dans `src/app/[lang]/references/page.tsx` (même ordre que la liste). Sur ordinateur, la carte des Barea est **large** (les deux colonnes de droite, en haut), le tableau tactique passe sur deux rangées pour que la grille reste pleine (hauteur 480 px) ; en dessous de 1280 px, la carte large passe en tête sur toute la largeur, puis les quatre autres, puis la photo ; sur mobile, une seule colonne, sans la photo. Un nouveau cas : une entrée de plus dans les 4 langues + une ligne dans `CASE_STYLE`, et prévoir où il se place dans la grille.
+Règle de contenu : une carte ne cite **aucun chiffre** qui ne soit pas confirmé (pour les Barea, seuls « duels et tirs » sont annoncés, comme dans les publications).
+
+### Section « Témoignage » de Références : retirée (décision du chef, 23/11)
+La page Références ne contient plus le témoignage du Coach Lalaina (COSFA) : le texte (`references.testimonial`), la photo de poignée de main et son texte alternatif ont été supprimés des 4 langues, et la description de la page (balise SEO) ne parle plus de témoignage. La photo est rangée dans `docs/images-retirees/` (hors du site). **Pour remettre la section** : retrouver le bloc dans l'historique git (commit d'avant le 23/11, fichier `src/app/[lang]/references/page.tsx`), remettre `testimonial` dans les 4 fichiers de textes, `handshake` dans `src/lib/images.ts` + `alt.handshake`, recopier la photo dans `public/images/`, puis mettre à jour les tests (un test vérifie aujourd'hui l'absence du témoignage).
 
 ### Ajouter une page
 1. `src/lib/site.ts` : ajouter l'adresse dans `PAGES` (et dans `NAV_KEYS` si elle va dans le menu).
@@ -189,8 +203,8 @@ Pour un chiffre qui « monte » : `<CountUp value="+165" />` (composant `ui/coun
 
 | Commande | Ce qu'elle vérifie | Durée |
 |---|---|---|
-| `npm run verify` | TypeScript + règles de code + 93 tests (traductions identiques, chiffres, détail des cartes, formulaires, e-mails) | quelques secondes |
-| `npm run test:e2e` | 365 tests dans un vrai navigateur : toutes les pages × toutes les langues, 16 largeurs d'écran sans débordement, cartes Fonctionnalités (forme, survol, clic sur la flèche, clavier, 4 langues × 5 largeurs), menu, formulaires, animations, FAQ, SEO, accessibilité | plusieurs minutes |
+| `npm run verify` | TypeScript + règles de code + 99 tests (traductions identiques, chiffres, détail des cartes, formulaires, e-mails) | quelques secondes |
+| `npm run test:e2e` | 393 tests dans un vrai navigateur : toutes les pages × toutes les langues, 16 largeurs d'écran sans débordement, cartes Fonctionnalités (forme, survol, clic sur la flèche, clavier, aucun mot rogné, 4 langues × 5 largeurs), page Références (5 cas, carte des Barea, sans témoignage), menu, formulaires, animations, FAQ, SEO, accessibilité | plusieurs minutes |
 | `npm run check:launch` | liste ce qui bloque encore la mise en ligne | instantané |
 | `npm run test:mail -- adresse@exemple.com` | envoie un **vrai** e-mail à l'équipe + une confirmation à l'adresse donnée (voir section 6) | quelques secondes |
 
@@ -252,7 +266,7 @@ L'encadré jaune n'existe qu'avec `npm run dev` : jamais sur le site publié.
 
 **Résultat des essais réels du 19/11** (compte Gmail personnel de la stagiaire comme expéditeur et destinataire) : `npm run test:mail` envoie bien les deux e-mails (équipe + confirmation, texte conforme) ; le formulaire **Contact** envoie bien à l'équipe, y compris avec une adresse Gmail et une adresse Yahoo saisies par le visiteur (ces deux adresses ne reçoivent **rien**, c'est voulu : Contact n'envoie pas de confirmation). Reste à vérifier : l'essai gratuit et la démo par le site (deux e-mails chacun), une confirmation vers une adresse tierce (Outlook / Yahoo, pour le spam), puis le même test avec efanamby2025 une fois l'accès au compte rétabli.
 
-⚠ Le code est couvert par des tests (93 tests unitaires, dont l'envoi simulé) ; l'envoi réel ne peut pas être fait depuis l'environnement de développement (réseau limité), il se teste sur ton ordinateur comme ci-dessus.
+⚠ Le code est couvert par des tests (99 tests unitaires, dont l'envoi simulé) ; l'envoi réel ne peut pas être fait depuis l'environnement de développement (réseau limité), il se teste sur ton ordinateur comme ci-dessus.
 
 **À contrôler à la main sur chaque formulaire** : champs vides, e-mail invalide, trop long, case non cochée, succès (avec et sans la phrase de confirmation), erreur d'envoi (mettre un mauvais `SMTP_PASS` exprès), clavier seul, téléphone, lecteur d'écran. Sur l'essai gratuit : la confirmation arrive-t-elle, dans la bonne langue, hors spam ?
 

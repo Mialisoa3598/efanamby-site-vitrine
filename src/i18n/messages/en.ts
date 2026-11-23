@@ -13,7 +13,7 @@ export const en: Messages = {
   seo: {
     features: { title: "Features", description: "Everything you need to turn a match into usable data, from kick-off to the final report." },
     pricing: { title: "Pricing", description: "Indicative prices by plan: Club/Coach, Media, Federations and Scouting." },
-    references: { title: "References", description: "Proof, not promises: real cases, a testimonial and frequently asked questions." },
+    references: { title: "References", description: "Proof, not promises: real cases and frequently asked questions." },
     contact: { title: "Contact", description: "A question before you get started? Write to us." },
     trial: { title: "Free trial", description: "Your first match analysed: report, video compilation and statistics, within 3 days." },
     legal: { title: "Legal notice" },
@@ -59,6 +59,7 @@ export const en: Messages = {
     heroTitle: ["Data comes", "into play."],
     heroText: "From video analysis to performance statistics, e-Fanamby supports your decisions on and off the pitch.",
     problemsTitle: "Global tools ignore local football.",
+    problemsIntro: "With no tool built for local leagues, clubs are left with:",
     problems: ["Gut-feeling analysis, no history", "Opposition prep without data", "Slow, costly video editing", "Nothing in real time"],
     analyticsTitle: "e-Fanamby is",
     analyticsAccent: "football analytics.",
@@ -97,7 +98,7 @@ export const en: Messages = {
       {
         title: "Match list",
         text: "Filter by team, competition, status",
-        details: ["Filters by team, competition and status", "Home and away set before the match"],
+        details: ["Scheduled, in progress, finished, validated, cancelled", "Every status change is kept in the history", "Home and away set before the match"],
       },
       {
         title: "Stats per match",
@@ -107,7 +108,7 @@ export const en: Messages = {
       {
         title: "Player profile",
         text: "OVR, POT, attributes, history",
-        details: ["Overall OVR rating out of 100, POT potential", "Six attributes: TIR, PAS, DRI, DEF, PHY, GK", "Match-by-match history and trend"],
+        details: ["Overall OVR rating out of 100, POT potential", "Six attributes: SHO, PAS, DRI, DEF, PHY, GK", "Match-by-match history and trend"],
       },
       {
         title: "Multi-match analysis",
@@ -121,7 +122,7 @@ export const en: Messages = {
       },
       {
         title: "Match report",
-        text: "PDF/CSV export. WhatsApp sharing: sent manually",
+        text: "PDF/CSV export. WhatsApp sharing on request",
         details: ["PDF per team: simplified or detailed", "PDF per player, across several matches", "CSV export for your own tools"],
       },
       {
@@ -149,16 +150,12 @@ export const en: Messages = {
     casesTitle: "From the pitch",
     casesAccent: "to the data.",
     cases: [
-      { title: "CFFA vs COSFA - PFL 2025-2026", text: "Match analysis and performance indicators" },
+      { title: "CFFA vs COSFA - PFL 2025-2026", text: "Quarter-final: match analysis and performance indicators" },
       { title: "Barea vs Burkina Faso - CHAN 2024", text: "Detailed analysis, goals and corners" },
       { title: "Toki Rakotondraibe - COSFA", text: "4-action compilation, 2026 season" },
       { title: "Disciples FC vs Elgeco Plus", text: "Score versus real statistics" },
+      { title: "Barea vs Guinea-Bissau - AFCON 2027 qualifiers", text: "Duels and shots analysed, half by half" },
     ],
-    testimonial: {
-      name: "Coach Lalaina",
-      org: "COSFA",
-      text: "A few match reports and video compilations helped the team prepare in-house for the semi-finals of the last PFL playoff.",
-    },
     faqTitle: "Frequently asked",
     faqAccent: "questions",
     faqIntro: "Have questions? Find answers here or contact us, we are here to help.",
@@ -194,7 +191,7 @@ export const en: Messages = {
           "Team statistics and PDF match report",
           "Tactical setup",
           "Advanced analysis and charts, statistics export",
-          "Sent manually: report sharing (WhatsApp) and video compilations",
+          "On request: report sharing (WhatsApp) and video compilations",
         ],
       },
       {
@@ -206,7 +203,7 @@ export const en: Messages = {
           "No access to the site, deliverable only",
           "Complete match data package, match events included",
           "PDF match report",
-          "Sent manually: report sharing and video compilations",
+          "On request: report sharing and video compilations",
         ],
       },
       {
@@ -219,7 +216,7 @@ export const en: Messages = {
           "View the competition's teams, players, matches, data and match events",
           "Competition statistics and PDF report (match or competition)",
           "Advanced analysis and charts, statistics export",
-          "Sent manually: report sharing",
+          "On request: report sharing",
         ],
       },
       {
@@ -231,7 +228,7 @@ export const en: Messages = {
           "Player technical sheet, view only",
           "Player statistics",
           "PDF player report, across several matches",
-          "Sent manually: report sharing",
+          "On request: report sharing",
         ],
       },
     ],
@@ -251,13 +248,13 @@ export const en: Messages = {
       { label: "Match events (viewing)", cells: ["Their team", "Included in the deliverable", "Competition", "no"] },
       { label: "Statistics and reports", cells: ["Team statistics", "Match reports (PDF)", "Competition statistics", "Player statistics"] },
       { label: "PDF report generation", cells: ["Match report", "Match report", "Match / competition report", "Player report (across several matches)"] },
-      { label: "Report sharing. Sent manually.", cells: ["yes", "yes", "yes", "yes"] },
+      { label: "Report sharing. On request.", cells: ["yes", "yes", "yes", "yes"] },
       { label: "Tactical setup", cells: ["yes", "no", "empty", "no"] },
       { label: "Advanced analysis and charts", cells: ["yes", "no", "yes", "no"] },
       { label: "Statistics export (advanced/generic analysis)", cells: ["yes", "no", "yes", "no"] },
       { label: "Competition management", cells: ["no", "no", "yes:Competition", "no"] },
       { label: "Player scouting sheet", cells: ["no", "no", "no", "no"] },
-      { label: "Video compilations. Sent manually.", cells: ["yes", "yes", "no", "no"] },
+      { label: "Video compilations. On request.", cells: ["yes", "yes", "no", "no"] },
       { label: "API access (coming soon)", cells: ["no", "no", "no", "no"] },
     ],
     yes: "Included",
@@ -275,7 +272,7 @@ export const en: Messages = {
       },
       {
         q: "Are WhatsApp sharing and video compilations automatic?",
-        a: "No. Report sharing (WhatsApp) and video compilations are sent manually by the e-Fanamby team, on request.",
+        a: "No. Report sharing (WhatsApp) and video compilations are handled by the e-Fanamby team, on request.",
       },
       {
         q: "Can a club follow teams other than its own?",
@@ -347,7 +344,6 @@ export const en: Messages = {
     audienceFederation: "A group of players in the evening",
     ceremony: "A speaker at the podium during the POESAM 2026 ceremony",
     tacticalBoard: "A tactics board lying on the grass of a football pitch",
-    handshake: "A handshake between two people",
     keyboard: "Hands typing on a computer keyboard",
     pitch: "Players on the pitch during a training session",
   },

@@ -34,8 +34,8 @@ Voir `.env.example`. Obligatoires en production : `NEXT_PUBLIC_SITE_URL`, `SMTP_
 npm run verify         # typecheck + lint + tests unitaires, d'un coup (à lancer après chaque modification)
 npm run typecheck      # TypeScript
 npm run lint           # ESLint
-npm test               # 93 tests unitaires (traductions, validation, e-mails, anti-spam, détail des cartes)
-npm run test:e2e       # 365 tests de navigateur (Chromium) : construit le site puis le teste en mode aperçu (344), puis en mode production (21)
+npm test               # 99 tests unitaires (traductions, validation, e-mails, anti-spam, détail des cartes, retours du 23/11)
+npm run test:e2e       # 393 tests de navigateur (Chromium) : construit le site puis le teste en mode aperçu (372), puis en mode production (21)
 npm run check:launch   # liste ce qui bloque encore la mise en ligne (--strict : code de sortie 1 s'il reste un point bloquant)
 npm run test:mail -- adresse@exemple.com   # envoi RÉEL d'un message à l'équipe + d'une confirmation (voir GUIDE.md, section 6)
 ```

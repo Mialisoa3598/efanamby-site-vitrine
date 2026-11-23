@@ -13,7 +13,7 @@ export const es: Messages = {
   seo: {
     features: { title: "Funcionalidades", description: "Todo lo necesario para convertir un partido en datos aprovechables, del saque inicial al informe final." },
     pricing: { title: "Tarifas", description: "Precios orientativos por oferta: Club/Entrenador, Medios, Federaciones y Scouting." },
-    references: { title: "Referencias", description: "Pruebas, no promesas: casos reales, un testimonio y preguntas frecuentes." },
+    references: { title: "Referencias", description: "Pruebas, no promesas: casos reales y preguntas frecuentes." },
     contact: { title: "Contacto", description: "¿Una pregunta antes de empezar? Escríbanos." },
     trial: { title: "Prueba gratuita", description: "Su primer partido analizado: informe, recopilación de vídeo y estadísticas, en 3 días." },
     legal: { title: "Aviso legal" },
@@ -59,6 +59,7 @@ export const es: Messages = {
     heroTitle: ["Los datos", "entran en juego."],
     heroText: "Del análisis de vídeo a las estadísticas de rendimiento, e-Fanamby acompaña sus decisiones dentro y fuera del campo.",
     problemsTitle: "Las herramientas globales ignoran el fútbol local.",
+    problemsIntro: "Sin una herramienta pensada para las ligas locales, los clubes se quedan con:",
     problems: ["Análisis a ojo, sin historial", "Preparación del rival sin datos", "Edición de vídeo larga y costosa", "Nada en tiempo real"],
     analyticsTitle: "e-Fanamby es",
     analyticsAccent: "football analytics.",
@@ -97,7 +98,7 @@ export const es: Messages = {
       {
         title: "Lista de partidos",
         text: "Filtrable por equipo, competición, estado",
-        details: ["Filtros por equipo, competición y estado", "Local y visitante fijados antes del partido"],
+        details: ["Programado, en curso, terminado, validado, cancelado", "Cada cambio de estado queda en el historial", "Local y visitante fijados antes del partido"],
       },
       {
         title: "Estadísticas por partido",
@@ -107,7 +108,7 @@ export const es: Messages = {
       {
         title: "Perfil del jugador",
         text: "OVR, POT, atributos, historial",
-        details: ["Nota global OVR sobre 100 y potencial POT", "Seis atributos: TIR, PAS, DRI, DEF, PHY, GK", "Historial partido a partido y tendencia"],
+        details: ["Nota global OVR sobre 100 y potencial POT", "Seis atributos: TIR, PAS, REG, DEF, FÍS, POR", "Historial partido a partido y tendencia"],
       },
       {
         title: "Análisis multipartido",
@@ -121,7 +122,7 @@ export const es: Messages = {
       },
       {
         title: "Informe de partido",
-        text: "Exportación PDF/CSV. Envío por WhatsApp: se envía manualmente",
+        text: "Exportación PDF/CSV. Envío por WhatsApp a petición",
         details: ["PDF por equipo: simplificado o detallado", "PDF por jugador, en varios partidos", "Exportación CSV para sus herramientas"],
       },
       {
@@ -149,16 +150,12 @@ export const es: Messages = {
     casesTitle: "Del campo",
     casesAccent: "al dato.",
     cases: [
-      { title: "CFFA vs COSFA - PFL 2025-2026", text: "Análisis del partido e indicadores de rendimiento" },
+      { title: "CFFA vs COSFA - PFL 2025-2026", text: "Cuartos de final: análisis del partido e indicadores de rendimiento" },
       { title: "Barea vs Burkina Faso - CHAN 2024", text: "Análisis detallado, goles y córners" },
       { title: "Toki Rakotondraibe - COSFA", text: "Recopilación de 4 acciones, temporada 2026" },
       { title: "Disciples FC vs Elgeco Plus", text: "Marcador frente a estadísticas reales" },
+      { title: "Barea vs Guinea-Bisáu - Clasificación CAN 2027", text: "Duelos y tiros analizados, parte por parte" },
     ],
-    testimonial: {
-      name: "Coach Lalaina",
-      org: "COSFA",
-      text: "Unos cuantos informes de partido y recopilaciones de vídeo permitieron al equipo preparar internamente las semifinales de la última eliminatoria de la PFL.",
-    },
     faqTitle: "Preguntas",
     faqAccent: "frecuentes",
     faqIntro: "¿Tiene preguntas? Encuentre aquí las respuestas o contáctenos, estamos para ayudarle.",
@@ -194,7 +191,7 @@ export const es: Messages = {
           "Estadísticas de su equipo e informe de partido en PDF",
           "Configuración táctica",
           "Análisis avanzado y gráfico, exportación de estadísticas",
-          "Se envía manualmente: envío de informes (WhatsApp) y recopilaciones de vídeo",
+          "A petición: envío de informes (WhatsApp) y recopilaciones de vídeo",
         ],
       },
       {
@@ -206,7 +203,7 @@ export const es: Messages = {
           "Sin acceso al sitio, solo entregable",
           "Paquete completo de datos del partido, hechos de partido incluidos",
           "Informe de partido en PDF",
-          "Se envía manualmente: envío de informes y recopilaciones de vídeo",
+          "A petición: envío de informes y recopilaciones de vídeo",
         ],
       },
       {
@@ -219,7 +216,7 @@ export const es: Messages = {
           "Consulta de los equipos, jugadores, partidos, datos y hechos de partido de la competición",
           "Estadísticas de la competición e informe PDF (partido o competición)",
           "Análisis avanzado y gráfico, exportación de estadísticas",
-          "Se envía manualmente: envío de informes",
+          "A petición: envío de informes",
         ],
       },
       {
@@ -231,7 +228,7 @@ export const es: Messages = {
           "Ficha técnica del jugador, solo consulta",
           "Estadísticas del jugador",
           "Informe del jugador en PDF, sobre varios partidos",
-          "Se envía manualmente: envío del informe",
+          "A petición: envío del informe",
         ],
       },
     ],
@@ -251,13 +248,13 @@ export const es: Messages = {
       { label: "Hechos de partido (consulta)", cells: ["Su equipo", "Incluido en el entregable", "Competición", "no"] },
       { label: "Estadísticas e informes", cells: ["Estadísticas de su equipo", "Informes de partido (PDF)", "Estadísticas de la competición", "Estadísticas del jugador"] },
       { label: "Generación de informes PDF", cells: ["Informe de partido", "Informe de partido", "Informe de partido / competición", "Informe del jugador (sobre varios partidos)"] },
-      { label: "Envío de informes. Se envía manualmente.", cells: ["yes", "yes", "yes", "yes"] },
+      { label: "Envío de informes. A petición.", cells: ["yes", "yes", "yes", "yes"] },
       { label: "Configuración táctica", cells: ["yes", "no", "empty", "no"] },
       { label: "Análisis avanzado y gráfico", cells: ["yes", "no", "yes", "no"] },
       { label: "Exportación de estadísticas (análisis avanzado/genérico)", cells: ["yes", "no", "yes", "no"] },
       { label: "Gestión de competiciones", cells: ["no", "no", "yes:Competición", "no"] },
       { label: "Ficha de scouting del jugador", cells: ["no", "no", "no", "no"] },
-      { label: "Recopilaciones de vídeo. Se envían manualmente.", cells: ["yes", "yes", "no", "no"] },
+      { label: "Recopilaciones de vídeo. A petición.", cells: ["yes", "yes", "no", "no"] },
       { label: "Acceso API (próximamente)", cells: ["no", "no", "no", "no"] },
     ],
     yes: "Incluido",
@@ -275,7 +272,7 @@ export const es: Messages = {
       },
       {
         q: "¿El envío por WhatsApp y las recopilaciones de vídeo son automáticos?",
-        a: "No. El envío de informes (WhatsApp) y las recopilaciones de vídeo los envía manualmente el equipo de e-Fanamby, a petición suya.",
+        a: "No. El envío de informes (WhatsApp) y las recopilaciones de vídeo los realiza el equipo de e-Fanamby, a petición suya.",
       },
       {
         q: "¿Puede un club seguir a otros equipos además del suyo?",
@@ -347,7 +344,6 @@ export const es: Messages = {
     audienceFederation: "Un grupo de jugadores al anochecer",
     ceremony: "Una ponente en el podio durante la ceremonia POESAM 2026",
     tacticalBoard: "Una pizarra táctica sobre el césped de un campo de fútbol",
-    handshake: "Un apretón de manos entre dos personas",
     keyboard: "Manos escribiendo en el teclado de un ordenador",
     pitch: "Jugadores en el campo durante un entrenamiento",
   },

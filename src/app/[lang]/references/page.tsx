@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ArrowsLeftRightFill, PersonRunFill, QuotesFill, SoccerBallFill, TrophyFill } from "@/components/icons";
+import { ArrowsLeftRightFill, PersonRunFill, SoccerBallFill, TrophyFill } from "@/components/icons";
 import { CtaBand } from "@/components/sections/cta-band";
 import { Button } from "@/components/ui/button";
 import { CountUp } from "@/components/ui/count-up";
@@ -16,11 +16,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 // Icônes confirmées par la stagiaire (16/11) : trophée = CFFA, ballon = Barea, coureur = Toki, flèches = Disciples FC.
+// La 5e carte (ajoutée le 23/11) est la plus récente : les matchs des Barea contre la Guinée-Bissau, qualifications CAN 2027. Elle est large et placée en tête.
 const CASE_STYLE = [
   { Icon: TrophyFill, size: 44, dark: true },
   { Icon: SoccerBallFill, size: 38, dark: false },
   { Icon: PersonRunFill, size: 38, dark: false },
   { Icon: ArrowsLeftRightFill, size: 36, dark: true },
+  { Icon: SoccerBallFill, size: 38, dark: false },
 ] as const;
 
 export default async function ReferencesPage({ params }: PageProps) {
@@ -71,41 +73,22 @@ export default async function ReferencesPage({ params }: PageProps) {
       </section>
 
       {/* CAS CONCRETS */}
-      <section className="sheet pt-[100px] max-md:pt-14">
+      <section className="sheet pb-[44px] pt-[100px] max-md:pb-6 max-md:pt-14">
         <div className="wrap grid grid-cols-[558px_270px_270px] justify-between gap-x-5 gap-y-5 max-xl:grid-cols-2 max-md:grid-cols-1">
           <h2 className="t-h2 col-span-1 m-0 max-xl:col-span-2 max-md:col-span-1">
             {r.casesTitle}
             <br />
             <span className="text-violet">{r.casesAccent}</span>
           </h2>
-          {r.cases.slice(0, 2).map((c, i) => (
-            <CaseCard key={c.title} {...c} style={CASE_STYLE[i]} className={i === 0 ? "max-xl:order-1" : "max-xl:order-2"} />
-          ))}
-          <div data-reveal className="relative h-[230px] overflow-hidden rounded-[16px] cut-tr-bl rc [--cut:30px] [--r:16px] max-xl:order-5 max-xl:col-span-2 max-md:hidden">
+          {/* Le plus récent d'abord : carte large (les deux colonnes de droite). Le tableau tactique passe sur deux rangées pour garder la grille pleine. */}
+          <CaseCard {...r.cases[4]} style={CASE_STYLE[4]} wide className="col-span-2 max-xl:order-1 max-md:col-span-1" />
+          <div data-reveal className="relative row-span-2 h-[480px] overflow-hidden rounded-[16px] cut-tr-bl rc [--cut:30px] [--r:16px] max-xl:order-6 max-xl:col-span-2 max-xl:row-span-1 max-xl:h-[230px] max-md:hidden">
             <Photo name="tacticalBoard" alt={t.alt.tacticalBoard} className="size-full object-cover" sizes="(max-width: 1024px) 90vw, 558px" />
             <div aria-hidden="true" className="absolute inset-0 bg-navy/35" />
           </div>
-          {r.cases.slice(2).map((c, i) => (
-            <CaseCard key={c.title} {...c} style={CASE_STYLE[i + 2]} className={i === 0 ? "max-xl:order-4" : "max-xl:order-3"} />
+          {r.cases.slice(0, 4).map((c, i) => (
+            <CaseCard key={c.title} {...c} style={CASE_STYLE[i]} className={["max-xl:order-2", "max-xl:order-3", "max-xl:order-5", "max-xl:order-4"][i]} />
           ))}
-        </div>
-
-        {/* TÉMOIGNAGE */}
-        <div className="wrap mt-[88px] max-md:mt-14">
-          <figure data-reveal className="cut-br rc relative isolate m-0 flex min-h-[495px] items-center overflow-hidden rounded-[16px] p-7 [--cut:31px] [--r:16px] max-md:min-h-[580px] max-md:items-stretch max-md:p-3">
-            <Photo name="handshake" alt={t.alt.handshake} className="absolute inset-0 -z-20 size-full object-cover" sizes="(max-width: 1280px) 100vw, 1137px" />
-            <div aria-hidden="true" className="absolute inset-0 -z-10 bg-[#0a0a5a]/55" />
-            <div className="flex h-[437px] w-[508px] flex-col justify-between rounded-[16px] border border-mint/20 bg-[linear-gradient(160deg,rgb(80_52_210/0.78)_0%,rgb(36_16_150/0.88)_100%)] p-7 text-mint backdrop-blur-[3px] max-md:h-auto max-md:w-full max-md:flex-1 max-md:p-5">
-              <figcaption className="flex items-start gap-3">
-                <QuotesFill size={60} className="-mt-1.5 shrink-0" />
-                <span>
-                  <span className="block text-[16px] font-bold leading-[1.2]">{r.testimonial.name}</span>
-                  <span className="block text-[12px]">{r.testimonial.org}</span>
-                </span>
-              </figcaption>
-              <blockquote className="m-0 text-[18px] leading-[1.5]">{r.testimonial.text}</blockquote>
-            </div>
-          </figure>
         </div>
       </section>
 
@@ -134,21 +117,23 @@ export default async function ReferencesPage({ params }: PageProps) {
   );
 }
 
-function CaseCard({ title, text, style, className }: { title: string; text: string; style: (typeof CASE_STYLE)[number]; className?: string }) {
+function CaseCard({ title, text, style, className, wide = false }: { title: string; text: string; style: (typeof CASE_STYLE)[number]; className?: string; wide?: boolean }) {
   const { Icon, size, dark } = style;
   return (
     <article
       data-reveal
       className={cn(
-        "cut-tr-bl rc relative flex h-[230px] flex-col justify-between rounded-[16px] px-6 pb-6 pt-[26px] [--cut:30px] [--r:16px]",
+        "cut-tr-bl rc relative isolate flex h-[230px] flex-col justify-between overflow-hidden rounded-[16px] px-6 pb-6 pt-[26px] [--cut:30px] [--r:16px]",
         dark ? "bg-[linear-gradient(180deg,#07072f_0%,#2a10b4_100%)] text-white" : "bg-[#d6f7e9] text-navy",
         className,
       )}
     >
+      {/* Carte large : grand ballon en filigrane à droite (décoratif), pour que la carte ne paraisse pas vide. */}
+      {wide ? <Icon aria-hidden="true" size={210} className="pointer-events-none absolute -bottom-10 right-6 -z-10 opacity-[0.1] max-md:right-[-30px]" /> : null}
       <Icon size={size} />
       <div>
-        <h3 className="m-0 max-w-[200px] text-[18px] font-semibold leading-[1.2]">{title}</h3>
-        <p className="m-0 mt-3 max-w-[204px] text-[14px] leading-[1.25]">{text}</p>
+        <h3 className={cn("m-0 text-[18px] font-semibold leading-[1.2]", wide ? "max-w-[360px]" : "max-w-[200px]")}>{title}</h3>
+        <p className={cn("m-0 mt-3 text-[14px] leading-[1.25]", wide ? "max-w-[380px]" : "max-w-[204px]")}>{text}</p>
       </div>
     </article>
   );

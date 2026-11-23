@@ -60,7 +60,9 @@ export default async function HomePage({ params }: PageProps) {
       <section className="sheet overflow-x-clip pt-20 max-md:pt-14">
         <div className="wrap relative">
           <h2 className="t-h2 relative m-0 max-w-[800px] text-navy">{h.problemsTitle}</h2>
-          <div className="relative mt-[44px]">
+          {/* Transition (retour du 23/11) : le titre dit que les outils globaux ignorent le foot local, les cartes en sont les conséquences. */}
+          <p className="t-body relative m-0 mt-4 max-w-[620px] text-navy">{h.problemsIntro}</p>
+          <div className="relative mt-9 max-md:mt-6">
           {/* Lueur de la maquette (Figma « Vector 27 ») : même tache violette (#411AFF à 32 %), même flou (72 px), calée sur la grille de cartes. Elle est derrière les cartes (la liste suivante est « relative ») et derrière le panneau marine plus bas, qui est lui aussi « relative » : il passe par-dessus au lieu de la laisser transparaître. Pour la changer : le tracé « d », l'opacité (fillOpacity) ou le flou (stdDeviation). */}
           <svg aria-hidden="true" focusable="false" viewBox="0 0 1136 496" preserveAspectRatio="none" className="pointer-events-none absolute left-0 top-0 h-[496px] w-full overflow-visible max-xl:h-full max-md:hidden">
             <defs>

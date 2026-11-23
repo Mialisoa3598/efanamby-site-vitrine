@@ -100,3 +100,57 @@ describe.each(["fr", "en", "mg", "es"] as const)("fonctionnalités : détail des
     for (const item of items) expect(new Set(item.details).size, item.title).toBe(item.details.length);
   });
 });
+
+describe("retours du 23/11 (soir)", () => {
+  it("Profil joueur : les abréviations des attributs suivent la langue", () => {
+    const attrs = (code: keyof typeof DICTS) => DICTS[code].features.items[4].details[1];
+    expect(attrs("fr")).toContain("TIR, PAS, DRI, DEF, PHY, GK");
+    expect(attrs("en")).toContain("SHO, PAS, DRI, DEF, PHY, GK");
+    expect(attrs("en")).not.toMatch(/\bTIR\b/);
+    expect(attrs("es")).toContain("TIR, PAS, REG, DEF, FÍS, POR");
+    expect(attrs("es")).not.toMatch(/\b(PHY|DRI|GK)\b/);
+    expect(attrs("mg")).toContain("SHO, PAS, DRI, DEF, PHY, GK");
+    expect(attrs("mg")).not.toMatch(/\bTIR\b/);
+  });
+
+  it("Liste des matchs : le détail ne répète pas le texte court de la carte (filtres par équipe, compétition, statut)", () => {
+    for (const code of ["fr", "en", "mg", "es"] as const) {
+      const item = DICTS[code].features.items[2];
+      expect(item.details.some((d) => /^(Filtres?|Filters?|Filtros?|Sivana)/i.test(d)), code).toBe(false);
+    }
+  });
+
+  it("Rapport de match et Tarifs : « sur demande » remplace « à envoyer manuellement » dans les 4 langues", () => {
+    const old = /manuellement|manually|manualmente|alefa an-tanana/i;
+    for (const code of ["fr", "en", "mg", "es"] as const) {
+      const bad = leaves(DICTS[code]).filter(([, v]) => typeof v === "string" && old.test(v));
+      expect(bad.map(([k]) => k), code).toEqual([]);
+    }
+    expect(fr.features.items[7].text).toBe("Export PDF/CSV. Partage WhatsApp sur demande");
+    expect(en.features.items[7].text).toBe("PDF/CSV export. WhatsApp sharing on request");
+  });
+
+  it("Accueil : une phrase de transition sous le titre « outils globaux », dans les 4 langues", () => {
+    for (const code of ["fr", "en", "mg", "es"] as const) expect(DICTS[code].home.problemsIntro.length, code).toBeGreaterThan(30);
+  });
+
+  it("Références : 5 cas (le 5e, les Barea en qualifications CAN 2027, est le plus récent) et le stade de CFFA vs COSFA", () => {
+    for (const code of ["fr", "en", "mg", "es"] as const) {
+      const cases = DICTS[code].references.cases;
+      expect(cases, code).toHaveLength(5);
+      expect(cases[4].title, code).toMatch(/Guinea|Guinée/);
+      expect(cases[4].title, code).toMatch(/(CAN|AFCON) 2027/);
+    }
+    expect(fr.references.cases[0].text).toMatch(/Quart de finale/);
+    expect(en.references.cases[0].text).toMatch(/Quarter-final/);
+    expect(es.references.cases[0].text).toMatch(/Cuartos de final/);
+  });
+
+  it("Références : la section témoignage (Coach Lalaina) est retirée, texte et description de page compris (décision du chef, 23/11)", () => {
+    for (const code of ["fr", "en", "mg", "es"] as const) {
+      expect(DICTS[code].references, code).not.toHaveProperty("testimonial");
+      expect(DICTS[code].alt, code).not.toHaveProperty("handshake");
+      expect(JSON.stringify(DICTS[code]), code).not.toMatch(/Lalaina|témoignage|testimonial|testimonio/i);
+    }
+  });
+});

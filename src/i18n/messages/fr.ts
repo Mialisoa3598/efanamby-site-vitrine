@@ -14,7 +14,7 @@ export const fr = {
   seo: {
     features: { title: "Fonctionnalités", description: "Tout ce qu'il faut pour transformer un match en données exploitables, du coup d'envoi au rapport final." },
     pricing: { title: "Tarifs", description: "Prix indicatifs par offre : Club/Coach, Médias, Fédérations et Scouting." },
-    references: { title: "Références", description: "Des preuves, pas des promesses : cas concrets, témoignage et questions fréquentes." },
+    references: { title: "Références", description: "Des preuves, pas des promesses : cas concrets et questions fréquentes." },
     contact: { title: "Contact", description: "Une question avant de vous lancer ? Écrivez-nous." },
     trial: { title: "Essai gratuit", description: "Votre premier match analysé : rapport, compilation vidéo et statistiques, sous 3 jours." },
     legal: { title: "Mentions légales" },
@@ -60,6 +60,7 @@ export const fr = {
     heroTitle: ["Les données", "entrent en jeu."],
     heroText: "De l'analyse vidéo aux statistiques de performance, e-Fanamby accompagne vos décisions sur et en dehors du terrain.",
     problemsTitle: "Les outils globaux ignorent le foot local.",
+    problemsIntro: "Faute d'outil adapté aux championnats locaux, les clubs se retrouvent avec :",
     // « \n » = saut de ligne voulu par la maquette (cartes de l'Accueil).
     problems: ["Analyse au\nressenti, sans\nhistorique", "Préparation\nadverse sans\ndonnées", "Montage vidéo\nlong et coûteux", "Rien en\ntemps réel"],
     analyticsTitle: "e-Fanamby, c'est du",
@@ -99,7 +100,7 @@ export const fr = {
       {
         title: "Liste des matchs",
         text: "Filtrable par équipe, compétition, statut",
-        details: ["Filtres par équipe, compétition et statut", "Domicile et extérieur fixés avant le match"],
+        details: ["Programmé, en cours, terminé, validé, annulé", "Historique des changements de statut", "Domicile et extérieur fixés avant le match"],
       },
       {
         title: "Stats par match",
@@ -123,7 +124,7 @@ export const fr = {
       },
       {
         title: "Rapport de match",
-        text: "Export PDF/CSV. Partage WhatsApp : à envoyer manuellement",
+        text: "Export PDF/CSV. Partage WhatsApp sur demande",
         details: ["PDF par équipe : simplifié ou détaillé", "PDF par joueur, sur plusieurs matchs", "Export CSV pour vos propres outils"],
       },
       {
@@ -151,16 +152,12 @@ export const fr = {
     casesTitle: "Du terrain",
     casesAccent: "à la donnée.",
     cases: [
-      { title: "CFFA vs COSFA - PFL 2025-2026", text: "Analyse du match et indicateurs de performance" },
+      { title: "CFFA vs COSFA - PFL 2025-2026", text: "Quart de finale : analyse du match et indicateurs de performance" },
       { title: "Barea vs Burkina Faso - CHAN 2024", text: "Analyse détaillée, buts et corners" },
       { title: "Toki Rakotondraibe - COSFA", text: "Compilation 4 actions, saison 2026" },
       { title: "Disciples FC vs Elgeco Plus", text: "Score contre statistiques réelles" },
+      { title: "Barea vs Guinée-Bissau - Qualifications CAN 2027", text: "Duels et tirs analysés, mi-temps par mi-temps" },
     ],
-    testimonial: {
-      name: "Coach Lalaina",
-      org: "COSFA",
-      text: "Quelques rapports de match et compilations vidéo ont permis à l'équipe de préparer en interne le dernier carré de la dernière playoff PFL.",
-    },
     faqTitle: "Foire aux",
     faqAccent: "questions",
     faqIntro: "Vous avez des questions ? Trouvez des réponses ici ou contactez-nous, nous sommes là pour vous aider.",
@@ -196,7 +193,7 @@ export const fr = {
           "Statistiques de son équipe et rapport de match en PDF",
           "Configuration tactique",
           "Analyse avancée et graphique, export de statistiques",
-          "À envoyer manuellement : partage de rapports (WhatsApp) et compilations vidéo",
+          "Sur demande : partage de rapports (WhatsApp) et compilations vidéo",
         ],
       },
       {
@@ -208,7 +205,7 @@ export const fr = {
           "Pas d'accès au site, livrable uniquement",
           "Package complet des données du match, faits de match inclus",
           "Rapport de match en PDF",
-          "À envoyer manuellement : partage de rapports et compilations vidéo",
+          "Sur demande : partage de rapports et compilations vidéo",
         ],
       },
       {
@@ -221,7 +218,7 @@ export const fr = {
           "Consultation des équipes, joueurs, matchs, données et faits de match de la compétition",
           "Statistiques de la compétition et rapport PDF (match ou compétition)",
           "Analyse avancée et graphique, export de statistiques",
-          "À envoyer manuellement : partage de rapports",
+          "Sur demande : partage de rapports",
         ],
       },
       {
@@ -233,7 +230,7 @@ export const fr = {
           "Fiche technique joueur, en consultation uniquement",
           "Statistiques du joueur",
           "Rapport joueur en PDF, sur plusieurs matchs",
-          "À envoyer manuellement : partage du rapport",
+          "Sur demande : partage du rapport",
         ],
       },
     ],
@@ -254,13 +251,13 @@ export const fr = {
       { label: "Faits de match (consultation)", cells: ["Son équipe", "Inclus dans le livrable", "Compétition", "no"] },
       { label: "Statistiques et rapports", cells: ["Statistiques de son équipe", "Rapports de match (PDF)", "Statistiques de la compétition", "Statistiques du joueur"] },
       { label: "Génération de rapports PDF", cells: ["Rapport de match", "Rapport de match", "Rapport de match / compétition", "Rapport joueur (sur plusieurs matchs)"] },
-      { label: "Partage de rapports. À envoyer manuellement.", cells: ["yes", "yes", "yes", "yes"] },
+      { label: "Partage de rapports. Sur demande.", cells: ["yes", "yes", "yes", "yes"] },
       { label: "Configuration tactique", cells: ["yes", "no", "empty", "no"] },
       { label: "Analyse avancée et graphique", cells: ["yes", "no", "yes", "no"] },
       { label: "Export de statistiques (analyse avancée/générique)", cells: ["yes", "no", "yes", "no"] },
       { label: "Gestion des compétitions", cells: ["no", "no", "yes:Compétition", "no"] },
       { label: "Fiche de scouting joueur", cells: ["no", "no", "no", "no"] },
-      { label: "Compilations vidéo. À envoyer manuellement.", cells: ["yes", "yes", "no", "no"] },
+      { label: "Compilations vidéo. Sur demande.", cells: ["yes", "yes", "no", "no"] },
       { label: "Accès API (bientôt disponible)", cells: ["no", "no", "no", "no"] },
     ],
     yes: "Inclus",
@@ -278,7 +275,7 @@ export const fr = {
       },
       {
         q: "Le partage WhatsApp et les compilations vidéo sont-ils automatiques ?",
-        a: "Non. Le partage des rapports (WhatsApp) et les compilations vidéo sont envoyés manuellement par l'équipe e-Fanamby, à votre demande.",
+        a: "Non. Le partage des rapports (WhatsApp) et les compilations vidéo sont assurés par l'équipe e-Fanamby, sur votre demande.",
       },
       {
         q: "Un club peut-il suivre d'autres équipes que la sienne ?",
@@ -350,7 +347,6 @@ export const fr = {
     audienceFederation: "Un groupe de joueurs en soirée",
     ceremony: "Une intervenante au podium lors de la cérémonie POESAM 2026",
     tacticalBoard: "Un tableau tactique posé sur l'herbe d'un terrain de football",
-    handshake: "Une poignée de main entre deux personnes",
     keyboard: "Des mains tapent sur un clavier d'ordinateur",
     pitch: "Des joueurs sur le terrain pendant une séance",
   },

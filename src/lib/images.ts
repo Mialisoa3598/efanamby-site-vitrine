@@ -9,7 +9,6 @@ export const IMG = {
   audienceClub: { src: "/images/joueur-dossard-academie.webp", width: 430, height: 1078 },
   ceremony: { src: "/images/ceremonie-poesam-2026.webp", width: 2272, height: 1005 },
   tacticalBoard: { src: "/images/tableau-tactique-terrain.webp", width: 1116, height: 460 },
-  handshake: { src: "/images/poignee-de-main-partenariat.webp", width: 1800, height: 784 },
   keyboard: { src: "/images/mains-clavier-ordinateur.webp", width: 982, height: 1152 },
   pitch: { src: "/images/joueurs-sur-le-terrain.webp", width: 2560, height: 1710 },
   laptopPlatform: { src: "/images/ordinateur-plateforme-efanamby.webp", width: 836, height: 927 },
