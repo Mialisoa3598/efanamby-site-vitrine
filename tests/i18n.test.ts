@@ -83,3 +83,20 @@ describe("français (langue source)", () => {
     expect(fr.meta.slogan).toBe("Parions sur la data.");
   });
 });
+
+describe.each(["fr", "en", "mg", "es"] as const)("fonctionnalités : détail des cartes (%s)", (code) => {
+  const items = DICTS[code].features.items;
+
+  it("9 cartes, chacune avec 2 ou 3 lignes de détail courtes (elles doivent tenir dans une carte de 305 px de haut)", () => {
+    expect(items).toHaveLength(9);
+    for (const item of items) {
+      expect(item.details.length, item.title).toBeGreaterThanOrEqual(2);
+      expect(item.details.length, item.title).toBeLessThanOrEqual(3);
+      for (const d of item.details) expect(d.length, d).toBeLessThanOrEqual(60);
+    }
+  });
+
+  it("n'a pas deux fois la même ligne de détail dans une carte", () => {
+    for (const item of items) expect(new Set(item.details).size, item.title).toBe(item.details.length);
+  });
+});

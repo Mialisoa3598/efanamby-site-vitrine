@@ -1,7 +1,7 @@
 # Guide d'utilisation — site vitrine e-Fanamby
 
 Pour ne pas se perdre : où est chaque chose, comment la modifier, comment vérifier que rien n'est cassé.
-Dernière mise à jour : 22/11/2026 (soir, version v3.4). Le site est **déployé sur l'adresse de test *.vercel.app** (pas encore de nom de domaine, fermé aux moteurs de recherche) : le code du responsive, des formulaires (avec e-mail de confirmation) et des animations est fait ; le déploiement a démarré pas à pas (section 11), les essais réels (envoi Gmail, vrais téléphones, section 10) se font sur l'adresse de test.
+Dernière mise à jour : 23/11/2026 (soir, version v3.5). Le site est **déployé sur l'adresse de test *.vercel.app** (pas encore de nom de domaine, fermé aux moteurs de recherche) : le code du responsive, des formulaires (avec e-mail de confirmation) et des animations est fait ; le déploiement a démarré pas à pas (section 11), les essais réels (envoi Gmail, vrais téléphones, section 10) se font sur l'adresse de test.
 
 Autres fichiers utiles : `README.md` (résumé technique), `docs/decisions.md` (ce qu'il reste à trancher), `docs/design-system-jetons.txt` (valeurs du design system), `docs/registre-images.txt` (légende et origine de chaque photo).
 
@@ -143,9 +143,18 @@ L'adresse qui **reçoit** les formulaires : par défaut `CONTACT.email`, ou la v
 ### Changer le logo
 `src/components/logo.tsx` (celui qu'on voit sur le site) **et** les fichiers de `public/logo/` (favicon, usages externes). Le logo existe en deux endroits : les modifier ensemble.
 
-### Ajouter une carte dans « Fonctionnalités »
-⚠ Piège : les icônes et les filigranes sont associés aux cartes **par leur position dans la liste**, pas par leur nom. Dans `fonctionnalites/page.tsx`, `ICON_ORDER` et `WATERMARK` doivent avoir autant d'éléments que `features.items` (9 actuellement), dans le même ordre. De plus, la grille est dessinée pour 9 cartes : en ajouter une demande un ajustement de la mise en page.
-Étapes : texte dans les 4 langues → icône dans `FeatureIcons` (`components/icons.tsx`) → ligne dans `ICON_ORDER` → ligne dans `WATERMARK`.
+### Cartes « Fonctionnalités » (survol sur ordinateur, clic sur téléphone et tablette)
+Modèle suivi : le fichier Figma « MacBook Air - 1 » du 23/11 (carte « Multilingue » de 366 × 305 px). Les mesures du site ont été comparées au SVG pixel par pixel (forme, marges, tailles de texte, position du titre, de la flèche et des puces : écart nul ou de 1 px).
+- **Au repos** : fond `#DDECF4`, pastille d'icône violette, titre et texte en bas, flèche ↗ violette.
+- **Ouverte** : fond violet `#411AFF`, pastille inversée (fond menthe, icône violette), flèche ↙, le titre et le texte remontent et les lignes de détail apparaissent dessous.
+- **Ordinateur (souris)** : la carte s'ouvre au survol, et aussi quand on arrive dessus avec la touche Tab. **Téléphone et tablette** : un clic ouvre la carte, un second clic la referme ; une seule carte est ouverte à la fois.
+- **Le détail est toujours dans la page** (replié, pas supprimé) : Google et les lecteurs d'écran le lisent, carte ouverte ou non.
+- **Où modifier** : les lignes de détail sont dans les 4 fichiers de textes, `features.items[i].details` (2 ou 3 lignes courtes par carte, même nombre dans les 4 langues : un test le vérifie). Le composant est `src/components/sections/feature-cards.tsx`, le style est le bloc « Cartes Fonctionnalités » à la fin de `src/app/globals.css` (classes `.fc…`).
+- **Couleurs et marges** : en haut de la règle `.fc` (`--fc-rest`, `--fc-on`, `--fc-px`, `--fc-pt`, `--fc-pb`). **Forme** : `python3 scripts/gen-feature-card-shape.py` affiche la valeur de `clip-path` à coller dans `.fc`.
+- **Hauteur** : 305 px comme le modèle, mais toutes les cartes prennent la hauteur de la plus chargée une fois ouverte (mesurée au chargement, selon la langue et la largeur d'écran) : aucune carte ne grandit au survol. Une ligne de détail trop longue ou un titre sur deux lignes peut donc agrandir **toutes** les cartes d'une vingtaine de pixels : garder les lignes courtes (environ 44 caractères, une seule ligne).
+- ⚠ Les icônes sont associées aux cartes **par leur position dans la liste** : `ICON_ORDER` (dans `feature-cards.tsx`) doit avoir autant d'éléments que `features.items` (9), dans le même ordre. La grille est dessinée pour 9 cartes (3 × 3) : en ajouter une demande un ajustement de la mise en page.
+- Étapes pour une nouvelle carte : texte + détail dans les 4 langues → icône dans `FeatureIcons` (`components/icons.tsx`) → ligne dans `ICON_ORDER`.
+- Source du contenu des lignes de détail : « site actuel » (texte déjà validé) ou « plateforme » (fiche plateforme et publications, **à re-confirmer avec Nomena**). Les 4 lignes sans source de la maquette du 23/11 ont été retirées. Les traductions malgaches sont à faire relire par une personne de langue malgache (étape 7).
 
 ### Ajouter une page
 1. `src/lib/site.ts` : ajouter l'adresse dans `PAGES` (et dans `NAV_KEYS` si elle va dans le menu).
@@ -180,8 +189,8 @@ Pour un chiffre qui « monte » : `<CountUp value="+165" />` (composant `ui/coun
 
 | Commande | Ce qu'elle vérifie | Durée |
 |---|---|---|
-| `npm run verify` | TypeScript + règles de code + 85 tests (traductions identiques, chiffres, formulaires, e-mails) | quelques secondes |
-| `npm run test:e2e` | 336 tests dans un vrai navigateur : toutes les pages × toutes les langues, 16 largeurs d'écran sans débordement, menu, formulaires, animations, FAQ, SEO, accessibilité | plusieurs minutes |
+| `npm run verify` | TypeScript + règles de code + 93 tests (traductions identiques, chiffres, détail des cartes, formulaires, e-mails) | quelques secondes |
+| `npm run test:e2e` | 362 tests dans un vrai navigateur : toutes les pages × toutes les langues, 16 largeurs d'écran sans débordement, cartes Fonctionnalités (forme, survol, clic, clavier, 4 langues × 5 largeurs), menu, formulaires, animations, FAQ, SEO, accessibilité | plusieurs minutes |
 | `npm run check:launch` | liste ce qui bloque encore la mise en ligne | instantané |
 | `npm run test:mail -- adresse@exemple.com` | envoie un **vrai** e-mail à l'équipe + une confirmation à l'adresse donnée (voir section 6) | quelques secondes |
 
@@ -243,7 +252,7 @@ L'encadré jaune n'existe qu'avec `npm run dev` : jamais sur le site publié.
 
 **Résultat des essais réels du 19/11** (compte Gmail personnel de la stagiaire comme expéditeur et destinataire) : `npm run test:mail` envoie bien les deux e-mails (équipe + confirmation, texte conforme) ; le formulaire **Contact** envoie bien à l'équipe, y compris avec une adresse Gmail et une adresse Yahoo saisies par le visiteur (ces deux adresses ne reçoivent **rien**, c'est voulu : Contact n'envoie pas de confirmation). Reste à vérifier : l'essai gratuit et la démo par le site (deux e-mails chacun), une confirmation vers une adresse tierce (Outlook / Yahoo, pour le spam), puis le même test avec efanamby2025 une fois l'accès au compte rétabli.
 
-⚠ Le code est couvert par des tests (85 tests unitaires, dont l'envoi simulé) ; l'envoi réel ne peut pas être fait depuis l'environnement de développement (réseau limité), il se teste sur ton ordinateur comme ci-dessus.
+⚠ Le code est couvert par des tests (93 tests unitaires, dont l'envoi simulé) ; l'envoi réel ne peut pas être fait depuis l'environnement de développement (réseau limité), il se teste sur ton ordinateur comme ci-dessus.
 
 **À contrôler à la main sur chaque formulaire** : champs vides, e-mail invalide, trop long, case non cochée, succès (avec et sans la phrase de confirmation), erreur d'envoi (mettre un mauvais `SMTP_PASS` exprès), clavier seul, téléphone, lecteur d'écran. Sur l'essai gratuit : la confirmation arrive-t-elle, dans la bonne langue, hors spam ?
 

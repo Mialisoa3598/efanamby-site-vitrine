@@ -2,6 +2,7 @@
 // Import « /ssr » : fonctionne dans les composants serveur et client.
 import type { IconProps } from "@phosphor-icons/react";
 import {
+  ArrowDownLeft as PArrowDownLeft,
   ArrowDownRight as PArrowDownRight,
   ArrowRight as PArrowRight,
   ArrowUpRight as PArrowUpRight,
@@ -43,13 +44,14 @@ export const MinusIcon = (p: P) => <PMinus weight="regular" {...a11y} {...p} />;
 export const ArrowUpRight = (p: P) => <PArrowUpRight weight="regular" {...a11y} {...p} />;
 export const ArrowUpRightBold = (p: P) => <PArrowUpRight weight="bold" {...a11y} {...p} />;
 export const ArrowDownRight = (p: P) => <PArrowDownRight weight="regular" {...a11y} {...p} />;
+export const ArrowDownLeft = (p: P) => <PArrowDownLeft weight="regular" {...a11y} {...p} />;
 export const ArrowRight = (p: P) => <PArrowRight weight="regular" {...a11y} {...p} />;
 export const Play = (p: P) => <PPlay weight="regular" {...a11y} {...p} />;
 export const Check = (p: P) => <PCheck weight="regular" {...a11y} {...p} />;
 export const MenuIcon = (p: P) => <PList weight="regular" {...a11y} {...p} />;
 export const CloseIcon = (p: P) => <PX weight="regular" {...a11y} {...p} />;
 
-// Fonctionnalités (filigranes, graisse regular)
+// Fonctionnalités (pastille de chaque carte, graisse regular)
 export const FeatureIcons = {
   translate: (p: P) => <Translate weight="regular" {...a11y} {...p} />,
   dashboard: (p: P) => <SquaresFour weight="regular" {...a11y} {...p} />,

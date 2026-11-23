@@ -3,7 +3,7 @@ import { fr } from "../src/i18n/messages/fr";
 import { en } from "../src/i18n/messages/en";
 import { IMG } from "../src/lib/images";
 import { PAGES } from "../src/lib/site";
-import { ALL_LOCALES, ALL_PAGES, MAIN_PAGES, expectNoHorizontalOverflow, scrollThrough, watch } from "./helpers";
+import { ALL_LOCALES, ALL_PAGES, MAIN_PAGES, expectNoHorizontalOverflow, pixelsAt, scrollThrough, watch } from "./helpers";
 
 // Largeurs d'écran contrôlées (décision du 18/11) : iPhone 15 (393), Galaxy S24 Ultra (412), iPhone XR (414), petits téléphones (320, 360, 375, 390),
 // grands téléphones (430), tablettes (600 à 1180), ordinateurs (1280 à 1920).
@@ -884,7 +884,6 @@ test.describe("Angles arrondis relevés sur les maquettes", () => {
     ["/fr", "li.cut-tr-bl.rc", 16, "cartes « fonctionnalités » de l'accueil"],
     ["/fr/references", "article.cut-tr-bl.rc", 16, "cartes de cas de la page Références"],
     ["/fr/references", "figure.cut-br.rc", 16, "témoignage de la page Références"],
-    ["/fr/fonctionnalites", "li.cut-br.rc", 16, "cartes de la grille Fonctionnalités"],
     ["/fr/tarifs", "div.overflow-x-auto", 16, "tableau comparatif"],
     ["/fr", "li.h-\\[184px\\]", 16, "cartes de chiffres de l'accueil"],
     ["/fr", "details[name='analytics']", 16, "lignes « football analytics »"],
@@ -1051,5 +1050,200 @@ test.describe("Menu mobile : maquette", () => {
     await page.getByRole("button", { name: fr.nav.openMenu }).click();
     await page.getByRole("button", { name: fr.nav.closeMenu }).click();
     await expect(page.locator("#menu-mobile")).toHaveCount(0);
+  });
+});
+
+// ───────────────────────────── Fonctionnalités : cartes ouvertes au survol (ordinateur) et au clic (tactile) ─────────────────────────────
+// Modèle Figma du 23/11 : carte #DDECF4 au repos, violette ouverte ; coins haut-droit et bas-gauche coupés, haut-gauche et bas-droit arrondis de 20 px.
+test.describe("Fonctionnalités : cartes ouvertes au survol (ordinateur)", () => {
+  test.use({ viewport: { width: 1440, height: 900 } });
+  const ready = async (page: import("@playwright/test").Page, lang = "fr") => {
+    await page.goto(`/${lang}/fonctionnalites`);
+    await page.waitForLoadState("networkidle");
+    // La hauteur commune des cartes est posée par le script une fois la page affichée.
+    await expect.poll(() => page.locator("li.fc").first().locator("xpath=..").evaluate((e) => (e as HTMLElement).style.getPropertyValue("--fc-need"))).not.toBe("");
+  };
+
+  test("9 cartes au modèle : fond #DDECF4, pastille violette, mêmes marges et même hauteur sur toutes", async ({ page }) => {
+    await ready(page);
+    const cards = page.locator("li.fc");
+    await expect(cards).toHaveCount(9);
+    const rows = await cards.evaluateAll((els) =>
+      els.map((e) => {
+        const r = e.getBoundingClientRect();
+        const rel = (sel: string) => e.querySelector(sel)!.getBoundingClientRect();
+        return {
+          h: r.height,
+          bg: getComputedStyle(e).backgroundColor,
+          tileBg: getComputedStyle(e.querySelector(".fc-tile")!).backgroundColor,
+          marks: [rel(".fc-tile").left - r.left, rel(".fc-tile").top - r.top, rel(".fc-title").left - r.left, r.bottom - rel(".fc-text").bottom],
+        };
+      }),
+    );
+    for (const r of rows) {
+      expect(r.bg).toBe("rgb(221, 236, 244)");
+      expect(r.tileBg).toBe("rgb(65, 26, 255)");
+      // Marges du modèle : 38 px à gauche, 42 px au-dessus de la pastille et sous le texte.
+      expect(r.marks).toEqual([38, 42, 38, 42]);
+      expect(Math.abs(r.h - rows[0].h)).toBeLessThan(0.5);
+    }
+    expect(rows[0].h).toBeGreaterThanOrEqual(305);
+  });
+
+  test("forme du modèle : haut-droit et bas-gauche coupés en biais, haut-gauche et bas-droit arrondis", async ({ page }) => {
+    await ready(page);
+    const card = page.locator("li.fc").first();
+    await card.evaluate((e) => window.scrollTo(0, window.scrollY + e.getBoundingClientRect().top - 150));
+    await page.mouse.move(0, 0);
+    const b = (await card.boundingBox())!;
+    const { width: w, height: h } = b;
+    const at = await pixelsAt(page, { x: b.x, y: b.y, width: w, height: h }, [
+      [w / 2, 3], // milieu du bord haut : dans la carte
+      [w / 2, h - 4], // milieu du bord bas
+      [3, h / 2], // milieu du bord gauche
+      [w - 4, h / 2], // milieu du bord droit
+      [w - 12, 12], // coin haut-droit : COUPÉ en biais (un arrondi de 20 px le garderait)
+      [12, h - 12], // coin bas-gauche : coupé
+      [12, 12], // coin haut-gauche : ARRONDI (une coupe l'enlèverait)
+      [w - 12, h - 12], // coin bas-droit : arrondi
+      [2, 2], // tout au bout de l'arrondi haut-gauche : hors de la carte
+      [w - 2, h - 2],
+    ]);
+    const CARD = [221, 236, 244];
+    const PAGE = [235, 255, 247];
+    expect(at.slice(0, 4)).toEqual([CARD, CARD, CARD, CARD]);
+    expect(at[4], "coin haut-droit coupé").toEqual(PAGE);
+    expect(at[5], "coin bas-gauche coupé").toEqual(PAGE);
+    expect(at[6], "coin haut-gauche arrondi, pas coupé").toEqual(CARD);
+    expect(at[7], "coin bas-droit arrondi, pas coupé").toEqual(CARD);
+    expect(at[8]).toEqual(PAGE);
+    expect(at[9]).toEqual(PAGE);
+  });
+
+  test("le détail est dans la page même quand la carte est fermée (Google et lecteurs d'écran)", async ({ page }) => {
+    await ready(page);
+    const total = fr.features.items.reduce((n, i) => n + i.details.length, 0);
+    await expect(page.locator("li.fc .fc-list li")).toHaveCount(total);
+    for (const item of fr.features.items) for (const d of item.details) expect(await page.locator("li.fc").allInnerTexts()).toEqual(expect.arrayContaining([expect.stringContaining(d)]));
+    // Fermé : replié (hauteur nulle, transparent), mais jamais « display: none » ni « hidden ».
+    const closed = await page.locator("li.fc").first().locator(".fc-more").evaluate((e) => ({ h: e.getBoundingClientRect().height, o: getComputedStyle(e).opacity, d: getComputedStyle(e).display, v: getComputedStyle(e).visibility }));
+    expect(closed).toEqual({ h: 0, o: "0", d: "grid", v: "visible" });
+  });
+
+  test("survol : fond violet, détail déplié, flèche ↙, pastille inversée, la carte ne change pas de taille", async ({ page }) => {
+    await ready(page);
+    const card = page.locator("li.fc").first();
+    await card.evaluate((e) => window.scrollTo(0, window.scrollY + e.getBoundingClientRect().top - 150));
+    const before = (await card.boundingBox())!;
+    await card.hover();
+    const more = card.locator(".fc-more");
+    await expect(more).toHaveCSS("opacity", "1");
+    await expect.poll(async () => (await more.boundingBox())!.height).toBeGreaterThan(80);
+    await expect(card).toHaveCSS("color", "rgb(235, 255, 247)");
+    await expect.poll(() => card.evaluate((e) => getComputedStyle(e, "::before").opacity)).toBe("1");
+    await expect(card.locator(".fc-tile")).toHaveCSS("background-color", "rgb(235, 255, 247)");
+    await expect(card.locator(".fc-ar-down")).toHaveCSS("opacity", "1");
+    await expect(card.locator(".fc-ar-up")).toHaveCSS("opacity", "0");
+    const after = (await card.boundingBox())!;
+    expect([after.width, after.height]).toEqual([before.width, before.height]);
+    // Tout le détail reste à l'intérieur de la carte.
+    for (const li of await card.locator(".fc-list li").all()) {
+      const r = (await li.boundingBox())!;
+      expect(r.y).toBeGreaterThan(after.y + 100);
+      expect(r.y + r.height).toBeLessThanOrEqual(after.y + after.height - 38);
+      expect(r.x + r.width).toBeLessThanOrEqual(after.x + after.width - 20);
+    }
+    // On quitte la carte : elle se referme.
+    await page.mouse.move(0, 0);
+    await expect(more).toHaveCSS("opacity", "0");
+    await expect(card.locator(".fc-ar-up")).toHaveCSS("opacity", "1");
+  });
+
+  test("clavier : Tab sur le titre d'une carte l'ouvre", async ({ page }) => {
+    await ready(page);
+    const btn = page.locator("li.fc button.fc-btn").nth(1);
+    for (let i = 0; i < 80 && !(await btn.evaluate((e) => e === document.activeElement)); i++) await page.keyboard.press("Tab");
+    await expect(btn).toBeFocused();
+    await expect(page.locator("li.fc").nth(1).locator(".fc-more")).toHaveCSS("opacity", "1");
+    await expect(page.locator("li.fc").nth(0).locator(".fc-more")).toHaveCSS("opacity", "0");
+  });
+
+  // Aucune carte ne doit grandir à l'ouverture, ni laisser un texte sortir ou toucher la pastille, quelles que soient la langue et la largeur.
+  for (const lang of ALL_LOCALES) {
+    for (const width of [1440, 1280, 1100, 768, 393]) {
+      test(`${lang} à ${width} px : ouvertes une à une, les 9 cartes gardent leur hauteur et tout le texte tient dedans`, async ({ page }) => {
+        await page.setViewportSize({ width, height: 900 });
+        await ready(page, lang);
+        await page.addStyleTag({ content: "*,*::before,*::after{transition:none !important}" });
+        const heights = await page.locator("li.fc").evaluateAll((els) => els.map((e) => Math.round(e.getBoundingClientRect().height * 10) / 10));
+        expect(new Set(heights).size, "toutes les cartes ont la même hauteur").toBe(1);
+        const cards = page.locator("li.fc");
+        const bad: string[] = [];
+        for (let i = 0; i < 9; i++) {
+          const li = cards.nth(i);
+          await li.evaluate((e) => window.scrollTo(0, window.scrollY + e.getBoundingClientRect().top - 150));
+          const b = (await li.boundingBox())!;
+          await page.mouse.move(b.x + b.width / 2, b.y + b.height / 2);
+          const m = await li.evaluate((e) => {
+            const r = e.getBoundingClientRect();
+            const tile = e.querySelector(".fc-tile")!.getBoundingClientRect();
+            const title = e.querySelector(".fc-title")!.getBoundingClientRect();
+            const last = [...e.querySelectorAll(".fc-list li")].at(-1)!.getBoundingClientRect();
+            const clipped = [...e.querySelectorAll(".fc-title, .fc-text, .fc-list li")].some((n) => n.scrollWidth > n.clientWidth + 1);
+            return { h: r.height, gap: title.top - tile.bottom, below: r.bottom - last.bottom, clipped };
+          });
+          if (Math.abs(m.h - heights[i]) > 0.5) bad.push(`#${i + 1} grandit de ${(m.h - heights[i]).toFixed(1)} px`);
+          if (m.gap < 18) bad.push(`#${i + 1} titre trop près de la pastille (${m.gap.toFixed(0)} px)`);
+          if (m.below < 28) bad.push(`#${i + 1} dernier texte trop près du bas (${m.below.toFixed(0)} px)`);
+          if (m.clipped) bad.push(`#${i + 1} texte coupé`);
+        }
+        expect(bad).toEqual([]);
+      });
+    }
+  }
+});
+
+test.describe("Fonctionnalités : cartes ouvertes au clic (téléphone et tablette)", () => {
+  test.use({ viewport: { width: 393, height: 852 }, hasTouch: true, isMobile: true });
+
+  test("un clic ouvre la carte, un second la referme, une seule carte est ouverte à la fois", async ({ page }) => {
+    await page.goto("/fr/fonctionnalites");
+    await page.waitForLoadState("networkidle");
+    const cards = page.locator("li.fc");
+    const open = () => cards.evaluateAll((els) => els.map((e, i) => ((e as HTMLElement).dataset.open === "true" ? i : -1)).filter((i) => i >= 0));
+    const expanded = () => cards.evaluateAll((els) => els.map((e, i) => (e.querySelector("button")!.getAttribute("aria-expanded") === "true" ? i : -1)).filter((i) => i >= 0));
+    const heights = () => cards.evaluateAll((els) => els.map((e) => Math.round(e.getBoundingClientRect().height)));
+    const rest = await heights();
+    expect(await open()).toEqual([]);
+
+    await cards.nth(4).scrollIntoViewIfNeeded();
+    await cards.nth(4).tap();
+    expect(await open()).toEqual([4]);
+    expect(await expanded()).toEqual([4]);
+    await expect(cards.nth(4).locator(".fc-more")).toHaveCSS("opacity", "1");
+    await expect(cards.nth(4)).toHaveCSS("color", "rgb(235, 255, 247)");
+    await expect.poll(() => cards.nth(4).evaluate((e) => getComputedStyle(e, "::before").opacity)).toBe("1");
+
+    // Une autre carte : la première se referme.
+    await cards.nth(6).scrollIntoViewIfNeeded();
+    await cards.nth(6).tap();
+    expect(await open()).toEqual([6]);
+    await expect(cards.nth(4).locator(".fc-more")).toHaveCSS("opacity", "0");
+
+    // Second clic sur la même carte : elle se referme.
+    await cards.nth(6).tap();
+    expect(await open()).toEqual([]);
+    expect(await expanded()).toEqual([]);
+    expect(await heights()).toEqual(rest);
+  });
+
+  test("le clic fonctionne sur toute la carte, pas seulement sur le titre", async ({ page }) => {
+    await page.goto("/fr/fonctionnalites");
+    await page.waitForLoadState("networkidle");
+    const card = page.locator("li.fc").nth(2);
+    await card.scrollIntoViewIfNeeded();
+    const b = (await card.boundingBox())!;
+    await page.touchscreen.tap(b.x + b.width / 2, b.y + 60); // vide, entre la pastille et le titre
+    await expect(card).toHaveAttribute("data-open", "true");
   });
 });

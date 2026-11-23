@@ -51,3 +51,26 @@ export async function expectNoHorizontalOverflow(page: Page): Promise<void> {
   const { scroll, client } = await page.evaluate(() => ({ scroll: document.documentElement.scrollWidth, client: document.documentElement.clientWidth }));
   expect(scroll, `défilement horizontal : la page fait ${scroll}px pour une fenêtre de ${client}px`).toBeLessThanOrEqual(client);
 }
+
+/** Couleurs de plusieurs pixels d'une zone de la page (capture lue dans une page vierge, pour ne pas dépendre de la politique de sécurité du site). Points en px dans la zone. */
+export async function pixelsAt(page: Page, clip: { x: number; y: number; width: number; height: number }, points: [number, number][]): Promise<number[][]> {
+  const png = await page.screenshot({ clip });
+  const blank = await page.context().newPage();
+  await blank.goto("about:blank");
+  const rgb = await blank.evaluate(
+    async ({ b64, pts }) => {
+      const img = new Image();
+      img.src = `data:image/png;base64,${b64}`;
+      await img.decode();
+      const c = document.createElement("canvas");
+      c.width = img.width;
+      c.height = img.height;
+      const ctx = c.getContext("2d")!;
+      ctx.drawImage(img, 0, 0);
+      return pts.map(([x, y]) => Array.from(ctx.getImageData(Math.round(x), Math.round(y), 1, 1).data.slice(0, 3)));
+    },
+    { b64: png.toString("base64"), pts: points },
+  );
+  await blank.close();
+  return rgb;
+}

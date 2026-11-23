@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { FeatureIcons } from "@/components/icons";
+import { FeatureCards } from "@/components/sections/feature-cards";
 import { Photo } from "@/components/ui/photo";
 import type { ImageKey } from "@/lib/images";
 import { buildMetadata, loadPage, type PageProps } from "@/lib/page";
@@ -8,23 +8,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { t } = await loadPage(params);
   return buildMetadata(params, "features", t.seo.features);
 }
-
-// Une icône Phosphor (graisse regular) par carte, dans l'ordre de la maquette.
-const ICON_ORDER = ["translate", "dashboard", "matches", "stats", "player", "multi", "tactical", "report", "players"] as const;
-// Taille, position et flou de chaque filigrane, relevés dans l'export SVG de la maquette :
-// « size » = côté de l'icône Phosphor (le tracé occupe 69 à 97 % du côté), « left/top » = position dans la carte (px, à 1280),
-// « blur » = rayon du flou gaussien (stdDeviation du SVG), qui n'est pas le même pour toutes les icônes.
-const WATERMARK = [
-  { size: 329, left: 45, top: -31, blur: 20 },
-  { size: 338, left: 55, top: -43, blur: 20 },
-  { size: 344, left: 27, top: -38, blur: 14 },
-  { size: 312, left: 67, top: -33, blur: 20 },
-  { size: 300, left: 83, top: -21, blur: 18 },
-  { size: 271, left: 101, top: -7, blur: 15 },
-  { size: 303, left: 74, top: -17, blur: 17 },
-  { size: 284, left: 84, top: -1, blur: 15 },
-  { size: 308, left: 32, top: -13, blur: 15 },
-] as const;
 
 export default async function FeaturesPage({ params }: PageProps) {
   const { t } = await loadPage(params);
@@ -62,26 +45,7 @@ export default async function FeaturesPage({ params }: PageProps) {
           <h2 className="t-h2 m-0">
             {f.gridTitle} <span className="text-violet">{f.gridAccent}</span>
           </h2>
-          <ul className="mt-[56px] grid grid-cols-3 gap-8 max-lg:grid-cols-2 max-lg:gap-5 max-md:grid-cols-1 max-md:mt-8">
-            {f.items.map((item, i) => {
-              const Icon = FeatureIcons[ICON_ORDER[i]];
-              const w = WATERMARK[i];
-              return (
-                <li
-                  key={item.title}
-                  data-reveal
-                  data-reveal-delay={i % 3}
-                  className="cut-br rc relative flex h-[342px] flex-col justify-end overflow-hidden rounded-[16px] bg-[linear-gradient(225deg,#8c85ff_0%,#c9cbfb_48%,#eafaf3_100%)] p-5 pb-[18px] [--cut:50px] [--r:16px] max-md:h-[300px]"
-                >
-                  <span aria-hidden="true" className="pointer-events-none absolute text-violet" style={{ left: w.left, top: w.top, filter: `blur(${w.blur}px)` }}>
-                    <Icon size={w.size} />
-                  </span>
-                  <h3 className="relative m-0 text-[20px] font-bold leading-[1.25]">{item.title}</h3>
-                  <p className="relative m-0 mt-2 max-w-[240px] text-[13.5px] leading-[1.35]">{item.text}</p>
-                </li>
-              );
-            })}
-          </ul>
+          <FeatureCards items={f.items} />
         </div>
       </section>
 
