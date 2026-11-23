@@ -147,7 +147,7 @@ L'adresse qui **reçoit** les formulaires : par défaut `CONTACT.email`, ou la v
 Modèle suivi : le fichier Figma « MacBook Air - 1 » du 23/11 (carte « Multilingue » de 366 × 305 px). Les mesures du site ont été comparées au SVG pixel par pixel (forme, marges, tailles de texte, position du titre, de la flèche et des puces : écart nul ou de 1 px).
 - **Au repos** : fond `#DDECF4`, pastille d'icône violette, titre et texte en bas, flèche ↗ violette.
 - **Ouverte** : fond violet `#411AFF`, pastille inversée (fond menthe, icône violette), flèche ↙, le titre et le texte remontent et les lignes de détail apparaissent dessous.
-- **Ordinateur (souris)** : la carte s'ouvre au survol, et aussi quand on arrive dessus avec la touche Tab. **Téléphone et tablette** : un clic ouvre la carte, un second clic la referme ; une seule carte est ouverte à la fois.
+- **Ordinateur (souris)** : la carte s'ouvre au survol, et aussi quand on arrive dessus avec la touche Tab. **Un clic sur la carte (flèche comprise) l'épingle** : elle reste ouverte sur son détail quand la souris la quitte, jusqu'à un second clic sur elle ou un clic sur une autre carte (survoler une autre carte l'ouvre seulement le temps du survol). **Téléphone et tablette** : un clic ouvre la carte, un second clic la referme ; une seule carte est ouverte à la fois.
 - **Le détail est toujours dans la page** (replié, pas supprimé) : Google et les lecteurs d'écran le lisent, carte ouverte ou non.
 - **Où modifier** : les lignes de détail sont dans les 4 fichiers de textes, `features.items[i].details` (2 ou 3 lignes courtes par carte, même nombre dans les 4 langues : un test le vérifie). Le composant est `src/components/sections/feature-cards.tsx`, le style est le bloc « Cartes Fonctionnalités » à la fin de `src/app/globals.css` (classes `.fc…`).
 - **Couleurs et marges** : en haut de la règle `.fc` (`--fc-rest`, `--fc-on`, `--fc-px`, `--fc-pt`, `--fc-pb`). **Forme** : `python3 scripts/gen-feature-card-shape.py` affiche la valeur de `clip-path` à coller dans `.fc`.
@@ -190,7 +190,7 @@ Pour un chiffre qui « monte » : `<CountUp value="+165" />` (composant `ui/coun
 | Commande | Ce qu'elle vérifie | Durée |
 |---|---|---|
 | `npm run verify` | TypeScript + règles de code + 93 tests (traductions identiques, chiffres, détail des cartes, formulaires, e-mails) | quelques secondes |
-| `npm run test:e2e` | 362 tests dans un vrai navigateur : toutes les pages × toutes les langues, 16 largeurs d'écran sans débordement, cartes Fonctionnalités (forme, survol, clic, clavier, 4 langues × 5 largeurs), menu, formulaires, animations, FAQ, SEO, accessibilité | plusieurs minutes |
+| `npm run test:e2e` | 364 tests dans un vrai navigateur : toutes les pages × toutes les langues, 16 largeurs d'écran sans débordement, cartes Fonctionnalités (forme, survol, clic sur la flèche, clavier, 4 langues × 5 largeurs), menu, formulaires, animations, FAQ, SEO, accessibilité | plusieurs minutes |
 | `npm run check:launch` | liste ce qui bloque encore la mise en ligne | instantané |
 | `npm run test:mail -- adresse@exemple.com` | envoie un **vrai** e-mail à l'équipe + une confirmation à l'adresse donnée (voir section 6) | quelques secondes |
 

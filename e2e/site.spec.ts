@@ -1168,6 +1168,53 @@ test.describe("Fonctionnalités : cartes ouvertes au survol (ordinateur)", () =>
     await expect(page.locator("li.fc").nth(0).locator(".fc-more")).toHaveCSS("opacity", "0");
   });
 
+  test("clic sur la flèche (ordinateur) : la carte reste ouverte sur son détail quand la souris la quitte", async ({ page }) => {
+    await ready(page);
+    await page.addStyleTag({ content: "*,*::before,*::after{transition:none !important}" });
+    const cards = page.locator("li.fc");
+    const opacity = (i: number) => cards.nth(i).locator(".fc-more").evaluate((e) => getComputedStyle(e).opacity);
+    const rest = await cards.evaluateAll((els) => els.map((e) => Math.round(e.getBoundingClientRect().height)));
+    await cards.nth(1).evaluate((e) => window.scrollTo(0, window.scrollY + e.getBoundingClientRect().top - 150));
+
+    // Clic exactement sur la flèche : la carte est épinglée.
+    await cards.nth(1).hover();
+    const arrow = (await cards.nth(1).locator(".fc-arrows").boundingBox())!;
+    await page.mouse.click(arrow.x + 10, arrow.y + 4);
+    await expect(cards.nth(1)).toHaveAttribute("data-open", "true");
+    await expect(cards.nth(1).locator("button.fc-btn")).toHaveAttribute("aria-expanded", "true");
+
+    // La souris part ailleurs : la carte garde son détail, son fond violet et sa flèche ↙.
+    await page.mouse.move(0, 0);
+    expect(await opacity(1)).toBe("1");
+    await expect(cards.nth(1)).toHaveCSS("color", "rgb(235, 255, 247)");
+    await expect(cards.nth(1).locator(".fc-ar-down")).toHaveCSS("opacity", "1");
+    expect(await opacity(0)).toBe("0");
+
+    // Survoler une autre carte l'ouvre le temps du survol, sans détacher la carte épinglée ; aucune carte ne change de taille.
+    await cards.nth(2).hover();
+    expect(await opacity(2)).toBe("1");
+    expect(await opacity(1)).toBe("1");
+    expect(await cards.evaluateAll((els) => els.map((e) => Math.round(e.getBoundingClientRect().height)))).toEqual(rest);
+    await page.mouse.move(0, 0);
+    expect(await opacity(2)).toBe("0");
+    expect(await opacity(1)).toBe("1");
+
+    // Un clic sur une autre carte déplace l'épinglage.
+    await cards.nth(2).hover();
+    await page.mouse.click((await cards.nth(2).boundingBox())!.x + 100, (await cards.nth(2).boundingBox())!.y + 60);
+    await page.mouse.move(0, 0);
+    expect(await opacity(2)).toBe("1");
+    expect(await opacity(1)).toBe("0");
+
+    // Second clic sur la carte épinglée : elle est libérée, et se referme dès que la souris la quitte.
+    await cards.nth(2).hover();
+    await page.mouse.click((await cards.nth(2).boundingBox())!.x + 100, (await cards.nth(2).boundingBox())!.y + 60);
+    await expect(cards.nth(2)).toHaveAttribute("data-open", "false");
+    await page.mouse.move(0, 0);
+    expect(await opacity(2)).toBe("0");
+    await expect(cards.nth(2).locator(".fc-ar-up")).toHaveCSS("opacity", "1");
+  });
+
   // Aucune carte ne doit grandir à l'ouverture, ni laisser un texte sortir ou toucher la pastille, quelles que soient la langue et la largeur.
   for (const lang of ALL_LOCALES) {
     for (const width of [1440, 1280, 1100, 768, 393]) {
@@ -1244,6 +1291,16 @@ test.describe("Fonctionnalités : cartes ouvertes au clic (téléphone et tablet
     await card.scrollIntoViewIfNeeded();
     const b = (await card.boundingBox())!;
     await page.touchscreen.tap(b.x + b.width / 2, b.y + 60); // vide, entre la pastille et le titre
+    await expect(card).toHaveAttribute("data-open", "true");
+  });
+
+  test("un appui sur la flèche ouvre la carte aussi", async ({ page }) => {
+    await page.goto("/fr/fonctionnalites");
+    await page.waitForLoadState("networkidle");
+    const card = page.locator("li.fc").nth(3);
+    await card.scrollIntoViewIfNeeded();
+    const a = (await card.locator(".fc-arrows").boundingBox())!;
+    await page.touchscreen.tap(a.x + 10, a.y + 4);
     await expect(card).toHaveAttribute("data-open", "true");
   });
 });

@@ -23,7 +23,8 @@ function openHeight(li: HTMLElement): number {
  * Grille des 9 fonctionnalités (page Fonctionnalités). Modèle Figma du 23/11 : carte #DDECF4 au repos, violette quand elle est ouverte.
  *
  * - Ordinateur (souris) : la carte s'ouvre au survol, et aussi quand elle prend le focus au clavier (Tab). Tout est géré par le CSS (.fc dans globals.css).
- * - Tactile (téléphone, tablette) : un clic ouvre la carte, un second clic la referme ; une seule carte est ouverte à la fois. C'est `data-open` qui l'indique.
+ *   Un clic sur la carte (flèche comprise) l'« épingle » : elle reste sur son détail même quand la souris la quitte, jusqu'à un second clic ou un clic sur une autre carte.
+ * - Tactile (téléphone, tablette) : un clic ouvre la carte, un second clic la referme ; une seule carte est ouverte à la fois. C'est `data-open` qui l'indique (le même état sert à l'épinglage sur ordinateur).
  * - Le texte détaillé est toujours dans la page (il est seulement replié) : Google et les lecteurs d'écran le lisent, carte ouverte ou non.
  */
 export function FeatureCards({ items }: { items: readonly Item[] }) {

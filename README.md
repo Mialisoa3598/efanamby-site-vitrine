@@ -35,7 +35,7 @@ npm run verify         # typecheck + lint + tests unitaires, d'un coup (à lance
 npm run typecheck      # TypeScript
 npm run lint           # ESLint
 npm test               # 93 tests unitaires (traductions, validation, e-mails, anti-spam, détail des cartes)
-npm run test:e2e       # 362 tests de navigateur (Chromium) : construit le site puis le teste en mode aperçu (341), puis en mode production (21)
+npm run test:e2e       # 364 tests de navigateur (Chromium) : construit le site puis le teste en mode aperçu (343), puis en mode production (21)
 npm run check:launch   # liste ce qui bloque encore la mise en ligne (--strict : code de sortie 1 s'il reste un point bloquant)
 npm run test:mail -- adresse@exemple.com   # envoi RÉEL d'un message à l'équipe + d'une confirmation (voir GUIDE.md, section 6)
 ```
