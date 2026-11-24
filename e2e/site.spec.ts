@@ -380,11 +380,11 @@ test.describe("contenu (français)", () => {
     await expect(page.locator("table caption, table th[scope]").first()).toBeAttached();
   });
 
-  test("Références : cinq cas et une FAQ, sans section témoignage (retirée sur décision du chef, 23/11)", async ({ page }) => {
+  test("Références : quatre cas et une FAQ, sans section témoignage (retirée sur décision du chef, 23/11)", async ({ page }) => {
     for (const lang of ALL_LOCALES) {
       await page.goto(`/${lang}/references`);
       await expect(page.locator("details")).not.toHaveCount(0);
-      await expect(page.locator("main article")).toHaveCount(5);
+      await expect(page.locator("main article")).toHaveCount(4);
       await expect(page.locator("blockquote")).toHaveCount(0);
       await expect(page.locator("main figure")).toHaveCount(0);
       expect(await page.locator("main").innerText()).not.toMatch(/Lalaina/);
@@ -502,7 +502,7 @@ test.describe("mise en page mobile (390 px)", () => {
     expect(ordered.map((o) => (o.hidden ? "image" : o.text))).toEqual([flat(p0), flat(p1), "image", flat(fr.home.problems[2]), flat(fr.home.problems[3])]);
   });
 
-  test("Références : le texte précède l'image du héros, cas dans l'ordre : Barea CAN 2027 (le plus récent), trophée, ballon, flèches, coureur", async ({ page }) => {
+  test("Références : le texte précède l'image du héros, cas dans l'ordre trophée, ballon (Barea CAN 2027), flèches, coureur", async ({ page }) => {
     await page.goto("/fr/references");
     const h1 = await page.locator("h1").boundingBox();
     const hero = await page.locator("main section").first().locator("img").first().boundingBox();
@@ -512,9 +512,9 @@ test.describe("mise en page mobile (390 px)", () => {
     expect(hero!.width).toBeGreaterThan(300);
 
     const cases = page.locator("main article");
-    await expect(cases).toHaveCount(5);
+    await expect(cases).toHaveCount(4);
     const order = await cases.evaluateAll((els) => els.map((e) => ({ title: e.querySelector("h3")?.textContent ?? "", top: e.getBoundingClientRect().top + window.scrollY })).sort((a, b) => a.top - b.top).map((x) => x.title));
-    expect(order).toEqual([fr.references.cases[4].title, fr.references.cases[0].title, fr.references.cases[1].title, fr.references.cases[3].title, fr.references.cases[2].title]);
+    expect(order).toEqual([fr.references.cases[0].title, fr.references.cases[1].title, fr.references.cases[3].title, fr.references.cases[2].title]);
 
     // La photo du tableau tactique est masquée sur mobile.
     const tactical = page.locator(`main img[alt="${fr.alt.tacticalBoard}"]`);
@@ -1404,48 +1404,67 @@ test.describe("retours du 23/11 (soir) : Fonctionnalités, Accueil, Références
     }
   });
 
-  test("Références (ordinateur) : la carte des Barea (qualifications CAN 2027) est large, en tête, et la grille reste pleine", async ({ page }) => {
+  test("Références (ordinateur) : la carte des Barea (qualifications CAN 2027) prend la place de CHAN 2024, même taille, grille d'origine", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("/fr/references");
     await page.waitForLoadState("networkidle");
     await scrollThrough(page);
-    // L'animation d'apparition décale les cartes de 18 px tant qu'elles n'ont pas été vues : on attend qu'elles soient toutes en place.
     await page.evaluate(() => document.querySelectorAll("main section.sheet [data-reveal]").forEach((el) => el.scrollIntoView({ block: "center" })));
     await page.waitForFunction(() => [...document.querySelectorAll("main section.sheet [data-reveal]")].every((el) => getComputedStyle(el).transform === "none"));
-    const cards = page.locator("main article");
-    await expect(cards).toHaveCount(5);
+    await expect(page.locator("main article")).toHaveCount(4);
     const box = async (title: string) => (await page.locator("main article", { has: page.locator("h3", { hasText: title }) }).boundingBox())!;
-    const latest = await box("Guinée-Bissau");
+    const barea = await box("Guinée-Bissau");
     const cffa = await box("CFFA vs COSFA");
-    const chan = await box("Burkina Faso");
     const toki = await box("Toki");
     const disciples = await box("Disciples");
     const photo = (await page.locator(`main img[alt="${fr.alt.tacticalBoard}"]`).first().boundingBox())!;
     const title = (await page.locator("main section.sheet h2").first().boundingBox())!;
+    await expect(page.locator("main")).not.toContainText("CHAN 2024");
+    await expect(page.locator("main")).not.toContainText("Burkina");
 
-    // La carte la plus récente occupe les deux colonnes de droite, en haut ; elle est plus large que les autres cartes.
-    expect(latest.width).toBeGreaterThan(cffa.width * 1.9);
-    expect(Math.abs(latest.y - cffa.y + 250)).toBeLessThan(2); // une rangée (230 px + 20 px d'écart) au-dessus de la carte CFFA
-    expect(Math.abs(latest.x - cffa.x)).toBeLessThan(2);
-    expect(Math.abs(latest.x + latest.width - (chan.x + chan.width))).toBeLessThan(2);
-    // Les quatre autres cartes gardent leur place de la maquette (2 × 2), sans chevauchement.
-    expect(Math.abs(cffa.y - chan.y)).toBeLessThan(2);
+    // Première rangée : titre, CFFA, Barea (CAN 2027), toutes les cartes à la même taille (pas de grande carte).
+    expect(Math.abs(barea.y - cffa.y)).toBeLessThan(2);
+    expect(barea.x).toBeGreaterThan(cffa.x + cffa.width);
+    for (const c of [barea, cffa, toki, disciples]) {
+      expect(c.width).toBeCloseTo(270, 0);
+      expect(c.height).toBeCloseTo(230, 0);
+    }
+    // Deuxième rangée : photo du tableau tactique, Toki, Disciples.
     expect(Math.abs(toki.y - disciples.y)).toBeLessThan(2);
+    expect(Math.abs(photo.y - toki.y)).toBeLessThan(2);
     expect(toki.y).toBeGreaterThan(cffa.y + cffa.height + 10);
-    // Le tableau tactique couvre les deux rangées du bas, à gauche : aucun trou dans la grille.
-    expect(Math.abs(photo.y - cffa.y)).toBeLessThan(2);
-    expect(Math.abs(photo.y + photo.height - (toki.y + toki.height))).toBeLessThan(2);
-    expect(photo.x + photo.width).toBeLessThan(cffa.x);
-    expect(title.y + title.height).toBeLessThan(photo.y);
-    for (const c of [latest, cffa, chan, toki, disciples]) expect(c.height).toBeCloseTo(230, 0);
+    expect(photo.height).toBeCloseTo(230, 0);
+    expect(photo.x + photo.width).toBeLessThan(toki.x);
+    expect(title.y).toBeLessThan(photo.y);
   });
 
-  test("Références (tablette 820 px) : la carte des Barea est en tête, sur toute la largeur", async ({ page }) => {
+  test("Références (tablette 820 px) : la carte des Barea suit CFFA, côte à côte", async ({ page }) => {
     await page.setViewportSize({ width: 820, height: 900 });
     await page.goto("/fr/references");
-    const latest = (await page.locator("main article", { has: page.locator("h3", { hasText: "Guinée-Bissau" }) }).boundingBox())!;
+    await scrollThrough(page);
+    await page.evaluate(() => document.querySelectorAll("main section.sheet [data-reveal]").forEach((el) => el.scrollIntoView({ block: "center" })));
+    await page.waitForFunction(() => [...document.querySelectorAll("main section.sheet [data-reveal]")].every((el) => getComputedStyle(el).transform === "none"));
+    const barea = (await page.locator("main article", { has: page.locator("h3", { hasText: "Guinée-Bissau" }) }).boundingBox())!;
     const cffa = (await page.locator("main article", { has: page.locator("h3", { hasText: "CFFA vs COSFA" }) }).boundingBox())!;
-    expect(latest.y).toBeLessThan(cffa.y);
-    expect(latest.width).toBeGreaterThan(cffa.width * 1.8);
+    expect(Math.abs(barea.y - cffa.y)).toBeLessThan(2);
+    expect(barea.x).toBeGreaterThan(cffa.x);
+    expect(Math.abs(barea.width - cffa.width)).toBeLessThan(2);
+  });
+
+  test("Accueil : le titre dit que le football local n'a pas d'outils d'analyse, suivi de la phrase de transition (4 langues)", async ({ page }) => {
+    const titles = {
+      fr: "Le football local n'a pas d'outils d'analyse.",
+      en: "Local football has no analysis tools.",
+      es: "El fútbol local no tiene herramientas de análisis.",
+    } as const;
+    for (const lang of ALL_LOCALES) {
+      await page.goto(`/${lang}`);
+      const h2 = page.locator("main section.sheet h2").first();
+      if (lang in titles) await expect(h2).toHaveText(titles[lang as keyof typeof titles]);
+      await expect(page.locator("main")).not.toContainText(/Les outils globaux|Global tools ignore|herramientas globales ignoran/);
+      const [t, p, card] = await Promise.all([h2.boundingBox(), page.locator("main section.sheet h2 + p").first().boundingBox(), page.locator("ul.grid-cols-4 > li").first().boundingBox()]);
+      expect(p!.y).toBeGreaterThan(t!.y + t!.height - 1);
+      expect(card!.y).toBeGreaterThan(p!.y + p!.height + 16);
+    }
   });
 });

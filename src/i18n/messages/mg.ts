@@ -59,8 +59,8 @@ export const mg: Messages = {
   home: {
     heroTitle: ["Miditra an-kianja", "ny angon-drakitra."],
     heroText: "Hatramin'ny fanadihadiana horonan-tsary ka hatrany amin'ny antontanisa, e-Fanamby no miaraka aminao amin'ny fanapahan-kevitra, ao anaty kianja sy ivelan'ny kianja.",
-    problemsTitle: "Tsy mahita ny baolina kitra eto an-toerana ny fitaovana iraisam-pirenena.",
-    problemsIntro: "Noho ny tsy fisian'ny fitaovana mifanaraka amin'ny fifaninanana eto an-toerana, ireto no iainan'ny klioba :",
+    problemsTitle: "Tsy manana fitaovana famakafakana ny baolina kitra eto an-toerana.",
+    problemsIntro: "Noho izany, ireto no iainan'ny klioba :",
     problems: ["Fanadihadiana araka ny fihetseham-po, tsy misy tantara", "Fanomanana fanoherana tsy misy angon-drakitra", "Fanaovana horonan-tsary lava sy lafo", "Tsy misy amin'ny fotoana tena izy"],
     analyticsTitle: "e-Fanamby dia",
     analyticsAccent: "football analytics.",
@@ -152,10 +152,9 @@ export const mg: Messages = {
     casesAccent: "ho amin'ny angon-drakitra.",
     cases: [
       { title: "CFFA vs COSFA - PFL 2025-2026", text: "Dingana 1/4 famaranana : famakafakana ny lalao sy famantarana momba ny zava-bita" },
-      { title: "Barea vs Burkina Faso - CHAN 2024", text: "Fanadihadiana amin'ny antsipiriany, baolina niditra sy kornera" },
+      { title: "Barea vs Guinea-Bissau - Fanasokajiana CAN 2027", text: "Tolona sy tifitra nodinihina, isaky ny fizaràna" },
       { title: "Toki Rakotondraibe - COSFA", text: "Fanangonana hetsika 4, vanim-potoana 2026" },
       { title: "Disciples FC vs Elgeco Plus", text: "Isa tamin'ny lalao raha oharina amin'ny antontanisa tena izy" },
-      { title: "Barea vs Guinea-Bissau - Fanasokajiana CAN 2027", text: "Tolona sy tifitra nodinihina, isaky ny fizaràna" },
     ],
     faqTitle: "Fanontaniana",
     faqAccent: "matetika apetraka",

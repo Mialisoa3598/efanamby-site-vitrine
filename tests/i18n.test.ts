@@ -130,20 +130,44 @@ describe("retours du 23/11 (soir)", () => {
     expect(en.features.items[7].text).toBe("PDF/CSV export. WhatsApp sharing on request");
   });
 
-  it("Accueil : une phrase de transition sous le titre « outils globaux », dans les 4 langues", () => {
-    for (const code of ["fr", "en", "mg", "es"] as const) expect(DICTS[code].home.problemsIntro.length, code).toBeGreaterThan(30);
-  });
-
-  it("Références : 5 cas (le 5e, les Barea en qualifications CAN 2027, est le plus récent) et le stade de CFFA vs COSFA", () => {
+  it("Références : 4 cas, le 2e (Barea, qualifications CAN 2027) remplace CHAN 2024 ; stade de CFFA vs COSFA précisé", () => {
     for (const code of ["fr", "en", "mg", "es"] as const) {
       const cases = DICTS[code].references.cases;
-      expect(cases, code).toHaveLength(5);
-      expect(cases[4].title, code).toMatch(/Guinea|Guinée/);
-      expect(cases[4].title, code).toMatch(/(CAN|AFCON) 2027/);
+      expect(cases, code).toHaveLength(4);
+      expect(cases[1].title, code).toMatch(/Guinea|Guinée/);
+      expect(cases[1].title, code).toMatch(/(CAN|AFCON) 2027/);
+      expect(JSON.stringify(cases), code).not.toMatch(/CHAN 2024|Burkina/);
     }
     expect(fr.references.cases[0].text).toMatch(/Quart de finale/);
     expect(en.references.cases[0].text).toMatch(/Quarter-final/);
     expect(es.references.cases[0].text).toMatch(/Cuartos de final/);
+  });
+
+  it("Accueil : titre « le football local n'a pas d'outils d'analyse » et transition qui ne le répète pas, dans les 4 langues", () => {
+    expect(fr.home.problemsTitle).toBe("Le football local n'a pas d'outils d'analyse.");
+    expect(en.home.problemsTitle).toBe("Local football has no analysis tools.");
+    expect(es.home.problemsTitle).toBe("El fútbol local no tiene herramientas de análisis.");
+    for (const code of ["fr", "en", "mg", "es"] as const) {
+      const h = DICTS[code].home;
+      expect(h.problemsTitle, code).not.toMatch(/globaux|Global|globales|iraisam-pirenena/);
+      expect(h.problemsIntro.length, code).toBeGreaterThan(15);
+      expect(h.problemsIntro.length, code).toBeLessThan(h.problemsTitle.length + 40);
+      expect(h.problemsIntro, code).not.toMatch(/Faute d'outil|With no tool|Sin una herramienta|Noho ny tsy fisian/);
+    }
+  });
+
+  it("Fonctionnalités (EN) : « Player profile » écrit en toutes lettres, sans OVR ni POT dans les textes anglais d'Accueil et de Fonctionnalités", () => {
+    const card = en.features.items[4];
+    expect(card.title).toBe("Player profile");
+    expect(card.text).toBe("Overall rating, potential, attributes and history");
+    expect(card.details).toEqual(["Overall rating out of 100 and potential", "Six attributes: SHO, PAS, DRI, DEF, PHY, GK", "Match-by-match history and performance trends"]);
+    expect(JSON.stringify([en.home, en.features])).not.toMatch(/\b(OVR|POT)\b/);
+  });
+
+  it("Fonctionnalités (EN) : formulations naturelles (« pitchside », « Actions by area », « live the game »)", () => {
+    expect(en.features.modes[0].text).toBe("pitchside");
+    expect(en.features.items[6].details[1]).toBe("Actions by area: right, left, in the box");
+    expect(en.features.audiencesAccent).toBe("live the game");
   });
 
   it("Références : la section témoignage (Coach Lalaina) est retirée, texte et description de page compris (décision du chef, 23/11)", () => {

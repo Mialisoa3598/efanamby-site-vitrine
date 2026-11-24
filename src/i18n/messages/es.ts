@@ -58,8 +58,8 @@ export const es: Messages = {
   home: {
     heroTitle: ["Los datos", "entran en juego."],
     heroText: "Del análisis de vídeo a las estadísticas de rendimiento, e-Fanamby acompaña sus decisiones dentro y fuera del campo.",
-    problemsTitle: "Las herramientas globales ignoran el fútbol local.",
-    problemsIntro: "Sin una herramienta pensada para las ligas locales, los clubes se quedan con:",
+    problemsTitle: "El fútbol local no tiene herramientas de análisis.",
+    problemsIntro: "Así, los clubes se quedan con:",
     problems: ["Análisis a ojo, sin historial", "Preparación del rival sin datos", "Edición de vídeo larga y costosa", "Nada en tiempo real"],
     analyticsTitle: "e-Fanamby es",
     analyticsAccent: "football analytics.",
@@ -151,10 +151,9 @@ export const es: Messages = {
     casesAccent: "al dato.",
     cases: [
       { title: "CFFA vs COSFA - PFL 2025-2026", text: "Cuartos de final: análisis del partido e indicadores de rendimiento" },
-      { title: "Barea vs Burkina Faso - CHAN 2024", text: "Análisis detallado, goles y córners" },
+      { title: "Barea vs Guinea-Bisáu - Clasificación CAN 2027", text: "Duelos y tiros analizados, parte por parte" },
       { title: "Toki Rakotondraibe - COSFA", text: "Recopilación de 4 acciones, temporada 2026" },
       { title: "Disciples FC vs Elgeco Plus", text: "Marcador frente a estadísticas reales" },
-      { title: "Barea vs Guinea-Bisáu - Clasificación CAN 2027", text: "Duelos y tiros analizados, parte por parte" },
     ],
     faqTitle: "Preguntas",
     faqAccent: "frecuentes",

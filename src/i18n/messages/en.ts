@@ -58,15 +58,15 @@ export const en: Messages = {
   home: {
     heroTitle: ["Data comes", "into play."],
     heroText: "From video analysis to performance statistics, e-Fanamby supports your decisions on and off the pitch.",
-    problemsTitle: "Global tools ignore local football.",
-    problemsIntro: "With no tool built for local leagues, clubs are left with:",
+    problemsTitle: "Local football has no analysis tools.",
+    problemsIntro: "So clubs are left with:",
     problems: ["Gut-feeling analysis, no history", "Opposition prep without data", "Slow, costly video editing", "Nothing in real time"],
     analyticsTitle: "e-Fanamby is",
     analyticsAccent: "football analytics.",
     analyticsItems: [
       { title: "Team management overview", text: "Win rate, recent form and standings, with a match list you can filter by team, competition and status." },
       { title: "In-depth match analysis", text: "Detailed statistics for a match, tactical analysis read minute by minute, and a match report in PDF/CSV." },
-      { title: "Individual tracking & recruitment", text: "Player profile (OVR, POT, attributes, history), the team's player list and multi-match analysis to follow trends." },
+      { title: "Individual tracking & recruitment", text: "Player profile (overall rating, potential, attributes, history), the team's player list and multi-match analysis to follow trends." },
     ],
     trustTitle: "They already trust us",
     stats: [
@@ -79,7 +79,7 @@ export const en: Messages = {
     title: "Features",
     text: "Everything you need to turn a match into usable data, from kick-off to the final report.",
     modes: [
-      { title: "Live mode", text: "at the pitch" },
+      { title: "Live mode", text: "pitchside" },
       { title: "Post-match mode", text: "video provided" },
     ],
     gridTitle: "The whole game,",
@@ -107,8 +107,8 @@ export const en: Messages = {
       },
       {
         title: "Player profile",
-        text: "OVR, POT, attributes, history",
-        details: ["Overall OVR rating out of 100, POT potential", "Six attributes: SHO, PAS, DRI, DEF, PHY, GK", "Match-by-match history and trend"],
+        text: "Overall rating, potential, attributes and history",
+        details: ["Overall rating out of 100 and potential", "Six attributes: SHO, PAS, DRI, DEF, PHY, GK", "Match-by-match history and performance trends"],
       },
       {
         title: "Multi-match analysis",
@@ -118,7 +118,7 @@ export const en: Messages = {
       {
         title: "Tactical analysis + timeline",
         text: "Read the match minute by minute",
-        details: ["Match timeline, minute by minute", "Located actions: right, left, in the box", "Tactical set-up, Club/Coach plan"],
+        details: ["Match timeline, minute by minute", "Actions by area: right, left, in the box", "Tactical set-up, Club/Coach plan"],
       },
       {
         title: "Match report",
@@ -132,7 +132,7 @@ export const en: Messages = {
       },
     ],
     audiencesTitle: "Built for those who",
-    audiencesAccent: "live the pitch",
+    audiencesAccent: "live the game",
     audiences: [
       { title: "Clubs and coaching staff", text: "Preparation, debrief, tactical decisions" },
       { title: "Media and broadcasters", text: "Enriched content, stats to comment on" },
@@ -151,10 +151,9 @@ export const en: Messages = {
     casesAccent: "to the data.",
     cases: [
       { title: "CFFA vs COSFA - PFL 2025-2026", text: "Quarter-final: match analysis and performance indicators" },
-      { title: "Barea vs Burkina Faso - CHAN 2024", text: "Detailed analysis, goals and corners" },
+      { title: "Barea vs Guinea-Bissau - AFCON 2027 qualifiers", text: "Duels and shots analysed, half by half" },
       { title: "Toki Rakotondraibe - COSFA", text: "4-action compilation, 2026 season" },
       { title: "Disciples FC vs Elgeco Plus", text: "Score versus real statistics" },
-      { title: "Barea vs Guinea-Bissau - AFCON 2027 qualifiers", text: "Duels and shots analysed, half by half" },
     ],
     faqTitle: "Frequently asked",
     faqAccent: "questions",
