@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function TrialPage({ params }: PageProps) {
   const { lang, t } = await loadPage(params);
   return (
-    <div className="page-ends-navy relative isolate overflow-hidden bg-navy pb-[141px] pt-[115px] max-md:pb-16 max-md:pt-8">
+    <div className="page-ends-navy relative isolate overflow-hidden bg-navy pb-[141px] pt-[115px] short:pt-10 max-md:pb-16 max-md:pt-8">
       {/* Photo de terrain en fond : le voile marine (relevé sur la maquette) est plein en haut et en bas, à 50 % au milieu. */}
       <div aria-hidden="true" className="absolute inset-x-0 -top-[5px] -z-10 h-[855px] max-md:h-[700px]">
         <Photo name="pitch" alt="" className="size-full object-cover" sizes="100vw" />
@@ -27,7 +27,7 @@ export default async function TrialPage({ params }: PageProps) {
       </div>
 
       <div className="mx-auto mt-[31px] w-full max-w-[556px] px-6 md:px-0">
-        <div className="glass-panel rounded-[20px] px-10 pb-10 pt-9 text-left max-md:px-5 max-md:py-6">
+        <div className="glass-panel rounded-[20px] px-10 pb-10 pt-9 text-left short:pb-6 short:pt-6 max-md:px-5 max-md:py-6">
           <RequestForm variant="trial" locale={lang} pageHref={`/${lang}${PAGES.trial}`} privacyHref={path(lang, "privacy")} recipient={FORM_RECIPIENT} labels={formLabels(t)} />
         </div>
       </div>

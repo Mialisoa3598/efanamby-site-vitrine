@@ -44,7 +44,7 @@ export function MobileMenu({ items, navLabel, openLabel, closeLabel, trial, tria
           <div className="wrap flex min-h-full flex-col justify-between gap-10 pb-[calc(2.5rem+env(safe-area-inset-bottom,0px))] pt-4">
             {/* Hors maquette (elle ne montre que les cinq liens) : « Essai gratuit » et la langue sont gardés en haut du panneau. */}
             <div className="flex flex-col items-start gap-5">
-              <Button href={trialHref} icon="arrow-box" tight className="w-full">
+              <Button href={trialHref} icon="arrow-box" full>
                 {trial}
               </Button>
               <LanguageMenu current={locale} items={languages} label={languageLabel} soon={languageSoon} variant="list" />

@@ -70,7 +70,7 @@ export const es: Messages = {
     ],
     trustTitle: "Ya confían en nosotros",
     stats: [
-      { value: "8", title: "Partidos analizados", text: "Partidos reales, anotados acción por acción." },
+      { value: "23", title: "Partidos analizados", text: "Partidos reales, anotados acción por acción." },
       { value: "+165", title: "Indicadores seguidos", text: "Pases, tiros, duelos, córners y muchas otras acciones de juego." },
     ],
     ctaTitle: "Pase al análisis de datos.",
@@ -150,8 +150,8 @@ export const es: Messages = {
     casesTitle: "Del campo",
     casesAccent: "al dato.",
     cases: [
-      { title: "CFFA vs COSFA - PFL 2025-2026", text: "Cuartos de final: análisis del partido e indicadores de rendimiento" },
       { title: "Barea vs Guinea-Bisáu - Clasificación CAN 2027", text: "Duelos y tiros analizados, parte por parte" },
+      { title: "CFFA vs COSFA - PFL 2025-2026", text: "Cuartos de final: análisis del partido e indicadores de rendimiento" },
       { title: "Toki Rakotondraibe - COSFA", text: "Recopilación de 4 acciones, temporada 2026" },
       { title: "Disciples FC vs Elgeco Plus", text: "Marcador frente a estadísticas reales" },
     ],

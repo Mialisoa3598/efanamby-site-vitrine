@@ -223,7 +223,7 @@ export function RequestForm({ variant, locale, pageHref, privacyHref, recipient,
           placeholder={t.messagePlaceholder}
           aria-invalid={errors.message ? true : undefined}
           aria-describedby={errors.message ? `${id}-message-err` : undefined}
-          className={cn(INPUT, "h-[116px] resize-none py-4 leading-[1.5]")}
+          className={cn(INPUT, "h-[116px] tiny:h-[104px] mini:h-[84px] resize-none py-4 leading-[1.5]")}
         />
       </Field>
 
@@ -272,12 +272,12 @@ export function RequestForm({ variant, locale, pageHref, privacyHref, recipient,
 // Champ : fond clair translucide, coin bas-droit coupé ; champ actif : bordure verte de 1 px (vert à 60 %) et halo vert diffus de 30 px à 30 %
 // (valeurs mesurées sur la capture envoyée par la stagiaire ; états absents du design system).
 const INPUT =
-  "cut-br rc block h-[62px] w-full rounded-[10px] border border-transparent bg-white/[0.2] px-5 text-[14px] text-mint placeholder:text-[12px] placeholder:text-mint/70 [--cut:10px] [--r:10px] outline-none transition-colors focus:border-green/60 aria-[invalid=true]:border-[#ff9b9b]";
+  "cut-br rc block h-[62px] tiny:h-14 mini:h-12 w-full rounded-[10px] border border-transparent bg-white/[0.2] px-5 text-[14px] text-mint placeholder:text-[12px] placeholder:text-mint/70 [--cut:10px] [--r:10px] outline-none transition-colors focus:border-green/60 aria-[invalid=true]:border-[#ff9b9b]";
 
 function Field({ id, label, suffix, error, children }: { id: string; label: string; suffix?: ReactNode; error?: string | false; children: ReactNode }) {
   return (
-    <div className="mb-[19px]">
-      <label htmlFor={id} className="mb-3 block text-[16px] font-semibold leading-5">
+    <div className="mb-[19px] tiny:mb-[14px] mini:mb-2.5">
+      <label htmlFor={id} className="mb-3 block text-[16px] font-semibold leading-5 tiny:mb-2">
         {label}
         {suffix}
       </label>

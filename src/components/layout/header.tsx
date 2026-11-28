@@ -25,7 +25,7 @@ export function Header({ locale, t }: { locale: Locale; t: Messages }) {
 
         <div className="flex items-center gap-[30px] max-lg:hidden lg:max-xl:gap-5">
           <LanguageMenu current={locale} items={languages} label={t.nav.language} soon={t.nav.languageSoon} />
-          <Button href={trialHref} icon="arrow-box" tight className="!h-10 !px-5">
+          <Button href={trialHref} icon="arrow-box" size="nav">
             {t.common.trial}
           </Button>
         </div>

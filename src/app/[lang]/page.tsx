@@ -30,10 +30,11 @@ export default async function HomePage({ params }: PageProps) {
   return (
     <>
       {/* HERO */}
-      <section className="relative overflow-clip bg-navy pb-10">
+      <section className="hero-fill relative overflow-clip bg-navy pb-10 lg:flex lg:flex-col">
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(70%_95%_at_80%_92%,#411aff_0%,rgb(65_26_255/0.55)_38%,transparent_72%)] max-lg:bg-[radial-gradient(150%_620px_at_78%_100%,#411aff_0%,rgb(65_26_255/0.62)_34%,rgb(65_26_255/0.2)_62%,transparent_82%)]" />
-        <div className="wrap relative grid min-h-[595px] items-center max-xl:min-h-[500px] max-lg:min-h-0 max-lg:py-14 max-md:pb-3 max-md:pt-5">
-          <div className="relative z-10 max-w-[640px] pt-2 max-xl:max-w-[470px] max-lg:max-w-none">
+        {/* Centre optique : le bloc de texte est centré dans le premier écran puis remonté (marge basse = 12 % de la hauteur d'écran, soit ≈ 47 px à 784 px de haut) : un bloc au centre géométrique paraît trop bas. */}
+        <div className="wrap relative grid min-h-[595px] items-center lg:flex-1 max-xl:min-h-[500px] max-lg:min-h-0 max-lg:py-14 max-md:pb-3 max-md:pt-5">
+          <div className="relative z-10 max-w-[640px] pt-2 max-xl:max-w-[470px] max-lg:max-w-none lg:pb-[clamp(40px,12svh,150px)]">
             <h1 className="t-h1 m-0 text-mint">
               {h.heroTitle[0]}
               <br />
@@ -50,7 +51,7 @@ export default async function HomePage({ params }: PageProps) {
             </div>
           </div>
         </div>
-        <div className="pointer-events-none absolute right-0 top-5 h-[620px] w-[575px] max-xl:h-[480px] max-xl:w-[440px] max-lg:relative max-lg:right-auto max-lg:top-auto max-lg:ml-auto max-lg:mt-2 max-lg:h-auto max-lg:w-[min(108%,700px)] max-lg:max-w-none max-lg:translate-x-[4%]">
+        <div className="pointer-events-none absolute bottom-[-5px] right-0 h-[620px] w-[575px] max-xl:bottom-10 max-xl:h-[480px] max-xl:w-[440px] max-lg:relative max-lg:bottom-auto max-lg:right-auto max-lg:top-auto max-lg:ml-auto max-lg:mt-2 max-lg:h-auto max-lg:w-[min(108%,700px)] max-lg:max-w-none max-lg:translate-x-[4%]">
           <Photo name="ball" alt={t.alt.ball} priority className="absolute -left-[6px] -top-[31px] z-10 size-[160px] max-xl:size-[120px] max-lg:left-[2%] max-lg:top-[2%] max-lg:size-[24%]" />
           <Photo name="laptopPlatform" alt={t.alt.laptopPlatform} priority className="absolute right-0 top-0 w-[575px] max-xl:w-[440px] max-lg:static max-lg:ml-auto max-lg:w-[100%]" sizes="(max-width: 1024px) 110vw, 575px" />
         </div>

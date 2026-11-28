@@ -72,7 +72,7 @@ export const fr = {
     ],
     trustTitle: "Ils nous font déjà confiance",
     stats: [
-      { value: "8", title: "Matchs analysés", text: "Des rencontres réelles, annotées action par action." },
+      { value: "23", title: "Matchs analysés", text: "Des rencontres réelles, annotées action par action." },
       { value: "+165", title: "Indicateurs suivis", text: "Passes, tirs, duels, corners et bien d'autres actions de jeu." },
     ],
     ctaTitle: "Passez à l'analyse data.",
@@ -152,8 +152,8 @@ export const fr = {
     casesTitle: "Du terrain",
     casesAccent: "à la donnée.",
     cases: [
-      { title: "CFFA vs COSFA - PFL 2025-2026", text: "Quart de finale : analyse du match et indicateurs de performance" },
       { title: "Barea vs Guinée-Bissau - Qualifications CAN 2027", text: "Duels et tirs analysés, mi-temps par mi-temps" },
+      { title: "CFFA vs COSFA - PFL 2025-2026", text: "Quart de finale : analyse du match et indicateurs de performance" },
       { title: "Toki Rakotondraibe - COSFA", text: "Compilation 4 actions, saison 2026" },
       { title: "Disciples FC vs Elgeco Plus", text: "Score contre statistiques réelles" },
     ],

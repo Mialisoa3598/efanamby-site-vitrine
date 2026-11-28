@@ -16,26 +16,28 @@ export default async function FeaturesPage({ params }: PageProps) {
   return (
     <>
       {/* HERO */}
-      <section className="relative overflow-clip bg-navy pb-10 max-lg:pb-0">
+      <section className="hero-fill relative overflow-clip bg-navy pb-10 max-lg:pb-0 lg:flex lg:flex-col">
         {/* Desktop : deux halos violets de la maquette. Sous 1024 px : un fond en pixels (pas en pourcentages, donc jamais étiré par la hauteur de la page) :
             dégradé vertical marine → violet, halo lavande en haut à droite et halo vif derrière l'ordinateur. */}
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(45%_55%_at_100%_8%,rgb(120_105_255/0.55)_0%,transparent_70%),radial-gradient(80%_100%_at_35%_90%,#3b17e8_0%,rgb(65_26_255/0.5)_40%,transparent_75%)] max-lg:bg-[radial-gradient(460px_380px_at_100%_0%,rgb(125_110_255/0.5)_0%,transparent_72%),radial-gradient(560px_430px_at_62%_calc(100%-150px),rgb(88_58_255/0.75)_0%,rgb(65_26_255/0.38)_50%,transparent_78%),linear-gradient(180deg,#06062d_0%,#0c0a66_34%,#2412c8_72%,#3517e6_100%)]" />
-        <div className="wrap relative min-h-[600px] max-xl:min-h-[540px] max-lg:min-h-0 max-lg:pb-6">
-          <div className="max-w-[560px] pt-[76px] max-xl:max-w-[400px] max-xl:pt-12 max-lg:max-w-none max-md:pt-5">
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(45%_55%_at_100%_30%,rgb(120_105_255/0.55)_0%,transparent_70%),radial-gradient(80%_100%_at_35%_90%,#3b17e8_0%,rgb(65_26_255/0.5)_40%,transparent_75%)] max-lg:bg-[radial-gradient(460px_380px_at_100%_0%,rgb(125_110_255/0.5)_0%,transparent_72%),radial-gradient(560px_430px_at_62%_calc(100%-150px),rgb(88_58_255/0.75)_0%,rgb(65_26_255/0.38)_50%,transparent_78%),linear-gradient(180deg,#06062d_0%,#0c0a66_34%,#2412c8_72%,#3517e6_100%)]" />
+        {/* Même échelle que l'Accueil : texte de 18 px, cartes plus grandes dès 1440 px de large, et groupe (titre, texte, cartes) centré puis remonté au centre optique (marge basse = 10 % de la hauteur d'écran). */}
+        <div className="wrap relative min-h-[600px] max-xl:min-h-[540px] max-lg:min-h-0 max-lg:pb-6 lg:flex lg:flex-1 lg:flex-col lg:justify-center lg:pb-[clamp(24px,10svh,120px)]">
+          <div className="max-w-[560px] max-xl:max-w-[400px] max-lg:max-w-none max-lg:pt-12 max-md:pt-5">
             <h1 className="t-h1 m-0 text-mint">{f.title}</h1>
-            <p className="t-body mt-4 max-w-[470px] text-mint/85 max-lg:max-w-none">{f.text}</p>
+            <p className="t-body mt-4 max-w-[470px] text-mint/85 max-lg:max-w-none md:mt-8 md:text-[18px]! md:leading-[1.55]! xl:max-w-[500px] min-[1440px]:max-w-[560px]">{f.text}</p>
           </div>
-          <ul className="absolute bottom-[63px] left-0 flex gap-7 max-xl:bottom-10 max-xl:gap-4 max-lg:static max-lg:mt-10 max-md:mt-6 max-md:flex-col max-md:gap-4">
+          <ul className="mt-[clamp(72px,16svh,200px)] flex gap-7 max-xl:mt-[160px] max-xl:gap-4 max-lg:mt-10 max-md:mt-6 max-md:flex-col max-md:gap-4">
             {f.modes.map((m) => (
-              <li key={m.title} className="glass cut-br rc flex h-[95px] w-[238px] flex-col justify-center rounded-[16px] px-4 text-mint [--cut:24px] [--r:16px] max-xl:w-[232px] max-md:w-full">
-                <p className="m-0 text-[24px] font-bold leading-[1.2] tracking-[-0.02em] max-xl:text-[22px] max-md:text-[24px]">{m.title}</p>
-                <p className="m-0 mt-0.5 text-[14px]">{m.text}</p>
+              <li key={m.title} className="glass cut-br rc flex h-[95px] w-[238px] flex-col justify-center rounded-[16px] px-4 text-mint [--cut:24px] [--r:16px] max-xl:w-[232px] max-md:w-full min-[1440px]:h-[108px] min-[1440px]:w-[264px] min-[1440px]:px-5">
+                <p className="m-0 text-[24px] font-bold leading-[1.2] tracking-[-0.02em] max-xl:text-[22px] min-[1440px]:text-[26px] max-md:text-[24px]">{m.title}</p>
+                <p className="m-0 mt-0.5 text-[14px] min-[1440px]:text-[15px]">{m.text}</p>
               </li>
             ))}
           </ul>
         </div>
-        <div className="pointer-events-none absolute -right-[103px] top-[-12px] w-[920px] max-xl:-right-[70px] max-xl:top-auto max-xl:-bottom-10 max-xl:w-[660px] max-lg:relative max-lg:bottom-auto max-lg:left-1/2 max-lg:mt-4 max-lg:w-[min(124%,820px)] max-lg:max-w-none max-lg:-translate-x-1/2 max-md:left-0 max-md:-mt-6 max-md:w-[152%] max-md:-translate-x-[17%]">
-          <Photo name="laptopHands" alt={t.alt.laptopHands} priority className="h-auto w-full" sizes="(max-width: 767px) 152vw, (max-width: 1024px) 124vw, 920px" />
+        {/* Image agrandie (≥ 1280 px de large) : largeur --lh-w = 1,68 × (hauteur d'écran − 156 px) pour que l'ordinateur occupe tout le premier écran comme sur l'Accueil, plafonnée à droite (73,6 % de la largeur − 9 px, ou − 94 px dès 1440 px car les cartes sont plus larges) pour ne jamais toucher le texte, jamais sous 920 px ni au-delà de 1240 px. Le débord à droite (mains) garde la même proportion : 11,2 % de la largeur. */}
+        <div className="pointer-events-none absolute right-[calc(var(--lh-w)*-0.112)] bottom-[39px] w-[var(--lh-w)] [--lh-w:max(920px,min(calc((100svh-156px)*1.68),calc(73.6vw-9px),1240px))] min-[1440px]:[--lh-w:max(920px,min(calc((100svh-156px)*1.68),calc(73.6vw-94px),1240px))] max-xl:-right-[70px] max-xl:-bottom-10 max-xl:w-[660px] max-lg:relative max-lg:bottom-auto max-lg:left-1/2 max-lg:mt-4 max-lg:w-[min(124%,820px)] max-lg:max-w-none max-lg:-translate-x-1/2 max-md:left-0 max-md:-mt-6 max-md:w-[152%] max-md:-translate-x-[17%]">
+          <Photo name="laptopHands" alt={t.alt.laptopHands} priority className="h-auto w-full" sizes="(max-width: 767px) 152vw, (max-width: 1024px) 124vw, 1100px" />
         </div>
       </section>
 

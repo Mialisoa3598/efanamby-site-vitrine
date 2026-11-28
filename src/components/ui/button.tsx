@@ -4,7 +4,7 @@ import { cn } from "@/lib/cn";
 import { ArrowUpRight, ArrowUpRightBold, Play } from "../icons";
 
 type Variant = "green" | "outline-light" | "violet" | "violet-soft" | "violet-grad" | "mint";
-type Size = "sm" | "md" | "lg";
+type Size = "sm" | "md" | "lg" | "nav";
 type Icon = "arrow-box" | "arrow" | "play" | null;
 
 const VARIANT: Record<Variant, string> = {
@@ -15,10 +15,13 @@ const VARIANT: Record<Variant, string> = {
   "violet-grad": "bg-gradient-to-r from-violet to-[#25109f] text-white hover:brightness-110 active:brightness-90",
   mint: "bg-mint text-navy hover:bg-white active:bg-[#d3f5e6]",
 };
+// Demande du 27/11 : TOUS les boutons ont la même forme (coins arrondis de 10 px, coin bas-droit coupé et arrondi, comme le bouton « Envoyer » de la maquette).
+// La coupe garde la proportion de la maquette (14 px pour 60 px de haut, soit ≈ 23 % de la hauteur) : 9 px (en-tête, 40 px), 10 px (42 px), 12 px (50 px), 14 px (60 px, mobile).
 const SIZE: Record<Size, string> = {
-  sm: "h-[42px] px-5 gap-2",
-  md: "h-[42px] px-6 gap-3",
-  lg: "h-[50px] px-8 gap-3",
+  nav: "h-10 px-5 gap-3 [--cut:9px]",
+  sm: "h-[42px] px-5 gap-2 [--cut:10px]",
+  md: "h-[42px] px-6 gap-3 [--cut:10px]",
+  lg: "h-[50px] px-8 gap-3 [--cut:12px]",
 };
 
 type CommonProps = {
@@ -26,10 +29,6 @@ type CommonProps = {
   size?: Size;
   icon?: Icon;
   full?: boolean;
-  /** Forme du coin coupé ; par défaut : haut-droit + bas-gauche pour les violets, bas-droit pour les autres. */
-  cut?: "br" | "tr-bl";
-  /** Petite coupe de 7 px (gros boutons et bouton de l'en-tête) ; sinon coupe de 10 px (boutons de formulaire). Les coins sont arrondis de 10 px dans tous les cas. */
-  tight?: boolean;
   className?: string;
   children: ReactNode;
 };
@@ -37,20 +36,14 @@ type LinkProps = CommonProps & { href: string; external?: boolean; type?: never;
 type ButtonProps = CommonProps & { href?: undefined; external?: never; type?: "button" | "submit"; disabled?: boolean; onClick?: () => void };
 
 export function Button(props: LinkProps | ButtonProps) {
-  const { variant = "green", size = "md", icon = null, full, cut, tight = size === "lg", className, children } = props;
+  const { variant = "green", size = "md", icon = null, full, className, children } = props;
   const outline = variant === "outline-light";
-  const trbl = cut ? cut === "tr-bl" : variant.startsWith("violet");
-  // Demande du 19/11 : tous les boutons ont les quatre coins arrondis (10 px), y compris les sommets de la coupe (rayon 10 px ; 8 px pour la petite coupe de 7 px).
-  // Coupe : 14 px (haut-droit/bas-gauche), 7 px (grands boutons et en-tête), 10 px (formulaires). Le contour fin du bouton « outline » suit la même forme (--rb).
-  const shape = trbl
-    ? "cut-tr-bl rc rounded-[10px] [--cut:14px] [--r:10px] [--rb:10px]"
-    : tight
-      ? "cut-br rc rounded-[10px] [--cut:7px] [--r:8px] [--rb:10px]"
-      : "cut-br rc rounded-[10px] [--cut:10px] [--r:10px] [--rb:10px]";
+  // Une seule forme pour tous les boutons (pleins ou à contour) ; le contour fin du bouton « outline » suit la même forme (--rb) et mesure 0,5 px.
+  const shape = "cut-br rc rounded-[10px] [--r:10px] [--rb:10px]";
   const base = cn(
     "t-button inline-flex shrink-0 select-none items-center justify-center whitespace-nowrap transition-colors duration-150 disabled:cursor-not-allowed disabled:opacity-50",
     shape,
-    outline && "lined [--lw:1.5px]",
+    outline && "lined [--lw:0.5px]",
     SIZE[size],
     full && "w-full",
     VARIANT[variant],

@@ -333,7 +333,9 @@ test.describe("en-tête fixe (reste en haut pendant le défilement)", () => {
       for (const url of ["/fr", "/fr/tarifs", "/fr/references", "/fr/contact"]) {
         await page.goto(url);
         await scrollToBottom(page);
-        await expect.poll(() => page.evaluate(() => window.scrollY), { message: `défilement de ${url}` }).toBeGreaterThan(100);
+        // Depuis le 27/11 la page Contact tient presque dans l'écran d'un ordinateur : elle ne défile plus que de quelques dizaines de pixels.
+        const minScroll = url.endsWith("/contact") && viewport.width >= 1024 ? 20 : 100;
+        await expect.poll(() => page.evaluate(() => window.scrollY), { message: `défilement de ${url}` }).toBeGreaterThan(minScroll);
         const box = (await page.locator("header").boundingBox())!;
         expect(box.y, `${url} : en-tête en haut de l'écran`).toBeCloseTo(0, 0);
         expect(box.height).toBeCloseTo(76, 0);
@@ -502,7 +504,7 @@ test.describe("mise en page mobile (390 px)", () => {
     expect(ordered.map((o) => (o.hidden ? "image" : o.text))).toEqual([flat(p0), flat(p1), "image", flat(fr.home.problems[2]), flat(fr.home.problems[3])]);
   });
 
-  test("Références : le texte précède l'image du héros, cas dans l'ordre trophée, ballon (Barea CAN 2027), flèches, coureur", async ({ page }) => {
+  test("Références : le texte précède l'image du héros, cas dans l'ordre ballon (Barea CAN 2027), trophée (CFFA), flèches, coureur", async ({ page }) => {
     await page.goto("/fr/references");
     const h1 = await page.locator("h1").boundingBox();
     const hero = await page.locator("main section").first().locator("img").first().boundingBox();
@@ -896,7 +898,7 @@ test.describe("Angles arrondis relevés sur les maquettes", () => {
     ["/fr", "header a.cut-br", 10, "bouton « Essai gratuit » de l'en-tête"],
     ["/fr/tarifs", "details.cut-br", 16, "questions fréquentes (cartes)"],
     ["/fr/tarifs", "li.group", 16, "cartes de prix"],
-    ["/fr/tarifs", "li.group a.cut-tr-bl", 10, "bouton violet des cartes de prix"],
+    ["/fr/tarifs", "li.group a.t-button", 10, "bouton violet des cartes de prix"],
     ["/fr/tarifs", "a.t-button:has-text(\"Demander une démo\")", 10, "bouton « Demander une démo » de la photo"],
     ["/fr/contact", ".glass-panel", 20, "panneau du formulaire"],
     ["/fr/contact", "input.cut-br", 10, "champ de formulaire"],
@@ -941,6 +943,9 @@ test.describe("Angles arrondis relevés sur les maquettes", () => {
   test("lignes « football analytics » : arrondies à 16 px aussi quand on les ouvre", async ({ page }) => {
     await page.goto("/fr");
     const rows = page.locator("details[name='analytics']");
+    // Les lignes apparaissent en fondu quand on défile jusqu'à elles : on attend la fin du mouvement avant de cliquer (sinon le clic peut tomber à côté).
+    await rows.first().scrollIntoViewIfNeeded();
+    await page.waitForFunction(() => [...document.querySelectorAll("details[name='analytics']")].every((el) => { let o = 1; let moved = false; for (let n: Element | null = el; n; n = n.parentElement) { o *= parseFloat(getComputedStyle(n).opacity); if (getComputedStyle(n).transform !== "none") moved = true; } return o === 1 && !moved; }));
     for (let i = 0; i < 3; i++) {
       await rows.nth(i).locator("summary").click();
       await expect(rows.nth(i)).toHaveAttribute("open", "");
@@ -966,14 +971,49 @@ test.describe("Angles arrondis relevés sur les maquettes", () => {
     }
   });
 
-  test("bouton « Voir une démo » (contour fin) : le contour suit la forme arrondie", async ({ page }) => {
+  test("bouton « Voir une démo » (contour fin) : le contour suit la forme arrondie et mesure 0,5 px", async ({ page }) => {
     await page.goto("/fr");
     const btn = page.getByRole("link", { name: fr.common.demo }).first();
-    const st = await btn.evaluate((e) => ({ cls: e.className, border: getComputedStyle(e).borderTopWidth, after: getComputedStyle(e, "::after").clipPath.startsWith("polygon") }));
+    const st = await btn.evaluate((e) => ({ cls: e.className, border: getComputedStyle(e).borderTopWidth, lw: getComputedStyle(e).getPropertyValue("--lw").trim(), after: getComputedStyle(e, "::after").clipPath.startsWith("polygon") }));
     expect(st.cls).toContain("lined");
     expect(st.cls).toContain("rc");
     expect(st.border).toBe("0px");
+    expect(parseFloat(st.lw)).toBe(0.5);
     expect(st.after).toBe(true);
+  });
+
+  // Demande du 27/11 : tous les boutons (pleins ou à contour) ont la forme de la maquette « Envoyer » : coins arrondis de 10 px, coin BAS-DROIT coupé et arrondi.
+  // La coupe garde la proportion de la maquette (14 px pour 60 px de haut ≈ 23 %) : on vérifie 20 à 27 % de la hauteur, jamais de coupe haut-droit / bas-gauche.
+  test("tous les boutons ont la même forme : coin bas-droit coupé (≈ 23 % de la hauteur), jamais de coupe haut-droit / bas-gauche", async ({ page }) => {
+    const pages = ["/fr", "/fr/fonctionnalites", "/fr/tarifs", "/fr/references", "/fr/contact", "/fr/essai-gratuit", "/fr/mentions-legales", "/fr/page-inconnue"];
+    for (const path of pages) {
+      await page.goto(path);
+      const bad = await page.locator("a.t-button, button.t-button").evaluateAll((els) =>
+        els
+          .map((e) => {
+            const h = e.getBoundingClientRect().height;
+            const cut = parseFloat(getComputedStyle(e).getPropertyValue("--cut"));
+            return { name: (e.textContent ?? "").trim().slice(0, 24), cls: e.className, ratio: cut / h, h };
+          })
+          .filter((b) => !b.cls.includes("cut-br") || b.cls.includes("cut-tr-bl") || b.ratio < 0.2 || b.ratio > 0.27)
+          .map((b) => `${b.name} (h ${b.h}, coupe/hauteur ${b.ratio.toFixed(2)}) → ${b.cls.slice(0, 50)}`),
+      );
+      expect(bad, `boutons de forme différente sur ${path}`).toEqual([]);
+    }
+  });
+
+  test("boutons : même forme à 390 px (mobile, boutons de 60 px à coupe de 14 px)", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/fr");
+    const hero = page.locator("main section").first().locator("a.t-button");
+    await expect(hero).toHaveCount(2);
+    const st = await hero.evaluateAll((els) => els.map((e) => ({ h: e.getBoundingClientRect().height, cut: getComputedStyle(e).getPropertyValue("--cut").trim(), r: getComputedStyle(e).getPropertyValue("--r").trim(), cls: e.className })));
+    for (const s of st) {
+      expect(s.h).toBe(60);
+      expect(s.cut).toBe("14px");
+      expect(s.r).toBe("10px");
+      expect(s.cls).toContain("cut-br");
+    }
   });
 
   test("pied de page : coins hauts arrondis de 24 px", async ({ page }) => {
@@ -1099,6 +1139,12 @@ test.describe("Fonctionnalités : cartes ouvertes au survol (ordinateur)", () =>
     const card = page.locator("li.fc").first();
     await card.evaluate((e) => window.scrollTo(0, window.scrollY + e.getBoundingClientRect().top - 150));
     await page.mouse.move(0, 0);
+    // Depuis le 27/11 le hero remplit l'écran : les cartes sont sous la ligne de flottaison et apparaissent en fondu quand on défile. On attend la fin du fondu avant de relever les pixels.
+    await page.waitForFunction(() => {
+      let o = 1;
+      for (let n: Element | null = document.querySelector("li.fc"); n; n = n.parentElement) o *= parseFloat(getComputedStyle(n).opacity);
+      return o === 1;
+    });
     const b = (await card.boundingBox())!;
     const { width: w, height: h } = b;
     const at = await pixelsAt(page, { x: b.x, y: b.y, width: w, height: h }, [
@@ -1138,6 +1184,16 @@ test.describe("Fonctionnalités : cartes ouvertes au survol (ordinateur)", () =>
     await ready(page);
     const card = page.locator("li.fc").first();
     await card.evaluate((e) => window.scrollTo(0, window.scrollY + e.getBoundingClientRect().top - 150));
+    // Depuis le 27/11 les cartes sont sous la ligne de flottaison : on attend la fin du fondu d'apparition avant de survoler (sinon la carte bouge sous la souris).
+    await page.waitForFunction(() => {
+      let o = 1;
+      let moved = false;
+      for (let n: Element | null = document.querySelector("li.fc"); n; n = n.parentElement) {
+        o *= parseFloat(getComputedStyle(n).opacity);
+        if (getComputedStyle(n).transform !== "none") moved = true;
+      }
+      return o === 1 && !moved;
+    });
     const before = (await card.boundingBox())!;
     await card.hover();
     const more = card.locator(".fc-more");
@@ -1404,7 +1460,7 @@ test.describe("retours du 23/11 (soir) : Fonctionnalités, Accueil, Références
     }
   });
 
-  test("Références (ordinateur) : la carte des Barea (qualifications CAN 2027) prend la place de CHAN 2024, même taille, grille d'origine", async ({ page }) => {
+  test("Références (ordinateur) : Barea (carte sombre, ballon) puis CFFA (carte claire, trophée), même taille, grille d'origine", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("/fr/references");
     await page.waitForLoadState("networkidle");
@@ -1422,9 +1478,9 @@ test.describe("retours du 23/11 (soir) : Fonctionnalités, Accueil, Références
     await expect(page.locator("main")).not.toContainText("CHAN 2024");
     await expect(page.locator("main")).not.toContainText("Burkina");
 
-    // Première rangée : titre, CFFA, Barea (CAN 2027), toutes les cartes à la même taille (pas de grande carte).
+    // Première rangée : titre, Barea (CAN 2027), CFFA, toutes les cartes à la même taille (pas de grande carte). Échange du 27/11 : Barea passe à gauche.
     expect(Math.abs(barea.y - cffa.y)).toBeLessThan(2);
-    expect(barea.x).toBeGreaterThan(cffa.x + cffa.width);
+    expect(cffa.x).toBeGreaterThan(barea.x + barea.width);
     for (const c of [barea, cffa, toki, disciples]) {
       expect(c.width).toBeCloseTo(270, 0);
       expect(c.height).toBeCloseTo(230, 0);
@@ -1438,7 +1494,7 @@ test.describe("retours du 23/11 (soir) : Fonctionnalités, Accueil, Références
     expect(title.y).toBeLessThan(photo.y);
   });
 
-  test("Références (tablette 820 px) : la carte des Barea suit CFFA, côte à côte", async ({ page }) => {
+  test("Références (tablette 820 px) : la carte de CFFA suit celle des Barea, côte à côte", async ({ page }) => {
     await page.setViewportSize({ width: 820, height: 900 });
     await page.goto("/fr/references");
     await scrollThrough(page);
@@ -1447,8 +1503,45 @@ test.describe("retours du 23/11 (soir) : Fonctionnalités, Accueil, Références
     const barea = (await page.locator("main article", { has: page.locator("h3", { hasText: "Guinée-Bissau" }) }).boundingBox())!;
     const cffa = (await page.locator("main article", { has: page.locator("h3", { hasText: "CFFA vs COSFA" }) }).boundingBox())!;
     expect(Math.abs(barea.y - cffa.y)).toBeLessThan(2);
-    expect(barea.x).toBeGreaterThan(cffa.x);
+    expect(cffa.x).toBeGreaterThan(barea.x);
     expect(Math.abs(barea.width - cffa.width)).toBeLessThan(2);
+  });
+
+  test("Références : les deux premières cartes ont échangé icône et texte, les fonds restent à leur place (sombre puis claire)", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/fr/references");
+    const cards = page.locator("main article");
+    await expect(cards).toHaveCount(4);
+    const info = await cards.evaluateAll((els) =>
+      els
+        .map((e) => ({
+          title: e.querySelector("h3")?.textContent ?? "",
+          left: e.getBoundingClientRect().left,
+          top: e.getBoundingClientRect().top + window.scrollY,
+          dark: getComputedStyle(e).backgroundImage.includes("gradient"),
+          icon: e.querySelector("svg")?.getAttribute("viewBox") ?? "",
+          iconSize: Math.round(e.querySelector("svg")?.getBoundingClientRect().width ?? 0),
+        }))
+        .sort((a, b) => a.top - b.top || a.left - b.left),
+    );
+    // Première rangée : carte sombre = Barea (ballon, 38 px), carte claire = CFFA (trophée, 44 px).
+    expect(info[0].title).toBe(fr.references.cases[0].title);
+    expect(info[0].title).toContain("Barea");
+    expect(info[0].dark).toBe(true);
+    expect(info[0].iconSize).toBe(38);
+    expect(info[1].title).toBe(fr.references.cases[1].title);
+    expect(info[1].title).toContain("CFFA");
+    expect(info[1].dark).toBe(false);
+    expect(info[1].iconSize).toBe(44);
+    expect(info[0].left).toBeLessThan(info[1].left);
+  });
+
+  test("Accueil : le compteur « Matchs analysés » affiche 23", async ({ page }) => {
+    await page.goto("/fr");
+    const card = page.locator("li.h-\\[184px\\]", { hasText: fr.home.stats[0].title });
+    await card.scrollIntoViewIfNeeded();
+    await expect(card).toContainText("23", { timeout: 5000 });
+    await expect(card).not.toContainText(/\b8\b/);
   });
 
   test("Accueil : le titre dit que le football local n'a pas d'outils d'analyse, suivi de la phrase de transition (4 langues)", async ({ page }) => {
@@ -1466,5 +1559,246 @@ test.describe("retours du 23/11 (soir) : Fonctionnalités, Accueil, Références
       expect(p!.y).toBeGreaterThan(t!.y + t!.height - 1);
       expect(card!.y).toBeGreaterThan(p!.y + p!.height + 16);
     }
+  });
+});
+
+// ───────────────────────────── Première section de chaque page : adaptée à tout écran (demande du 27/11) ─────────────────────────────
+// Sur ordinateur (≥ 1024 px), la première section remplit la hauteur visible : la feuille claire suivante n'apparaît que par son arrondi (24 px) au bas de l'écran,
+// jamais un titre coupé à moitié. Si le contenu est plus grand que l'écran, la section s'agrandit : rien n'est coupé.
+test.describe("Première section adaptée à n'importe quel écran", () => {
+  const SCREENS: [number, number][] = [
+    [1024, 768],
+    [1280, 720],
+    [1366, 768],
+    [1440, 900],
+    [1536, 864],
+    [1526, 784], // écran de la stagiaire : 1907×980 pixels à 125 % d'affichage Windows
+    [1534, 781],
+    [1913, 978],
+    [1920, 1080],
+    [2560, 1300],
+  ];
+  const HEROES: [string, string][] = [
+    ["/fr", "Accueil"],
+    ["/fr/fonctionnalites", "Fonctionnalités"],
+    ["/fr/references", "Références"],
+  ];
+
+  for (const [w, h] of SCREENS) {
+    test(`${w}×${h} : Accueil, Fonctionnalités et Références remplissent l'écran (feuille claire à 24 px du bas), contenu entièrement visible`, async ({ page }) => {
+      await page.setViewportSize({ width: w, height: h });
+      for (const [path, name] of HEROES) {
+        await page.goto(path);
+        await page.waitForLoadState("networkidle");
+        const r = await page.evaluate(() => {
+          const hero = document.querySelector("main > section")!;
+          const sheet = hero.nextElementSibling!.getBoundingClientRect();
+          const bottoms = [...hero.querySelectorAll("h1, h1 + p, a.t-button, ul li")].map((e) => e.getBoundingClientRect().bottom);
+          return { vh: innerHeight, sheetTop: sheet.top, lowestContent: Math.max(...bottoms), scrollW: document.documentElement.scrollWidth, clientW: document.documentElement.clientWidth };
+        });
+        expect(r.sheetTop, `${name} à ${w}×${h} : la feuille claire commence à 24 px du bas de l'écran`).toBeCloseTo(r.vh - 24, 0);
+        expect(r.lowestContent, `${name} à ${w}×${h} : le contenu du hero ne passe pas sous la feuille`).toBeLessThanOrEqual(r.sheetTop);
+        expect(r.scrollW, `${name} à ${w}×${h} : pas de défilement horizontal`).toBeLessThanOrEqual(r.clientW);
+      }
+    });
+  }
+
+  test("l'image du hero repose sur le bas de la section (pas de bord net au milieu de l'écran) sur Accueil et Fonctionnalités", async ({ page }) => {
+    for (const [w, h] of [[1280, 720], [1913, 978], [2560, 1300]] as const) {
+      await page.setViewportSize({ width: w, height: h });
+      for (const path of ["/fr", "/fr/fonctionnalites"]) {
+        await page.goto(path);
+        await page.waitForLoadState("networkidle");
+        const gap = await page.evaluate(() => {
+          const hero = document.querySelector("main > section")!;
+          const img = [...hero.querySelectorAll("img")].reduce((a, b) => (b.getBoundingClientRect().width > a.getBoundingClientRect().width ? b : a));
+          const sheetTop = hero.nextElementSibling!.getBoundingClientRect().top;
+          return sheetTop - img.getBoundingClientRect().bottom;
+        });
+        // L'image finit au plus tard sous la feuille claire (écart ≤ 1 px) : elle déborde de moins de 90 px sous la feuille (partie cachée), jamais de vide visible.
+        expect(gap, `${path} à ${w}×${h}`).toBeLessThanOrEqual(1);
+        expect(gap, `${path} à ${w}×${h}`).toBeGreaterThanOrEqual(-90);
+      }
+    }
+  });
+
+  test("Tarifs : le titre et les quatre cartes sont en haut, la section remplit l'écran (le tableau ne commence pas à moitié visible)", async ({ page }) => {
+    for (const [w, h] of [[1913, 978], [1920, 1080], [2560, 1300]] as const) {
+      await page.setViewportSize({ width: w, height: h });
+      await page.goto("/fr/tarifs");
+      await page.waitForLoadState("networkidle");
+      const r = await page.evaluate(() => {
+        const hero = document.querySelector("main > div")!.getBoundingClientRect();
+        const table = document.querySelector("#table-title")!.getBoundingClientRect();
+        return { heroBottom: hero.bottom, vh: innerHeight, tableTop: table.top };
+      });
+      expect(r.heroBottom, `Tarifs à ${w}×${h}`).toBeGreaterThanOrEqual(r.vh - 1);
+      expect(r.tableTop, `le titre du tableau n'est pas à moitié coupé à ${w}×${h}`).toBeGreaterThanOrEqual(r.vh);
+    }
+  });
+
+  test("Contact : tout le formulaire et les liens (jusqu'à Facebook) sont visibles sans défiler, de 1280×720 à 1913×978", async ({ page }) => {
+    for (const [w, h] of [[1280, 720], [1366, 768], [1440, 900], [1526, 784], [1534, 781], [1913, 978]] as const) {
+      await page.setViewportSize({ width: w, height: h });
+      await page.goto("/fr/contact");
+      await page.waitForLoadState("networkidle");
+      const r = await page.evaluate(() => {
+        const send = document.querySelector("button[type=submit]")!.getBoundingClientRect();
+        const panel = document.querySelector(".glass-panel")!.getBoundingClientRect();
+        const links = [...document.querySelectorAll("main ul li a, main ul li span")].map((e) => e.getBoundingClientRect().bottom);
+        return { vh: innerHeight, sendBottom: send.bottom, panelBottom: panel.bottom, linksBottom: Math.max(...links) };
+      });
+      expect(r.sendBottom, `bouton Envoyer à ${w}×${h}`).toBeLessThanOrEqual(r.vh);
+      expect(r.panelBottom, `panneau du formulaire à ${w}×${h}`).toBeLessThanOrEqual(r.vh);
+      expect(r.linksBottom, `dernier lien (Facebook) à ${w}×${h}`).toBeLessThanOrEqual(r.vh);
+    }
+  });
+
+  test("Contact à 1526×784 (écran réel, Windows 125 %) : tailles d'origine (titre 64 px, champs 62 px, message 116 px), éléments remontés comme sur la capture du 27/11", async ({ page }) => {
+    await page.setViewportSize({ width: 1526, height: 784 });
+    await page.goto("/fr/contact");
+    await page.waitForLoadState("networkidle");
+    const r = await page.evaluate(() => {
+      const h1 = document.querySelector("h1")!;
+      const rect = (e: Element) => e.getBoundingClientRect();
+      const inputs = [...document.querySelectorAll("input.cut-br")].filter((e) => rect(e).width > 0 && rect(e).left > 0).map((e) => rect(e).height);
+      const area = rect(document.querySelector("textarea")!);
+      const panel = rect(document.querySelector(".glass-panel")!);
+      const firstLabel = rect([...document.querySelectorAll(".glass-panel label")].find((l) => rect(l).width > 0 && rect(l).left > 0 && /Nom/.test(l.textContent ?? ""))!);
+      const links = [...document.querySelectorAll("main ul li a, main ul li span")].map((e) => rect(e).bottom);
+      return {
+        vh: innerHeight, h1Font: getComputedStyle(h1).fontSize, h1Centre: (rect(h1).top + rect(h1).bottom) / 2, inputs, areaH: area.height,
+        panelBottom: panel.bottom, labelCentre: (firstLabel.top + firstLabel.bottom) / 2, linksBottom: Math.max(...links),
+        scrollH: document.documentElement.scrollHeight, contentBottom: document.querySelector("main > div")!.getBoundingClientRect().bottom,
+      };
+    });
+    expect(r.h1Font).toBe("64px");
+    for (const h of r.inputs) expect(h).toBe(62);
+    expect(r.areaH).toBe(116);
+    // Positions de la capture (÷ 1,25) : titre ≈ 136, étiquette « Nom » ≈ 117, bas du panneau ≈ 750, ligne Facebook ≈ 737.
+    expect(r.h1Centre).toBeGreaterThan(128);
+    expect(r.h1Centre).toBeLessThan(146);
+    expect(r.labelCentre).toBeGreaterThan(110);
+    expect(r.labelCentre).toBeLessThan(126);
+    expect(r.panelBottom).toBeGreaterThan(740);
+    expect(r.panelBottom).toBeLessThanOrEqual(r.vh - 20);
+    expect(r.linksBottom).toBeLessThanOrEqual(r.panelBottom);
+    // La section de contact tient dans l'écran : on voit tout sans défiler (le pied de page est juste dessous).
+    expect(r.contentBottom).toBeLessThanOrEqual(r.vh);
+  });
+
+  test("Contact : les tailles ne sont réduites que sur les écrans vraiment bas (≤ 766 px : champs 56 px ; ≤ 700 px : 48 px)", async ({ page }) => {
+    for (const [w, h, input, area] of [[1366, 768, 62, 116], [1280, 720, 56, 104], [1366, 657, 48, 84]] as const) {
+      await page.setViewportSize({ width: w, height: h });
+      await page.goto("/fr/contact");
+      await page.waitForLoadState("networkidle");
+      const r = await page.evaluate(() => ({
+        input: [...document.querySelectorAll("input.cut-br")].find((e) => e.getBoundingClientRect().width > 0 && e.getBoundingClientRect().left > 0)!.getBoundingClientRect().height,
+        area: document.querySelector("textarea")!.getBoundingClientRect().height,
+      }));
+      expect(r.input, `champ à ${w}×${h}`).toBe(input);
+      expect(r.area, `message à ${w}×${h}`).toBe(area);
+    }
+  });
+
+  test("Contact : sur un grand écran (2560×1300) l'espacement d'origine est conservé et le pied de page reste en bas", async ({ page }) => {
+    await page.setViewportSize({ width: 2560, height: 1300 });
+    await page.goto("/fr/contact");
+    await page.waitForLoadState("networkidle");
+    const r = await page.evaluate(() => ({ input: document.querySelector("input.cut-br")!.getBoundingClientRect().height, footerBottom: document.querySelector("footer")!.getBoundingClientRect().bottom, vh: innerHeight, scrollH: document.documentElement.scrollHeight }));
+    expect(r.input).toBe(62);
+    expect(r.scrollH).toBe(r.vh);
+    expect(Math.round(r.footerBottom)).toBe(r.vh);
+  });
+
+  test("Contact et Essai gratuit : en dessous de 1024 px (tablette, téléphone) la mise en page n'est pas resserrée", async ({ page }) => {
+    for (const path of ["/fr/contact", "/fr/essai-gratuit"]) {
+      await page.setViewportSize({ width: 820, height: 700 });
+      await page.goto(path);
+      const h = await page.locator("input.cut-br").first().evaluate((e) => e.getBoundingClientRect().height);
+      expect(h, path).toBe(62);
+    }
+  });
+
+  test("Accueil : le bloc de gauche (titre, texte, boutons) est remonté au-dessus du centre de la zone visible, sans toucher l'en-tête", async ({ page }) => {
+    for (const [w, h] of [[1024, 768], [1280, 720], [1526, 784], [1920, 1080], [2560, 1300]] as const) {
+      await page.setViewportSize({ width: w, height: h });
+      await page.goto("/fr");
+      await page.waitForLoadState("networkidle");
+      const r = await page.evaluate(() => {
+        const hero = document.querySelector("main > section")!;
+        const h1 = hero.querySelector("h1")!.getBoundingClientRect();
+        const btns = [...hero.querySelectorAll("a.t-button")].map((e) => e.getBoundingClientRect().bottom);
+        const header = document.querySelector("header")!.getBoundingClientRect().bottom;
+        const sheetTop = hero.nextElementSibling!.getBoundingClientRect().top;
+        return { top: h1.top, bottom: Math.max(...btns), header, sheetTop };
+      });
+      const visibleCentre = (r.header + r.sheetTop) / 2;
+      const lift = visibleCentre - (r.top + r.bottom) / 2;
+      expect(lift, `Accueil ${w}×${h} : le bloc est au-dessus du centre`).toBeGreaterThan(20);
+      expect(lift, `Accueil ${w}×${h} : sans exagérer`).toBeLessThan(110);
+      expect(r.top - r.header, `Accueil ${w}×${h} : marge sous l'en-tête`).toBeGreaterThan(60);
+    }
+  });
+
+  test("Fonctionnalités : l'ordinateur est agrandi (≥ 1000 px de large à 1526×784), sous l'en-tête et à plus de 40 px du texte et des cartes, en FR, EN et ES", async ({ page }) => {
+    for (const [w, h] of [[1280, 720], [1366, 768], [1440, 900], [1526, 784], [1920, 1080], [2560, 1300]] as const) {
+      await page.setViewportSize({ width: w, height: h });
+      for (const lang of ["fr", "en", "es"]) {
+        await page.goto(`/${lang}/fonctionnalites`);
+        await page.waitForLoadState("networkidle");
+        const r = await page.evaluate(() => {
+          const hero = document.querySelector("main > section")!;
+          const img = hero.querySelector("img")!.getBoundingClientRect();
+          const textRight = Math.max(...[...hero.querySelectorAll("h1, h1 + p")].map((e) => { const g = document.createRange(); g.selectNodeContents(e); return g.getBoundingClientRect().right; }));
+          const cardsRight = Math.max(...[...hero.querySelectorAll("ul li")].map((e) => e.getBoundingClientRect().right));
+          const header = document.querySelector("header")!.getBoundingClientRect().bottom;
+          return { imgW: img.width, laptopLeft: img.left + img.width * 0.209, laptopTop: img.top + img.height * 0.107, textRight, cardsRight, header, scrollW: document.documentElement.scrollWidth, clientW: document.documentElement.clientWidth };
+        });
+        if (w === 1526) expect(r.imgW, `image ${lang} à ${w}×${h}`).toBeGreaterThanOrEqual(1000);
+        expect(r.imgW, `image ${lang} à ${w}×${h} : jamais plus petite qu'avant (920 px)`).toBeGreaterThanOrEqual(920);
+        expect(r.laptopLeft - Math.max(r.textRight, r.cardsRight), `${lang} à ${w}×${h} : l'ordinateur ne touche ni le texte ni les cartes`).toBeGreaterThan(40);
+        expect(r.laptopTop, `${lang} à ${w}×${h} : l'ordinateur n'est pas masqué par l'en-tête`).toBeGreaterThan(r.header + 20);
+        expect(r.scrollW).toBeLessThanOrEqual(r.clientW);
+      }
+    }
+  });
+
+  test("Fonctionnalités : texte de 18 px comme l'Accueil, cartes de modes plus grandes dès 1440 px de large, groupe remonté au centre optique", async ({ page }) => {
+    await page.setViewportSize({ width: 1526, height: 784 });
+    await page.goto("/fr");
+    const home = await page.evaluate(() => getComputedStyle(document.querySelector("main > section h1 + p")!).fontSize);
+    await page.goto("/fr/fonctionnalites");
+    await page.waitForLoadState("networkidle");
+    const big = await page.evaluate(() => {
+      const hero = document.querySelector("main > section")!;
+      const card = hero.querySelector("ul li")!.getBoundingClientRect();
+      const title = getComputedStyle(hero.querySelector("ul li p")!).fontSize;
+      const h1 = hero.querySelector("h1")!.getBoundingClientRect();
+      const cardsBottom = Math.max(...[...hero.querySelectorAll("ul li")].map((e) => e.getBoundingClientRect().bottom));
+      const header = document.querySelector("header")!.getBoundingClientRect().bottom;
+      const sheetTop = hero.nextElementSibling!.getBoundingClientRect().top;
+      return { fs: getComputedStyle(hero.querySelector("h1 + p")!).fontSize, w: card.width, h: card.height, title, lift: (header + sheetTop) / 2 - (h1.top + cardsBottom) / 2 };
+    });
+    expect(big.fs).toBe(home);
+    expect(big.fs).toBe("18px");
+    expect([big.w, big.h, big.title]).toEqual([264, 108, "26px"]);
+    expect(big.lift).toBeGreaterThan(20);
+    await page.setViewportSize({ width: 1366, height: 768 });
+    await page.goto("/fr/fonctionnalites");
+    const small = await page.evaluate(() => { const c = document.querySelector("main > section ul li")!.getBoundingClientRect(); return [c.width, c.height]; });
+    expect(small).toEqual([238, 95]);
+  });
+
+  test("404 : le contenu est centré dans la hauteur libre, le pied de page reste en bas", async ({ page }) => {
+    await page.setViewportSize({ width: 1913, height: 978 });
+    await page.goto("/fr/page-inconnue");
+    const r = await page.evaluate(() => {
+      const h1 = document.querySelector("h1")!.getBoundingClientRect();
+      const header = document.querySelector("header")!.getBoundingClientRect();
+      const footer = document.querySelector("footer")!.getBoundingClientRect();
+      return { h1Center: (h1.top + h1.bottom) / 2, mid: (header.bottom + footer.top) / 2 };
+    });
+    expect(Math.abs(r.h1Center - r.mid)).toBeLessThan(140);
   });
 });

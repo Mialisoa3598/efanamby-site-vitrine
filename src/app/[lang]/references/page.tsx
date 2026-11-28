@@ -15,10 +15,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return buildMetadata(params, "references", t.seo.references);
 }
 
-// Icônes confirmées par la stagiaire (16/11) : trophée = CFFA, ballon = Barea (qualifications CAN 2027, le plus récent), coureur = Toki, flèches = Disciples FC.
+// Icônes confirmées par la stagiaire (16/11) : trophée = CFFA, ballon = Barea (qualifications CAN 2027), coureur = Toki, flèches = Disciples FC.
+// Échange du 27/11 : le contenu (icône + texte) des deux premières cartes est inversé, les fonds restent à leur place :
+// carte sombre (1re) = Barea / ballon, carte claire (2e) = CFFA / trophée. L'ordre des textes dans les fichiers de langue suit (cases[0] = Barea, cases[1] = CFFA).
 const CASE_STYLE = [
-  { Icon: TrophyFill, size: 44, dark: true },
-  { Icon: SoccerBallFill, size: 38, dark: false },
+  { Icon: SoccerBallFill, size: 38, dark: true },
+  { Icon: TrophyFill, size: 44, dark: false },
   { Icon: PersonRunFill, size: 38, dark: false },
   { Icon: ArrowsLeftRightFill, size: 36, dark: true },
 ] as const;
@@ -34,9 +36,9 @@ export default async function ReferencesPage({ params }: PageProps) {
   return (
     <>
       {/* HERO */}
-      <section className="bg-navy pb-[69px] pt-[18px] max-md:pt-2">
-        <div className="wrap relative isolate h-[502px] overflow-hidden rounded-[16px] max-lg:flex max-lg:h-auto max-lg:flex-col max-lg:overflow-visible">
-          <div className="flex h-full flex-col justify-between px-10 pb-[31px] pt-[43px] max-lg:h-auto max-lg:px-0 max-lg:pb-0 max-lg:pt-8 max-md:pt-6">
+      <section className="hero-fill bg-navy pb-[69px] pt-[18px] max-md:pt-2 lg:flex lg:flex-col">
+        <div className="wrap relative isolate flex min-h-[502px] flex-col overflow-hidden rounded-[16px] lg:flex-1 max-lg:min-h-0 max-lg:overflow-visible">
+          <div className="flex flex-1 flex-col justify-between px-10 pb-[31px] pt-[43px] max-lg:px-0 max-lg:pb-0 max-lg:pt-8 max-md:pt-6">
             <div>
               <h1 className="m-0 text-[52px] font-bold leading-[1.1] tracking-[-0.025em] text-mint max-md:text-[38px]">
                 {r.title[0]}

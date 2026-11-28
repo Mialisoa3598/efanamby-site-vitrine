@@ -71,7 +71,7 @@ export const mg: Messages = {
     ],
     trustTitle: "Efa matoky anay izy ireo",
     stats: [
-      { value: "8", title: "Lalao nodinihina", text: "Fihaonana tena izy, voasoratra hetsika isan-tsaha." },
+      { value: "23", title: "Lalao nodinihina", text: "Fihaonana tena izy, voasoratra hetsika isan-tsaha." },
       { value: "+165", title: "Famantarana arahina", text: "Pasy, tifitra, tolona, kornera ary hetsika hafa maro." },
     ],
     ctaTitle: "Mandalo amin'ny fanadihadiana angon-drakitra.",
@@ -151,8 +151,8 @@ export const mg: Messages = {
     casesTitle: "Avy eny an-kianja",
     casesAccent: "ho amin'ny angon-drakitra.",
     cases: [
-      { title: "CFFA vs COSFA - PFL 2025-2026", text: "Dingana 1/4 famaranana : famakafakana ny lalao sy famantarana momba ny zava-bita" },
       { title: "Barea vs Guinea-Bissau - Fanasokajiana CAN 2027", text: "Tolona sy tifitra nodinihina, isaky ny fizaràna" },
+      { title: "CFFA vs COSFA - PFL 2025-2026", text: "Dingana 1/4 famaranana : famakafakana ny lalao sy famantarana momba ny zava-bita" },
       { title: "Toki Rakotondraibe - COSFA", text: "Fanangonana hetsika 4, vanim-potoana 2026" },
       { title: "Disciples FC vs Elgeco Plus", text: "Isa tamin'ny lalao raha oharina amin'ny antontanisa tena izy" },
     ],

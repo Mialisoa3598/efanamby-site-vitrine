@@ -194,7 +194,40 @@ details > summary::-webkit-details-marker { display: none; }
 @media (max-width: 389px) { .wrap { --gutter: 20px; } }
 
 /* Feuille claire à haut arrondi qui recouvre le bas d'un hero sombre. */
-.sheet { position: relative; margin-top: -40px; border-radius: 24px 24px 0 0; background: var(--color-mint); }
+:root {
+  --header-h: 76px;       /* hauteur de l'en-tête (collant) */
+  --sheet-overlap: 40px;  /* la feuille claire remonte de 40 px sur le hero sombre */
+  --peek: 24px;           /* ce qu'on voit de la feuille suivante au bas du premier écran (= son arrondi) */
+}
+.sheet { position: relative; margin-top: calc(var(--sheet-overlap) * -1); border-radius: 24px 24px 0 0; background: var(--color-mint); }
+
+/* Première section d'une page (demande du 27/11) : elle remplit la hauteur visible de l'écran, quel que soit l'écran.
+   Hauteur mini = écran − en-tête + recouvrement de la feuille − dépassement visible de la feuille ; si le contenu est plus grand, la section s'agrandit
+   (jamais de texte coupé). Sous 1024 px (tablette / téléphone, mise en page empilée) c'est le contenu qui décide. */
+@media (min-width: 1024px) {
+  .hero-fill { min-height: calc(100vh - var(--header-h) + var(--sheet-overlap) - var(--peek)); }
+}
+@supports (height: 100svh) {
+  @media (min-width: 1024px) {
+    .hero-fill { min-height: calc(100svh - var(--header-h) + var(--sheet-overlap) - var(--peek)); }
+  }
+}
+/* Page sans feuille claire au-dessus (Tarifs) : la section remplit simplement la hauteur visible. */
+@media (min-width: 1024px) {
+  .hero-fill-plain { min-height: calc(100vh - var(--header-h)); }
+}
+@supports (height: 100svh) {
+  @media (min-width: 1024px) {
+    .hero-fill-plain { min-height: calc(100svh - var(--header-h)); }
+  }
+}
+/* Écrans de hauteur limitée : variantes Tailwind pour les pages à formulaire (Contact, Essai gratuit). Hauteurs en pixels CSS : un écran 1920×1080 à 125 % d'affichage Windows fait ≈ 1526×784 utiles.
+   « short » (≤ 880 px de haut) : on REMONTE seulement les blocs (marges du haut et du bas), les tailles d'origine sont conservées (titre 64 px, champs 62 px).
+   « tiny » (≤ 766 px) puis « mini » (≤ 700 px) : écrans vraiment bas, on réduit en plus les champs et le titre pour que le formulaire reste lisible d'un coup d'œil.
+   Sous 1024 px de large la mise en page est empilée : on ne touche à rien. Déclarées dans l'ordre short → tiny → mini : la plus étroite l'emporte. */
+@custom-variant short (@media (min-width: 1024px) and (max-height: 880px));
+@custom-variant tiny (@media (min-width: 1024px) and (max-height: 766px));
+@custom-variant mini (@media (min-width: 1024px) and (max-height: 700px));
 
 /* Coin coupé AVEC contour fin : la diagonale est tracée par des pseudo-éléments (fonctionne sur fond transparent). */
 .lined { position: relative; border: var(--lw, 1px) solid var(--bc, currentColor); }

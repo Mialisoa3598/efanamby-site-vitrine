@@ -22,7 +22,7 @@ export default async function ContactPage({ params }: PageProps) {
   ];
 
   return (
-    <div className="page-ends-navy relative isolate overflow-hidden bg-navy pb-[66px] max-md:pb-12">
+    <div className="page-ends-navy relative isolate overflow-hidden bg-navy pb-[66px] short:pb-8 max-md:pb-12">
       {/* Lueur verte du bas de page (relevée sur la maquette) */}
       <div
         aria-hidden="true"
@@ -30,15 +30,15 @@ export default async function ContactPage({ params }: PageProps) {
       />
       <div aria-hidden="true" className="absolute inset-x-0 bottom-0 -z-10 h-3.5 bg-[linear-gradient(to_top,#06062d_0%,transparent_100%)]" />
 
-      <div className="wrap grid grid-cols-[1fr_556px] gap-x-12 pt-[23px] max-lg:grid-cols-1 max-lg:gap-y-10 max-md:pt-0">
-        <div className="flex flex-col justify-between gap-12 pt-9 max-lg:pt-4 max-md:gap-8 max-md:pt-2">
+      <div className="wrap grid grid-cols-[1fr_556px] gap-x-12 pt-[23px] short:pt-3 max-lg:grid-cols-1 max-lg:gap-y-10 max-md:pt-0">
+        <div className="flex flex-col justify-between gap-12 pt-9 short:pt-3.5 max-lg:pt-4 max-md:gap-8 max-md:pt-2">
           <div>
-            <h1 className="m-0 text-[64px] font-bold leading-[1.1] tracking-[-0.025em] text-mint max-md:text-[44px]">{t.contact.title}</h1>
+            <h1 className="m-0 text-[64px] font-bold leading-[1.1] tracking-[-0.025em] text-mint tiny:text-[56px] mini:text-[48px] max-md:text-[44px]">{t.contact.title}</h1>
             <p className="m-0 mt-3 text-[16px] leading-[1.5] text-mint">{t.contact.text}</p>
           </div>
           <div>
             <h2 className="sr-only">{t.contact.channels}</h2>
-            <ul className="m-0 flex list-none flex-col gap-4 p-0 pl-[5px] text-[12px] text-mint">
+            <ul className="m-0 flex list-none flex-col gap-4 p-0 pl-[5px] text-[12px] text-mint tiny:gap-3">
               {channels.map((c) => (
                 <li key={c.key} className="flex items-center gap-3">
                   {c.icon}
@@ -55,7 +55,7 @@ export default async function ContactPage({ params }: PageProps) {
           </div>
         </div>
 
-        <div className="glass-panel rounded-[20px] px-10 pb-10 pt-[42px] max-md:px-5 max-md:py-8">
+        <div className="glass-panel rounded-[20px] px-10 pb-10 pt-[42px] short:pt-[18px] tiny:pb-6 tiny:pt-4 max-md:px-5 max-md:py-8">
           <RequestForm variant="contact" locale={lang} pageHref={`/${lang}${PAGES.contact}`} privacyHref={path(lang, "privacy")} recipient={FORM_RECIPIENT} labels={formLabels(t)} />
         </div>
       </div>

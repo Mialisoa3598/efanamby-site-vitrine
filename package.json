@@ -26,7 +26,7 @@
     "@axe-core/playwright": "^4.10.0",
     "@playwright/test": "1.63.0",
     "@tailwindcss/turbopack": "^4",
-    "@types/node": "^26.6.6",
+    "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
@@ -35,13 +35,10 @@
     "tailwindcss": "^4",
     "tsx": "^4",
     "typescript": "^5",
-    "vitest": "^5.1.1"
+    "vitest": "^3"
   },
   "engines": {
     "node": ">=20.9.0"
   },
-  "description": "Site vitrine e-Fanamby — Football analytics, made in Madagascar.",
-  "allowScripts": {
-    "esbuild@0.28.2": true
-  }
+  "description": "Site vitrine e-Fanamby — Football analytics, made in Madagascar."
 }

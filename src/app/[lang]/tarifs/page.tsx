@@ -20,7 +20,7 @@ export default async function PricingPage({ params }: PageProps) {
   return (
     <>
       {/* HERO + CARTES : fond marine, lueur verte, feuille menthe qui passe derrière les cartes */}
-      <div className="relative bg-navy pb-0">
+      <div className="hero-fill-plain relative bg-navy pb-0">
         <div aria-hidden="true" className="absolute inset-x-0 top-[99px] h-[500px] bg-[radial-gradient(ellipse_700px_500px_at_50%_100%,rgb(172_221_205)_0%,rgb(157_215_197)_15%,rgb(74_168_141)_35%,rgb(26_106_94)_55%,rgb(18_67_75)_69%,rgb(11_35_59)_85%,rgb(6_6_45)_100%)] max-lg:top-[60px]" />
         <div aria-hidden="true" className="absolute inset-x-0 bottom-0 top-[599px] rounded-t-[24px] bg-mint max-xl:top-[460px]" />
         <div className="wrap relative pt-[80px] max-md:pt-5">
@@ -149,7 +149,6 @@ export default async function PricingPage({ params }: PageProps) {
               <Button
                 href={`${trialHref}?formule=demo`}
                 variant="mint"
-                cut="tr-bl"
                 className="absolute bottom-7 right-7 max-md:bottom-5 max-md:right-5"
               >
                 {t.common.requestDemo}

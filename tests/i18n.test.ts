@@ -130,17 +130,25 @@ describe("retours du 23/11 (soir)", () => {
     expect(en.features.items[7].text).toBe("PDF/CSV export. WhatsApp sharing on request");
   });
 
-  it("Références : 4 cas, le 2e (Barea, qualifications CAN 2027) remplace CHAN 2024 ; stade de CFFA vs COSFA précisé", () => {
+  it("Références : 4 cas, le 1er (Barea, qualifications CAN 2027) et le 2e (CFFA vs COSFA, quart de finale) ont été échangés le 27/11", () => {
     for (const code of ["fr", "en", "mg", "es"] as const) {
       const cases = DICTS[code].references.cases;
       expect(cases, code).toHaveLength(4);
-      expect(cases[1].title, code).toMatch(/Guinea|Guinée/);
-      expect(cases[1].title, code).toMatch(/(CAN|AFCON) 2027/);
+      expect(cases[0].title, code).toMatch(/Guinea|Guinée/);
+      expect(cases[0].title, code).toMatch(/(CAN|AFCON) 2027/);
+      expect(cases[1].title, code).toMatch(/CFFA vs COSFA/);
       expect(JSON.stringify(cases), code).not.toMatch(/CHAN 2024|Burkina/);
     }
-    expect(fr.references.cases[0].text).toMatch(/Quart de finale/);
-    expect(en.references.cases[0].text).toMatch(/Quarter-final/);
-    expect(es.references.cases[0].text).toMatch(/Cuartos de final/);
+    expect(fr.references.cases[1].text).toMatch(/Quart de finale/);
+    expect(en.references.cases[1].text).toMatch(/Quarter-final/);
+    expect(es.references.cases[1].text).toMatch(/Cuartos de final/);
+  });
+
+  it("Accueil : le compteur « matchs analysés » vaut 23 dans les 4 langues (demande du 27/11)", () => {
+    for (const code of ["fr", "en", "mg", "es"] as const) {
+      const stat = DICTS[code].home.stats[0];
+      expect(stat.value, code).toBe("23");
+    }
   });
 
   it("Accueil : titre « le football local n'a pas d'outils d'analyse » et transition qui ne le répète pas, dans les 4 langues", () => {
